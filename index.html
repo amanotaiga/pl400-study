@@ -177,9 +177,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .done-banner .btn-review-only{padding:10px 24px;background:var(--surf);
   color:var(--txt);border:1px solid var(--bdr);border-radius:8px;
   cursor:pointer;font-size:.9rem;margin:4px}
+
+/* ── Mobile / responsive (collapse both side panels) ── */
+.menu-toggle{display:none}
+.sb-backdrop{display:none}
+@media (max-width:768px){
+  body{font-size:14px}
+  /* left sidebar → off-canvas slide-in drawer */
+  .sb{position:fixed;top:0;left:0;height:100%;z-index:50;
+      transform:translateX(-100%);transition:transform .25s ease;
+      box-shadow:2px 0 14px rgba(0,0,0,.35)}
+  .sb.open{transform:translateX(0)}
+  /* dimmed backdrop behind the open drawer */
+  .sb-backdrop.show{display:block;position:fixed;inset:0;z-index:40;
+      background:rgba(0,0,0,.45);border:none;padding:0;cursor:pointer}
+  /* hamburger button */
+  .menu-toggle{display:flex;position:fixed;top:8px;left:8px;z-index:60;
+      width:38px;height:38px;align-items:center;justify-content:center;
+      background:var(--sb);color:#f1f5f9;border:none;border-radius:8px;
+      font-size:1.25rem;line-height:1;cursor:pointer;
+      box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  /* leave room for the hamburger in the tab bar */
+  .tabs{padding-left:54px}
+  .tb{padding:11px 12px;font-size:.8rem}
+  /* right TOC column collapses away on small screens */
+  .toc-col{display:none}
+  .guide-scroll{padding:20px 16px 48px;max-width:none;width:100%}
+  /* wide tables scroll instead of breaking the layout */
+  .guide-scroll table{display:block;overflow-x:auto;white-space:nowrap}
+  /* roomier deck on small screens */
+  .deck-wrap{padding:14px}
+  .flashcard{padding:18px}
+  .deck-topbar{flex-direction:column;align-items:flex-start;gap:10px}
+  .pbar-track{width:100%}
+}
 </style>
 </head>
 <body>
+<button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">☰</button>
+<div class="sb-backdrop" onclick="toggleSidebar(false)"></div>
 <aside class="sb">
   <div class="sb-head">
     <h1>PL-400 Study Portal</h1>
@@ -7534,6 +7570,15 @@ function getAnswered(slug) { return getSet(slug,'answered'); }
 function getCorrect(slug)  { return getSet(slug,'correct'); }
 
 // ── Sidebar navigation ───────────────────────────────────────────────────────
+// ── Mobile sidebar drawer ─────────────────────────────────────────────────────
+function toggleSidebar(force) {
+    const sb = document.querySelector('.sb');
+    const bd = document.querySelector('.sb-backdrop');
+    const open = force === undefined ? !sb.classList.contains('open') : force;
+    sb.classList.toggle('open', open);
+    bd.classList.toggle('show', open);
+}
+
 function showDomain(slug) {
     document.querySelectorAll('.db').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -7542,6 +7587,8 @@ function showDomain(slug) {
     // restore last tab
     const tab = tabState[slug] || 'guide';
     activateTab(slug, tab, false);
+    // on mobile, close the drawer after picking a domain
+    if (window.matchMedia('(max-width:768px)').matches) toggleSidebar(false);
 }
 
 // ── Tabs ─────────────────────────────────────────────────────────────────────
