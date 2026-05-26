@@ -178,48 +178,103 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   color:var(--txt);border:1px solid var(--bdr);border-radius:8px;
   cursor:pointer;font-size:.9rem;margin:4px}
 
-/* ── Mobile / responsive (collapse both side panels) ── */
-.menu-toggle{display:none}
-.sb-backdrop{display:none}
-@media (max-width:768px){
-  body{font-size:14px}
-  /* left sidebar → off-canvas slide-in drawer */
-  .sb{position:fixed;top:0;left:0;height:100%;z-index:50;
-      transform:translateX(-100%);transition:transform .25s ease;
-      box-shadow:2px 0 14px rgba(0,0,0,.35)}
-  .sb.open{transform:translateX(0)}
-  /* dimmed backdrop behind the open drawer */
-  .sb-backdrop.show{display:block;position:fixed;inset:0;z-index:40;
-      background:rgba(0,0,0,.45);border:none;padding:0;cursor:pointer}
-  /* hamburger button */
-  .menu-toggle{display:flex;position:fixed;top:8px;left:8px;z-index:60;
-      width:38px;height:38px;align-items:center;justify-content:center;
-      background:var(--sb);color:#f1f5f9;border:none;border-radius:8px;
-      font-size:1.25rem;line-height:1;cursor:pointer;
-      box-shadow:0 1px 4px rgba(0,0,0,.3)}
-  /* leave room for the hamburger in the tab bar */
-  .tabs{padding-left:54px}
-  .tb{padding:11px 12px;font-size:.8rem}
-  /* right TOC column collapses away on small screens */
-  .toc-col{display:none}
-  .guide-scroll{padding:20px 16px 48px;max-width:none;width:100%}
-  /* wide tables scroll instead of breaking the layout */
-  .guide-scroll table{display:block;overflow-x:auto;white-space:nowrap}
-  /* roomier deck on small screens */
-  .deck-wrap{padding:14px}
-  .flashcard{padding:18px}
-  .deck-topbar{flex-direction:column;align-items:flex-start;gap:10px}
-  .pbar-track{width:100%}
-}
+/* ── Quiz ── */
+.sb-quiz{padding:6px 12px 10px;border-bottom:1px solid var(--sb2)}
+.quiz-btn{display:flex;width:100%;padding:11px 14px;border:none;cursor:pointer;
+  align-items:center;gap:10px;border-radius:8px;background:var(--sb2);
+  color:#e2e8f0;font-size:.86rem;font-weight:600;transition:all .15s}
+.quiz-btn:hover{background:#334155}
+.quiz-btn.active{background:var(--sba);color:#fff}
+.quiz-btn .qb-emoji{font-size:1.1rem}
+.quiz-title{padding:11px 0;font-size:.85rem;font-weight:600;color:var(--txt)}
+.quiz-wrap{flex:1;overflow-y:auto;padding:28px 24px;display:flex;
+  justify-content:center;align-items:flex-start}
+.quiz-inner{width:100%;max-width:760px}
+/* setup */
+.quiz-setup h2{font-size:1.35rem;margin-bottom:6px;color:#0f172a}
+.quiz-setup .sub{color:var(--muted);font-size:.88rem;margin-bottom:22px}
+.qs-label{font-weight:700;text-transform:uppercase;font-size:.7rem;
+  letter-spacing:.06em;color:var(--muted);margin:18px 0 10px}
+.dom-grid{display:flex;flex-direction:column;gap:8px}
+.dom-row{display:flex;align-items:center;gap:11px;padding:11px 14px;
+  border:1.5px solid var(--bdr);border-radius:9px;cursor:pointer;
+  transition:all .15s;background:var(--surf)}
+.dom-row:hover{border-color:var(--acc);background:#f8fafc}
+.dom-row.on{border-color:var(--acc);background:#eff6ff}
+.dom-row input{width:17px;height:17px;accent-color:var(--acc);cursor:pointer}
+.dom-row .dn{flex:1;font-size:.9rem;font-weight:500}
+.dom-row .dc{font-size:.76rem;color:var(--muted)}
+.dom-row.all-row{background:#0f172a;border-color:#0f172a;color:#f1f5f9}
+.dom-row.all-row:hover{background:#1e293b}
+.dom-row.all-row .dc{color:#94a3b8}
+.count-grid{display:flex;gap:10px;flex-wrap:wrap}
+.count-btn{padding:12px 22px;border:1.5px solid var(--bdr);border-radius:9px;
+  background:var(--surf);cursor:pointer;font-size:1rem;font-weight:600;
+  color:var(--txt);transition:all .15s;min-width:64px}
+.count-btn:hover{border-color:var(--acc)}
+.count-btn.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.quiz-pool-note{font-size:.8rem;color:var(--muted);margin-top:10px}
+.start-quiz-btn{margin-top:26px;width:100%;padding:14px;background:var(--acc);
+  color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:600;
+  cursor:pointer;transition:background .12s}
+.start-quiz-btn:hover:not(:disabled){background:var(--acc2)}
+.start-quiz-btn:disabled{background:#94a3b8;cursor:not-allowed}
+/* runner */
+.quiz-run-top{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:8px}
+.quiz-run-top .qn{font-size:.82rem;font-weight:600;color:var(--muted)}
+.quiz-run-top .qd{font-size:.74rem;color:#cbd5e1;font-style:italic}
+.quiz-pbar{height:6px;background:var(--bdr);border-radius:3px;margin-bottom:22px}
+.quiz-pbar > div{height:100%;background:var(--acc);border-radius:3px;
+  transition:width .3s}
+.quiz-nav{display:flex;justify-content:space-between;margin-top:20px;gap:10px}
+.quiz-nav button{padding:11px 24px;border-radius:9px;font-size:.9rem;
+  font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--surf);
+  color:var(--txt)}
+.quiz-nav .next{background:var(--acc);border-color:var(--acc);color:#fff}
+.quiz-nav .next:hover{background:var(--acc2)}
+.quiz-nav button:disabled{opacity:.45;cursor:not-allowed}
+/* results */
+.quiz-score-card{text-align:center;padding:28px;background:var(--surf);
+  border:1px solid var(--bdr);border-radius:14px;margin-bottom:24px}
+.quiz-score-card .big{font-size:3rem;font-weight:800;margin:6px 0}
+.quiz-score-card .lbl{color:var(--muted);font-size:.9rem}
+.quiz-score-card.pass .big{color:var(--ok)}
+.quiz-score-card.fail .big{color:var(--bad)}
+.review-head{font-weight:700;font-size:1.05rem;margin:8px 0 14px;color:#0f172a}
+.rev-card{border:1px solid var(--bdr);border-radius:12px;padding:18px 20px;
+  margin-bottom:14px;background:var(--surf)}
+.rev-stem{font-size:.92rem;line-height:1.65;white-space:pre-wrap;margin-bottom:14px}
+.rev-ans{font-size:.85rem;margin:4px 0;line-height:1.5}
+.rev-ans .you{color:var(--bad);font-weight:600}
+.rev-ans .cor{color:var(--ok);font-weight:600}
+.rev-rat{background:#f8fafc;border-left:4px solid var(--ok);border-radius:0 6px 6px 0;
+  padding:11px 14px;margin:12px 0;font-size:.84rem;line-height:1.65;white-space:pre-wrap}
+.goto-guide{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;
+  background:var(--beybg);border:1px solid var(--beybdr);border-radius:8px;
+  color:var(--acc2);font-size:.83rem;font-weight:600;cursor:pointer;
+  transition:background .12s}
+.goto-guide:hover{background:#dbeafe}
+.rev-src{font-size:.72rem;color:#cbd5e1;font-style:italic;margin-top:10px}
+.quiz-results-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  margin:8px 0 26px}
+.quiz-results-actions button{padding:11px 22px;border-radius:9px;font-size:.9rem;
+  font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--surf);
+  color:var(--txt)}
+.quiz-results-actions .primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.all-correct{text-align:center;padding:30px;color:var(--ok);font-weight:600}
 </style>
 </head>
 <body>
-<button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">☰</button>
-<div class="sb-backdrop" onclick="toggleSidebar(false)"></div>
 <aside class="sb">
   <div class="sb-head">
     <h1>PL-400 Study Portal</h1>
     <p>441 questions · 6 domains</p>
+  </div>
+  <div class="sb-quiz">
+    <button class="quiz-btn" id="quiz-btn" onclick="openQuiz()">
+      <span class="qb-emoji">📝</span><span>Practice Quiz</span>
+    </button>
   </div>
   <nav class="sb-nav">
 <button class="db" data-slug="extend_the_platform" onclick="showDomain('extend_the_platform')">
@@ -315,6 +370,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   <div class="sb-foot">Space=reveal · G=got it · R=review</div>
 </aside>
 <main class="main">
+  <div class="panel" id="panel-quiz">
+    <div class="tabs"><span class="quiz-title">📝 Practice Quiz</span></div>
+    <div class="quiz-wrap"><div class="quiz-inner" id="quiz-inner"></div></div>
+  </div>
   
 <div class="panel" id="panel-extend_the_platform">
   <div class="tabs">
@@ -922,6 +981,74 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li><strong>Custom code cannot be used with the on-premises data gateway.</strong></li>
 <li>Custom code can scope to specific operations; unselected operations remain codeless.</li>
 </ul>
+<h3 id="custom-code-for-data-transformation">Custom Code for Data Transformation</h3>
+<p>The exam skill "Develop code for a custom connector to transform data" tests whether you can write a C# script that modifies the request sent to the backend or the response returned to the caller.</p>
+<p><strong>Script structure:</strong></p>
+<pre><code class="language-csharp">public class Script : ScriptBase
+{
+    public override async Task&lt;HttpResponseMessage&gt; ExecuteAsync()
+    {
+        // Branch on operation to apply different logic
+        if (Context.OperationId == &quot;GetItems&quot;)
+        {
+            // Transform the REQUEST before sending to the backend
+            var requestContent = await Context.Request.Content.ReadAsStringAsync();
+            var requestBody = JObject.Parse(requestContent);
+            requestBody[&quot;extraField&quot;] = &quot;injected&quot;;
+            Context.Request.Content = CreateJsonContent(requestBody.ToString());
+        }
+
+        // Send the (possibly modified) request
+        var response = await Context.SendAsync(Context.Request, CancellationToken);
+
+        if (Context.OperationId == &quot;GetItems&quot; &amp;&amp; response.IsSuccessStatusCode)
+        {
+            // Transform the RESPONSE before returning to Power Automate / Power Apps
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseBody = JObject.Parse(responseContent);
+            responseBody[&quot;transformedField&quot;] = responseBody[&quot;originalField&quot;];
+            responseBody.Remove(&quot;originalField&quot;);
+            response.Content = CreateJsonContent(responseBody.ToString());
+        }
+
+        return response;
+    }
+}
+</code></pre>
+<p><strong>Key rules:</strong>
+- Use <code>Context.SendAsync(Context.Request, CancellationToken)</code> — <strong>never</strong> create your own <code>HttpClient</code>.
+- Branch on <code>Context.OperationId</code> to apply per-action logic in a single script file.
+- <code>CreateJsonContent(string)</code> is the helper for setting JSON response/request bodies.
+- Modify <code>Context.Request.Content</code> to transform the outbound request; modify the returned <code>response.Content</code> to transform the response.
+- <strong>Only one script file per connector</strong>; it handles all operations.
+- <strong>Cannot be combined with on-premises data gateway</strong> — custom code requires cloud endpoints.</p>
+<p><strong>Common transformation scenarios the exam may test:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backend returns a flat array but Power Automate needs a wrapper object</td>
+<td>Parse response JSON, wrap array in <code>{"items": [...]}</code>, replace response content</td>
+</tr>
+<tr>
+<td>Request must include a computed field the caller doesn't provide</td>
+<td>Intercept request, compute value from other params, inject before <code>SendAsync</code></td>
+</tr>
+<tr>
+<td>Backend returns camelCase but connector schema uses PascalCase</td>
+<td>Parse response, remap property names, return modified JSON</td>
+</tr>
+<tr>
+<td>Different operations need different auth headers</td>
+<td>Branch on <code>OperationId</code>, set <code>Context.Request.Headers</code> per branch</td>
+</tr>
+</tbody>
+</table>
 <h3 id="cors-for-apim-backed-connectors">CORS for APIM-backed Connectors</h3>
 <p>Browser-based Power Platform clients require:
 1. Enable <strong>APIM CORS policy</strong> to allow the Power Platform origin.
@@ -1346,9 +1473,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tbody>
 </table>
 <hr />
-<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Beyond the Exam</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
+<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
 <blockquote>
-<p>This section adds depth, exact numbers, edge cases, and SDK/API specifics not fully covered above. All claims are sourced from Microsoft Learn unless marked "(unverified)".</p>
+<p>This section adds depth, exact numbers, edge cases, and SDK/API specifics. All claims are sourced from Microsoft Learn unless marked "(unverified)".</p>
 </blockquote>
 <hr />
 <h3 id="a-plug-in-execution-pipeline-deeper-detail">A. Plug-in Execution Pipeline — Deeper Detail</h3>
@@ -1391,14 +1518,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </table>
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/event-framework">Event Framework — Microsoft Dataverse</a></p>
 <p><strong>Special async-only rule:</strong> You must use asynchronous mode when registering a plug-in on the Create message of the <strong>SystemUser</strong> (User) entity if the plug-in performs an update operation. This is because the related <code>UserSettings</code> record is not created until after the <code>SystemUser</code> row is committed, which only exists outside the transaction.</p>
-<h4 id="execution-depth-and-infinite-loop-prevention">Execution Depth and Infinite-Loop Prevention</h4>
-<ul>
-<li><code>IExecutionContext.Depth</code> is incremented every time a running plug-in or workflow issues a message that triggers another plug-in or workflow.</li>
-<li>The platform aborts further execution when <code>Depth</code> reaches its maximum value within the configured time limit.</li>
-<li><strong>Default maximum depth: 8.</strong> Default time limit: <strong>one hour.</strong> These are configurable by the Dynamics 365 administrator via <code>Set-CrmSetting</code> (<code>WorkflowSettings.MaxDepth</code>) for on-premises. Dataverse online uses platform defaults.</li>
-<li><strong>Do not write business logic that depends on a specific Depth value.</strong> The docs explicitly warn that doing so will break when the operation occurs in a different code path due to configuration changes outside your control.</li>
-</ul>
-<p>Source: <a href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.xrm.sdk.iexecutioncontext.depth?view=dataverse-sdk-latest">IExecutionContext.Depth Property</a></p>
 <h4 id="ipluginexecutioncontext-full-context-members">IPluginExecutionContext — Full Context Members</h4>
 <p>Beyond <code>InputParameters</code>, <code>OutputParameters</code>, <code>SharedVariables</code>, <code>PreEntityImages</code>, <code>PostEntityImages</code>, and <code>CorrelationId</code> covered in the exam guide, the execution context also exposes:</p>
 <table>
@@ -1474,12 +1593,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/understand-the-data-context">Understand execution context — Microsoft Dataverse</a></p>
 <h4 id="outputparameters-only-available-in-postoperation">OutputParameters: Only Available in PostOperation</h4>
 <p><code>OutputParameters</code> are not populated until after the database transaction completes. They are therefore only accessible in plug-ins registered for the <strong>PostOperation</strong> stage. Attempting to read them in PreValidation or PreOperation yields an empty collection. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/understand-the-data-context">Understand execution context</a></p>
-<h4 id="sharedvariables-scope-caveat">SharedVariables Scope Caveat</h4>
-<p>For plug-ins registered for PreOperation or PostOperation to access shared variables set by a <strong>PreValidation</strong> plug-in (on Create, Update, Delete, or RetrieveExchangeRate), they must access <code>context.ParentContext.SharedVariables</code> — not <code>context.SharedVariables</code> directly. For all other cases, <code>context.SharedVariables</code> contains the collection. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/understand-the-data-context">Understand execution context</a></p>
-<h4 id="sandbox-isolation">Sandbox / Isolation</h4>
-<p>All plug-ins deployed to Dataverse online run in the <strong>sandbox</strong> (partial-trust, isolated) service by default. The <code>IsolationMode</code> is always <code>SandBox</code> for cloud environments. Operations called from within a sandboxed plug-in do not use the public API endpoints and therefore <strong>do not count toward service protection API limits</strong> for the number-of-requests or execution-time facets. However, the execution time those internal calls consume <strong>is added to the execution time of the originating request</strong>, which does accrue toward the service protection limits. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits">Service protection API limits</a></p>
-<h4 id="plug-in-sandbox-message-size-limit">Plug-in Sandbox Message Size Limit</h4>
-<p>When a plug-in is registered for any message and you use a bulk operation (CreateMultiple, UpdateMultiple), the total request size must stay below <strong>116.85 MB</strong>. Exceeding this triggers "Message size exceeded when sending context to Sandbox." Mitigation: disable plug-ins for the event, or use <code>BypassCustomPluginExecution</code> optional parameter. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
 <hr />
 <h3 id="b-custom-api-additional-properties-and-constraints">B. Custom API — Additional Properties and Constraints</h3>
 <h4 id="full-workflow-supported-parameter-types">Full Workflow-Supported Parameter Types</h4>
@@ -1503,8 +1616,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tbody>
 </table>
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
-<h4 id="custom-api-function-url-length-limit">Custom API — Function URL Length Limit</h4>
-<p>Functions are invoked via HTTP <code>GET</code> with all parameters in the URL. There is a <strong>32 KB (32,768 character) limit</strong> on URL length. If complex request parameters could cause the URL to exceed this limit, Microsoft explicitly recommends creating an Action instead (HTTP <code>POST</code> puts parameters in the body). Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
 <h4 id="functions-must-return-data">Functions Must Return Data</h4>
 <p>A Custom API with <code>IsFunction = true</code> must include at least one response property to be valid. A function with no response property will not appear in the Web API <code>$metadata</code> service document, and callers receive <code>404 Not Found</code> with <code>"Resource not found for the segment 'your_function_name'."</code>. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
 <h4 id="is-private-what-it-actually-prevents-and-doesnt">Is Private — What It Actually Prevents (and Doesn't)</h4>
@@ -1514,16 +1625,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 - Does <strong>not</strong> prevent the API from being invoked if a caller knows the message name and can compose a valid request.
 - Use <code>IsPrivate = false</code> during development so you can see $metadata output; switch to <code>true</code> before shipping the managed solution.
 - Known issue: <strong>Private messages cannot be used inside plug-ins.</strong> Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
-<h4 id="custom-processing-step-type-workaround-dependency">Custom Processing Step Type — Workaround Dependency</h4>
-<p>If you want to use the PostOperation-stage workaround for the profiler-debugging / secure-configuration limitation (register the plug-in on PostOperation instead of the main-operation plug-in type field), you <strong>must</strong> set <code>AllowedCustomProcessingStepType = Sync and Async</code> when creating the Custom API. You cannot change this setting after creation. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs — Known Issues</a></p>
-<h4 id="custom-api-activatedeactivate-no-effect">Custom API Activate/Deactivate — No Effect</h4>
-<p>Although Custom API records have <code>Status</code> and <code>Status Reason</code> columns (like most Dataverse tables), setting these columns has <strong>no impact</strong> on availability of the custom API, its request parameters, or response properties. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
-<h4 id="entitycollection-binding-no-implicit-parameter">EntityCollection Binding — No Implicit Parameter</h4>
-<p>When <code>BindingType = EntityCollection</code>, <strong>no</strong> implicit parameter or response property representing the entity collection is created automatically (unlike <code>Entity</code> binding which creates <code>Target</code>). The only effect is that the API must be invoked appended to an entity set URL when using the Web API. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
-<h4 id="managed-property-is-customizable">Managed Property: Is Customizable</h4>
-<p>Custom API definitions, request parameters, and response properties are customizable by default. When shipping in a managed solution, <strong>set <code>IsCustomizable = false</code> on each component individually</strong> (custom API, each request parameter, each response property). This prevents downstream consumers from modifying or deleting the definitions in ways that could break existing code. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
-<h4 id="custom-api-stage-code-at-runtime">Custom API Stage Code at Runtime</h4>
-<p>The main operation of a Custom API runs at <strong>Stage 30</strong> (not 40). The sample code in the official docs guards for this: <code>if (context.MessageName.Equals("sample_CustomAPIExample") &amp;&amp; context.Stage.Equals(30))</code>. Stage 30 corresponds to the MainOperation stage; PostOperation steps registered separately still run at Stage 40. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
 <hr />
 <h3 id="c-web-api-odata-deeper-detail">C. Web API / OData — Deeper Detail</h3>
 <h4 id="batch-limits-and-structure">$batch Limits and Structure</h4>
@@ -1537,8 +1638,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li>The <code>Prefer: odata.continue-on-error</code> header makes the server continue processing remaining requests after a failure, returning status <code>200 OK</code> with individual error details embedded in the response body. Without it, the entire batch stops at the first error.</li>
 </ul>
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/execute-batch-operations-using-web-api">Execute Batch Operations Using the Web API</a></p>
-<h4 id="content-id-cross-reference-in-change-sets">Content-ID Cross-Reference in Change Sets</h4>
-<p>Within a change set, assign a <code>Content-ID</code> integer to each operation (e.g., <code>Content-ID: 1</code>). Later operations in the <strong>same change set</strong> can reference the URI of that created resource using <code>$1</code>, <code>$2</code>, etc. in both URL paths and <code>@odata.id</code> properties. Referencing a <code>Content-ID</code> that appears <strong>after</strong> the current operation returns <code>HTTP 400</code> Bad Request: "Content-ID Reference: '$N' does not exist in the batch context." Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/execute-batch-operations-using-web-api">Execute Batch Operations</a></p>
 <h4 id="service-protection-api-limit-three-facets-with-exact-numbers">Service Protection API Limit — Three Facets with Exact Numbers</h4>
 <p>Per <strong>web server</strong> (most environments have multiple web servers):</p>
 <table>
@@ -1572,7 +1671,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li>Plug-in and custom workflow activity internal calls <strong>do not count</strong> toward the request number or execution time limits, but their execution time is added to the originating request's execution-time accrual.</li>
 <li><strong>Error codes for SDK for .NET:</strong> number of requests = <code>-2147015902</code> (<code>0x80072322</code>); execution time = <code>-2147015903</code> (<code>0x80072321</code>); concurrent requests = <code>-2147015898</code> (<code>0x80072326</code>).</li>
 <li>The <code>Retry-After</code> duration is calculated based on the nature of the preceding 5-minute period's requests. Continued demanding requests after a 429 extend the Retry-After duration further.</li>
-<li><strong>Response headers for monitoring (debugging only):</strong> <code>x-ms-ratelimit-burst-remaining-xrm-requests</code> (remaining requests for this connection) and <code>x-ms-ratelimit-time-remaining-xrm-requests</code> (remaining execution time for this user). These reset when you switch servers; do not use them to drive throttling logic.</li>
 <li>Service protection limits do <strong>not</strong> apply to Dataverse Search (which uses <code>api/search</code> instead of <code>api/data</code>). Dataverse Search has a separate limit of <strong>one request per second per user</strong>.</li>
 </ul>
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits">Service protection API limits</a></p>
@@ -1609,7 +1707,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li>Start with low parallelism; gradually increase until you hit 429s; let Retry-After guide the upper bound.</li>
 <li>Prefer individual requests with high parallelism over large batches — for Web API, JSON payload per request is small, so network latency is not a bottleneck.</li>
 <li>If using <code>ExecuteMultiple</code>, start with batch size 10 and increase; larger batches increase execution-time limit exposure more than they reduce request-count exposure.</li>
-<li><code>ExecuteMultiple</code> was previously limited to 2 concurrent instances; that limit is <strong>no longer enforced</strong> because service protection execution-time limits made it redundant.</li>
 </ol>
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits">Service protection API limits</a></p>
 <hr />
@@ -1621,66 +1718,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li><code>DeleteMultiple</code> is <strong>elastic tables only</strong>; calling it on a standard table returns <code>"DeleteMultiple has not yet been implemented."</code>.</li>
 </ul>
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
-<h4 id="recommended-batch-sizes">Recommended Batch Sizes</h4>
-<table>
-<thead>
-<tr>
-<th>Table type</th>
-<th>Recommended records per request</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Standard tables</td>
-<td>100–1,000 (experiment; no hard cap, but message size and time limits apply)</td>
-</tr>
-<tr>
-<td>Elastic tables</td>
-<td>100 (no transaction benefit from larger batches; no performance gain beyond 100)</td>
-</tr>
-</tbody>
-</table>
-<p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
 <h4 id="on-error-behavior-difference-standard-vs-elastic">On-Error Behavior Difference: Standard vs Elastic</h4>
 <ul>
 <li><strong>Standard tables</strong>: any error causes the <strong>entire operation to roll back</strong>. Only use when you have high confidence all records will succeed.</li>
 <li><strong>Elastic tables</strong>: <strong>partial success</strong> is possible. Retrieve per-record status from <code>OrganizationServiceFault.ErrorDetails["Plugin.BulkApiErrorDetails"]</code> (SDK) or include <code>Prefer: odata.include-annotations=Microsoft.PowerApps.CDS.ErrorDetails.*</code> (Web API).</li>
 </ul>
 <p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
-<h4 id="message-pipeline-merge-key-behavioral-rule">Message Pipeline Merge (Key Behavioral Rule)</h4>
-<p>When you call <code>CreateMultiple</code>, the individual <strong>Create</strong> event still fires for each entity in the <code>Targets</code> collection (for backward compatibility with existing plug-ins). Conversely, when you call the single-row <code>Create</code>, the <strong>CreateMultiple</strong> event also fires with an <code>EntityCollection</code> containing one entity. This means:</p>
-<ul>
-<li>You <strong>do not need to rewrite existing Create/Update plug-ins</strong> to handle bulk calls — they will still be invoked.</li>
-<li>If you write a new plug-in for <strong>CreateMultiple</strong>, you must <strong>remove</strong> the equivalent logic from the single-operation Create plug-in, or the logic will apply <strong>twice</strong>. The platform does not prevent this duplication.</li>
-</ul>
-<p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
 <h4 id="bulk-messages-in-plug-ins-still-forbidden">Bulk Messages in Plug-ins — Still Forbidden</h4>
 <p>Like <code>ExecuteMultiple</code> and <code>ExecuteTransaction</code>, the bulk operation messages (<code>CreateMultiple</code>, <code>UpdateMultiple</code>, etc.) <strong>cannot be used inside plug-in code</strong>. However, you <strong>should</strong> write plug-ins <em>for</em> the CreateMultiple and UpdateMultiple messages (i.e., plug-ins that handle those messages when clients use them). Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
-<h4 id="updatemultiple-vs-upsertmultiple-duplicate-key-behavior-differs">UpdateMultiple vs UpsertMultiple: Duplicate Key Behavior Differs</h4>
-<table>
-<thead>
-<tr>
-<th>Message</th>
-<th>Duplicate primary/alternate key in Targets</th>
-<th>Behavior</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>UpdateMultiple</td>
-<td>Duplicate keys present</td>
-<td>Performs operation on <strong>first occurrence only</strong>; ignores subsequent duplicates</td>
-</tr>
-<tr>
-<td>UpsertMultiple</td>
-<td>Duplicate keys present</td>
-<td>Returns an <strong>error</strong></td>
-</tr>
-</tbody>
-</table>
-<p>Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
-<h4 id="upsertmultiple-web-api-response">UpsertMultiple Web API Response</h4>
-<p>The <code>UpsertMultiple</code> action via Web API returns <code>204 NoContent</code> — the <code>UpsertMultipleResponse</code> complex type (which in the SDK indicates per-record create vs. update) is <strong>not returned</strong> via Web API. To determine create vs. update per item, use the SDK path. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/bulk-operations">Use bulk operation messages</a></p>
 <h4 id="api-limit-accrual-for-bulk-messages">API Limit Accrual for Bulk Messages</h4>
 <ul>
 <li><strong>Service protection — number of requests:</strong> One bulk request counts as <strong>one request</strong> toward the 6,000/5-min limit (regardless of how many records are in <code>Targets</code>). Bulk operations therefore reduce exposure to the request-count facet.</li>
@@ -1712,20 +1757,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <p>Previous instructions specified Key Vault Reader — this is no longer sufficient. If you configured Key Vault with Reader, add Secrets User to avoid retrieval failures. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
 <h4 id="key-vault-must-be-in-same-tenant">Key Vault Must Be in Same Tenant</h4>
 <p>Azure Key Vault must be in the <strong>same tenant</strong> as the Power Platform environment. Cross-tenant key vault integration is not supported. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
-<h4 id="azure-subscription-prerequisites">Azure Subscription Prerequisites</h4>
-<p>The Azure subscription containing the key vault must have the <strong><code>Microsoft.PowerPlatform</code> resource provider registered</strong> before creating environment variable secret references. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
 <h4 id="scope-of-use">Scope of Use</h4>
 <p>Environment variables referencing Azure Key Vault secrets are currently limited to:
 - Power Automate cloud flows
 - Copilot Studio agents
 - Custom connectors</p>
 <p>They are <strong>not</strong> accessible via the general API or in other customizations such as client-side scripts, plug-ins, or canvas apps directly. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
-<h4 id="copilot-studio-allowedbots-tag-requirement">Copilot Studio: AllowedBots Tag Requirement</h4>
-<p>When using a Key Vault secret environment variable in Copilot Studio, you must add an <code>AllowedBots</code> tag to the specific secret version in Azure Key Vault with the value <code>{envId}/{schemaName}</code> for each bot, or an <code>AllowedEnvironments</code> tag with the environment ID to allow all bots in an environment. Without these tags, the agent will receive a runtime error. This tag requirement applies only to Copilot Studio; Power Automate flows do not require it. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
-<h4 id="key-vault-firewall-consideration">Key Vault Firewall Consideration</h4>
-<p>If Azure Key Vault Firewall is enabled, Power Platform IP addresses must be explicitly allowed. Power Platform is <strong>not included</strong> in the "Trusted Services Only" option — it must be added via Power Platform URL/IP allowlist. Alternatively, use Azure Virtual Network (VNet) support with a private endpoint on the key vault; the VNet must be the same one delegated to Power Platform. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
-<h4 id="recommended-key-vault-architecture">Recommended Key Vault Architecture</h4>
-<p>Microsoft recommends using a <strong>separate vault per Power Platform environment</strong> to minimize blast radius in the event of a breach, and configuring the vault permission model as <strong>Azure RBAC</strong> (not vault access policy). Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
 <hr />
 <h3 id="f-durable-functions-async-http-pattern-details">F. Durable Functions — Async HTTP Pattern Details</h3>
 <h4 id="polling-consumer-pattern-built-in">Polling Consumer Pattern (Built-In)</h4>
@@ -1742,18 +1779,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 - Never stores tokens in durable orchestration state.
 - Attaches the token as a <code>Bearer</code> token in the <code>Authorization</code> header.</p>
 <p>To call Dataverse from a Durable orchestrator, pass <code>ManagedIdentityTokenSource("&lt;dataverse-env-url&gt;/.default")</code> as the <code>tokenSource</code> parameter. This eliminates manual token management. Source: <a href="https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-http-features">HTTP Features in Durable Functions</a></p>
-<h4 id="built-in-http-polling-auto-202-handling-net-only">Built-In HTTP Polling (Auto-202 Handling) — .NET Only</h4>
-<p>The automatic client-side polling on <code>202</code> responses is:
-- <strong>Enabled by default</strong> in .NET in-process.
-- <strong>Disabled by default</strong> in .NET Isolated; enable by setting <code>asynchronousPatternEnabled: true</code> in <code>CallHttpAsync</code>. Available from Durable Functions .NET Isolated extension v1.5.0+.
-- <strong>Not available</strong> in JavaScript, Python, PowerShell, or Java.</p>
-<p>Source: <a href="https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-http-features">HTTP Features in Durable Functions</a></p>
-<h4 id="orchestrator-http-limitations">Orchestrator HTTP Limitations</h4>
-<p>HTTP calls from an orchestrator via <code>CallHttpAsync</code> are serialized and persisted as messages in the Durable Functions storage provider for replay safety. This introduces:
-- Additional latency compared to a native HTTP client.
-- No support for streaming, chunked, or binary payloads.
-- Large request/response bodies may be compressed and spilled to Azure Blob Storage (when using Azure Storage backend), degrading orchestration performance.</p>
-<p>For these scenarios, move the HTTP call into an <strong>activity function</strong> and use standard language HTTP client libraries there. Source: <a href="https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-http-features">HTTP Features in Durable Functions</a></p>
 <hr />
 <h3 id="g-additional-edge-case-decision-rules">G. Additional Edge-Case Decision Rules</h3>
 <table>
@@ -1764,14 +1789,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>Plug-in must access SharedVariables set in PreValidation from a PreOperation plug-in</td>
-<td>Access <code>context.ParentContext.SharedVariables</code>, not <code>context.SharedVariables</code></td>
-</tr>
-<tr>
-<td>Custom API function with many complex parameters risks exceeding URL length</td>
-<td>Create an Action (POST) instead; 32 KB URL limit on GET-based functions</td>
-</tr>
 <tr>
 <td>Bulk operation on standard table partially fails</td>
 <td>Entire operation rolls back; consider ExecuteMultiple with ContinueOnError fallback if partial success is acceptable</td>
@@ -1789,14 +1806,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <td>Both fire; if logic is equivalent, remove from single-op plug-in or it runs twice</td>
 </tr>
 <tr>
-<td>Key Vault firewall enabled, Power Platform can't read secret</td>
-<td>Add Power Platform IPs to allowlist (not under Trusted Services); or use VNet private endpoint</td>
-</tr>
-<tr>
-<td>Copilot Studio agent can't access Key Vault secret env var</td>
-<td>Add <code>AllowedBots</code> or <code>AllowedEnvironments</code> tag to the secret version in Azure Key Vault</td>
-</tr>
-<tr>
 <td>Need to use Key Vault secret env var in a canvas app formula</td>
 <td>Not supported; limited to flows, Copilot Studio, and custom connectors</td>
 </tr>
@@ -1808,12 +1817,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <td>$batch operation stops on first error and discards remaining requests</td>
 <td>Add <code>Prefer: odata.continue-on-error</code> header to process all items and return aggregate results</td>
 </tr>
-<tr>
-<td>Need to reference a newly created record's URI within the same change set</td>
-<td>Use <code>Content-ID</code> on the Create request and reference it as <code>$N</code> in later operations</td>
-</tr>
 </tbody>
-</table></div></details></div>
+</table></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-plug-in-execution-pipeline">1. Plug-in Execution Pipeline</a><ul>
@@ -1862,6 +1867,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li><a href="#authentication-types">Authentication Types</a></li>
 <li><a href="#policy-templates">Policy Templates</a></li>
 <li><a href="#custom-code-in-connectors">Custom Code in Connectors</a></li>
+<li><a href="#custom-code-for-data-transformation">Custom Code for Data Transformation</a></li>
 <li><a href="#cors-for-apim-backed-connectors">CORS for APIM-backed Connectors</a></li>
 </ul>
 </li>
@@ -1893,7 +1899,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li><a href="#11-pcf-code-components">11. PCF / Code Components</a></li>
 <li><a href="#12-quick-fire-facts">12. Quick-Fire Facts</a></li>
 <li><a href="#13-common-traps">13. Common Traps</a></li>
-<li><a href="#beyond-the-exam">Beyond the exam</a><ul>
+<li><a href="#deeper-exam-detail">Deeper Exam Detail</a><ul>
 <li><a href="#a-plug-in-execution-pipeline-deeper-detail">A. Plug-in Execution Pipeline — Deeper Detail</a></li>
 <li><a href="#b-custom-api-additional-properties-and-constraints">B. Custom API — Additional Properties and Constraints</a></li>
 <li><a href="#c-web-api-odata-deeper-detail">C. Web API / OData — Deeper Detail</a></li>
@@ -2576,8 +2582,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tbody>
 </table>
 <hr />
-<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Beyond the Exam</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
-<p>This section contains deeper product behavior, edge-case decision rules, and current platform limits that go beyond what the core exam notes cover. All claims are sourced against Microsoft Learn documentation unless marked "(unverified)".</p>
+<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<p>This section contains deeper product behavior, edge-case decision rules, and current platform limits. All claims are sourced against Microsoft Learn documentation unless marked "(unverified)".</p>
 <hr />
 <h3 id="a-dataverse-table-types-deeper-detail">A. Dataverse Table Types — Deeper Detail</h3>
 <h4 id="full-taxonomy-four-types">Full taxonomy (four types)</h4>
@@ -2599,15 +2605,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <p>Elastic tables are backed by <strong>Azure Cosmos DB</strong> and horizontally partition data using a <code>partitionid</code> string column. <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/elastic-tables">learn.microsoft.com/en-us/power-apps/developer/data-platform/elastic-tables</a></p>
 <p>Key facts not in the core guide:</p>
 <ul>
-<li><strong><code>partitionid</code> is immutable after row creation.</strong> If you do not set it explicitly, Dataverse uses the primary key as the default. For write-heavy workloads queried mostly by primary key, this is an acceptable default.</li>
-<li><strong>Each logical partition can store up to 20 GB of data.</strong> Choose a <code>partitionid</code> value with high cardinality so data spreads evenly and no single partition hits the 20 GB limit.</li>
-<li><strong><code>partitionid</code> + primary key together form the unique reference</strong> for a row when a custom <code>partitionid</code> value is used. Two rows can share the same primary key GUID if they have different <code>partitionid</code> values.</li>
-<li><strong>TTL (Time to Live)</strong>: The <code>ttlinseconds</code> integer column is included automatically on every elastic table. Setting it to a value (e.g., <code>86400</code> = 1 day) causes Dataverse to automatically delete the row after that many seconds. Leaving it null means the row persists indefinitely. TTL deletion does <strong>not</strong> propagate to a Synapse Link data lake — rows expire in Dataverse but remain in the lake. <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/elastic-tables">learn.microsoft.com/en-us/power-apps/developer/data-platform/elastic-tables</a></li>
-<li><strong>Elastic tables do NOT support multi-record transactions.</strong> <code>ExecuteTransactionRequest</code> and Web API <code>$batch</code> changesets succeed silently but are <strong>not atomic</strong>. Do not rely on rollback behavior. Microsoft notes this as a known issue that will become an error in a future release.</li>
+<li><strong>Elastic tables do NOT support multi-record transactions.</strong> <code>ExecuteTransactionRequest</code> and Web API <code>$batch</code> changesets succeed silently but are <strong>not atomic</strong>. Do not rely on rollback behavior.</li>
 <li><strong>Deep insert is not supported</strong> on elastic tables. You cannot create related records in one operation; each record must be created individually.</li>
-<li><strong>Consistency model</strong>: Elastic tables use eventual consistency by default. To get strong read-your-writes consistency within a session, you must pass the <code>x-ms-session-token</code> response header value back in subsequent requests (<code>MSCRM.SessionToken</code> header in Web API; <code>SessionToken</code> optional parameter in SDK).</li>
 <li><strong>PreValidation plug-in stage is safe for throwing errors</strong> on elastic tables. However, throwing <code>InvalidPluginExecutionException</code> in <code>PreOperation</code> or <code>PostOperation</code> returns an error to the caller but does NOT roll back the already-written record — unlike standard tables. Always validate in <code>PreValidation</code> for elastic tables.</li>
-<li><strong>Elastic table data counts toward the Log storage bucket</strong>, not the Database bucket, in the Power Platform capacity model.</li>
 </ul>
 <p><strong>What if you need both high-volume storage AND transactional integrity?</strong> A combination of elastic tables (high-volume event log) and standard tables (master record) is the correct design pattern. Do not put transactional cross-record logic on the elastic table side.</p>
 <h4 id="virtual-tables-data-provider-options">Virtual tables — data provider options</h4>
@@ -2637,42 +2637,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <p>A custom data provider plug-in runs at <strong>stage 30</strong> (the main core transaction stage), not at the standard PreValidation/PreOperation/PostOperation stages used for ordinary plug-in steps. The <code>Microsoft.Xrm.Sdk.Data</code> NuGet package provides the <code>QueryExpressionVisitor</code> framework to translate incoming FetchXML/QueryExpression objects into external source queries.</p>
 <p><strong>What if the virtual table provider times out against the external source?</strong> The custom provider must throw <code>TimeoutException</code> from <code>Microsoft.Xrm.Sdk.Data.Exceptions</code> to surface a proper error. Generic exceptions will produce cryptic failures.</p>
 <hr />
-<h3 id="b-storage-and-capacity-model">B. Storage and Capacity Model</h3>
-<p>Dataverse uses a <strong>three-bucket capacity model</strong>: Database, File, and Log. These are separately metered and not freely interchangeable for enforcement purposes. <a href="https://learn.microsoft.com/en-us/power-platform/admin/capacity-storage">learn.microsoft.com/en-us/power-platform/admin/capacity-storage</a></p>
-<table>
-<thead>
-<tr>
-<th>Bucket</th>
-<th>What counts toward it</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Database</strong></td>
-<td>Table rows, metadata, relational data, indexes, Dataverse Search (DataverseSearch table)</td>
-</tr>
-<tr>
-<td><strong>File</strong></td>
-<td>Attachments, Annotation/Note files, any table with a File or Image (full-size) column, WebResource data</td>
-</tr>
-<tr>
-<td><strong>Log</strong></td>
-<td>AuditBase, PlugInTraceLogBase, <strong>elastic table data</strong></td>
-</tr>
-</tbody>
-</table>
-<p>Design implications:</p>
-<ul>
-<li><strong>Turning on auditing</strong> consumes Log storage. Over-auditing all tables by default is a design mistake in capacity-constrained environments.</li>
-<li><strong>Elastic tables consume Log storage</strong>, not Database storage. Factor this into capacity planning when choosing elastic vs standard for high-volume data.</li>
-<li><strong>File attachments</strong> go to File storage, not Database. Designs that store large files as base64-encoded strings in text columns incorrectly consume Database storage.</li>
-<li><strong>Database and File capacity can be pooled</strong> across Dataverse and Finance &amp; Operations workloads; Log entitlement is Dataverse-only and cannot be offset by excess Database or File capacity.</li>
-<li>When any bucket drops below 15% remaining, admins receive weekly email warnings. When below 5%, critical warnings are sent. When in overage, environment creation, copy, restore, and recovery operations are <strong>blocked</strong>. <a href="https://learn.microsoft.com/en-us/power-platform/admin/capacity-storage">learn.microsoft.com/en-us/power-platform/admin/capacity-storage</a></li>
-<li>The default environment includes 3 GB Database + 3 GB File + 1 GB Log as a base tenant entitlement. Trial, preview, support, and developer environments do not count against tenant capacity.</li>
-</ul>
-<p><strong>What if log storage is over capacity but database has surplus?</strong> Extra database capacity <strong>cannot</strong> compensate for log overage — each bucket is enforced independently. The tenant enters deficit and must purchase more Log capacity or free up audit/plugin trace data.</p>
-<hr />
-<h3 id="c-security-and-identity-full-depth">C. Security and Identity — Full Depth</h3>
+<h3 id="b-security-and-identity-full-depth">B. Security and Identity — Full Depth</h3>
 <h4 id="privilege-depth-access-levels-the-five-tier-model">Privilege depth (access levels) — the five-tier model</h4>
 <p>Each privilege on each table in a security role has one of five access levels. <a href="https://learn.microsoft.com/en-us/power-platform/admin/security-roles-privileges">learn.microsoft.com/en-us/power-platform/admin/security-roles-privileges</a></p>
 <table>
@@ -2778,51 +2743,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li>Overuse of column security adds query overhead. Use it selectively for high-sensitivity fields (e.g., salary, SSN).</li>
 <li>Security roles and column security profiles can be packaged in solutions and moved across environments; Business Units and Teams must be recreated per environment.</li>
 </ul>
-<h4 id="modernized-business-units-matrix-data-access-structure">Modernized Business Units (Matrix data access structure)</h4>
-<p>Traditional business units create a strict hierarchy where a user belongs to exactly one BU and can only access records within their BU scope (governed by the Local/Deep/Global privilege levels). <a href="https://learn.microsoft.com/en-us/power-platform/admin/modernized-business-units-security">learn.microsoft.com/en-us/power-platform/admin/modernized-business-units-security</a></p>
-<p><strong>Modernized Business Units</strong> (toggled on via "Record ownership across business units" in environment Settings → Product → Features) change this:</p>
-<ul>
-<li>A user can be assigned <strong>security roles from multiple different business units</strong>, regardless of which BU the user personally belongs to.</li>
-<li>The <strong>Owning Business Unit</strong> column on a record — not the owning user's BU — determines which security role applies for access decisions.</li>
-<li>Users can create records and choose which BU owns the record (if they have the Business Unit table's <strong>Append To</strong> privilege with Local level).</li>
-<li>This enables <strong>matrix organizations</strong> (e.g., a line manager who needs access to Sales, Service, and Marketing records simultaneously) without complex BU restructuring or ownership through Teams.</li>
-<li>Once enabled, switching it off re-constrains all records: any record whose Owning Business Unit differs from the owner's BU is automatically updated back to the owner's BU.</li>
-</ul>
-<p><strong>What if you need a service line manager to read Sales emails but not Service emails?</strong> Assign the service line manager a Sales BU security role with Basic Read on Account and Email only. Do not give them a Service or Marketing BU role. The matrix structure makes this granular cross-BU assignment possible without the user needing to move BUs. <a href="https://learn.microsoft.com/en-us/power-platform/admin/modernized-business-units-security">learn.microsoft.com/en-us/power-platform/admin/modernized-business-units-security</a></p>
-<h4 id="hierarchy-security-manager-and-position-models">Hierarchy security (manager and position models)</h4>
-<p>Hierarchy security is an <strong>extension</strong> to the standard security model, not a replacement. It is disabled by default. <a href="https://learn.microsoft.com/en-us/power-platform/admin/hierarchy-security">learn.microsoft.com/en-us/power-platform/admin/hierarchy-security</a></p>
-<table>
-<thead>
-<tr>
-<th>Model</th>
-<th>Based on</th>
-<th>Access scope</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Manager hierarchy</strong></td>
-<td>The <code>Manager</code> field on the SystemUser table (direct reporting chain)</td>
-<td>Manager has Read/Write/Append/AppendTo on direct reports' records; Read-only on nondirect reports' records up to the configured depth</td>
-</tr>
-<tr>
-<td><strong>Position hierarchy</strong></td>
-<td>Explicitly defined Position records with a parent-child arrangement</td>
-<td>Users at higher positions get Read/Write/Append/AppendTo on lower positions' records in the <strong>direct ancestor path</strong> only; read-only on nondirect ancestor paths</td>
-</tr>
-</tbody>
-</table>
-<p>Key specifics:</p>
-<ul>
-<li><strong>Depth setting</strong>: Limits how many levels deep read-only (non-direct) access extends. Default manager hierarchy allows update access <strong>3 levels deep</strong> (<code>HierarchyLevelForHierarchyFeature</code> default = 3; configurable via OrgDBOrgSettings).</li>
-<li>A manager must have <strong>at least User-level Read privilege</strong> on a table to see subordinates' records for that table via hierarchy. Hierarchy security does not override a complete absence of table privilege.</li>
-<li>Position hierarchy can span business units (unlike manager hierarchy, which by default requires manager and report to be in the same BU or parent BU — relaxable by setting <code>ManagersMustBeInSameOrParentBusinessUnitAsReports</code> to false).</li>
-<li>A user can hold <strong>only one position</strong> in the position hierarchy at a time.</li>
-<li><strong>Performance recommendation</strong>: Keep effective hierarchy security to <strong>50 users or fewer</strong> under any manager or position. Use the Depth setting to reduce the effective covered population if the hierarchy is larger.</li>
-</ul>
-<p><strong>What if you enable modernized BUs and manager hierarchy together?</strong> They are compatible. When Record ownership across business units is on, managers can have direct reports from different BUs. Set <code>ManagersMustBeInSameOrParentBusinessUnitAsReports</code> to false to remove the same-BU restriction on manager access.</p>
 <hr />
-<h3 id="d-logic-placement-fuller-option-list-and-current-behavior">D. Logic Placement — Fuller Option List and Current Behavior</h3>
+<h3 id="c-logic-placement-fuller-option-list-and-current-behavior">C. Logic Placement — Fuller Option List and Current Behavior</h3>
 <p>The core guide covers plug-ins, Custom API, Power Fx functions, business rules, and client scripts. The following adds Custom Process Actions (workflow actions), background operations, and real-time vs. asynchronous workflow distinctions.</p>
 <h4 id="custom-api-vs-custom-process-action-workflow-action-full-comparison">Custom API vs. Custom Process Action (workflow action) — full comparison</h4>
 <p><a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api</a></p>
@@ -2998,7 +2920,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <td>Sync plug-in: blocks caller; cloud flow: runs in Power Automate runtime, not Dataverse server</td>
 </tr>
 </tbody>
-</table></div></details></div>
+</table></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-dataverse-table-types">1. Dataverse Table Types</a><ul>
@@ -3075,11 +2997,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </li>
 <li><a href="#quick-fire-facts">Quick-Fire Facts</a></li>
 <li><a href="#common-traps">Common Traps</a></li>
-<li><a href="#beyond-the-exam">Beyond the exam</a><ul>
+<li><a href="#deeper-exam-detail">Deeper Exam Detail</a><ul>
 <li><a href="#a-dataverse-table-types-deeper-detail">A. Dataverse Table Types — Deeper Detail</a></li>
-<li><a href="#b-storage-and-capacity-model">B. Storage and Capacity Model</a></li>
-<li><a href="#c-security-and-identity-full-depth">C. Security and Identity — Full Depth</a></li>
-<li><a href="#d-logic-placement-fuller-option-list-and-current-behavior">D. Logic Placement — Fuller Option List and Current Behavior</a></li>
+<li><a href="#b-security-and-identity-full-depth">B. Security and Identity — Full Depth</a></li>
+<li><a href="#c-logic-placement-fuller-option-list-and-current-behavior">C. Logic Placement — Fuller Option List and Current Behavior</a></li>
 </ul>
 </li>
 </ul>
@@ -3640,8 +3561,8 @@ attribute.fireOnChange(); // required to trigger existing OnChange handlers
 </li>
 </ol>
 <hr />
-<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Beyond the Exam</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
-<p>This section contains deeper API detail, fuller method lists, lifecycle nuances, deprecation status, and edge-case decision rules not covered in the exam-focused sections above. Each claim is sourced directly from Microsoft Learn documentation.</p>
+<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<p>This section contains deeper API detail, fuller method lists, lifecycle nuances, and edge-case decision rules. Each claim is sourced directly from Microsoft Learn documentation.</p>
 <hr />
 <h3 id="pcf-full-context-object-surface-area">PCF: Full context object surface area</h3>
 <p>The <code>context</code> object passed into every PCF lifecycle method exposes the following top-level namespaces. Availability varies by host (model-driven vs. canvas):</p>
@@ -3751,81 +3672,6 @@ attribute.fireOnChange(); // required to trigger existing OnChange handlers
 <li>You cannot convert an existing StandardControl to ReactControl by editing the manifest — a new project from the <code>react</code> template is required.</li>
 </ul>
 <p>Source: https://learn.microsoft.com/en-us/power-apps/developer/component-framework/react-controls-platform-libraries</p>
-<hr />
-<h3 id="pcf-full-manifest-property-element-of-type-values">PCF: Full manifest <code>property</code> element — <code>of-type</code> values</h3>
-<p>The <code>of-type</code> attribute on a <code>&lt;property&gt;</code> element constrains what Dataverse column types the maker can bind to. The full set of supported values (model-driven and canvas unless noted):</p>
-<table>
-<thead>
-<tr>
-<th>of-type value</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>SingleLine.Text</code></td>
-<td>Plain text</td>
-</tr>
-<tr>
-<td><code>SingleLine.Email</code> / <code>SingleLine.Phone</code> / <code>SingleLine.URL</code> / <code>SingleLine.Ticker</code></td>
-<td>Typed text sub-formats</td>
-</tr>
-<tr>
-<td><code>SingleLine.TextArea</code></td>
-<td>Multi-line up to 4000 chars</td>
-</tr>
-<tr>
-<td><code>Multiple</code></td>
-<td>Multi-line up to 1,048,576 chars</td>
-</tr>
-<tr>
-<td><code>Whole.None</code></td>
-<td>Integer</td>
-</tr>
-<tr>
-<td><code>Decimal</code></td>
-<td>Up to 10 decimal places</td>
-</tr>
-<tr>
-<td><code>FP</code></td>
-<td>Floating point, up to 5 decimal places</td>
-</tr>
-<tr>
-<td><code>Currency</code></td>
-<td>Monetary</td>
-</tr>
-<tr>
-<td><code>TwoOptions</code></td>
-<td>Boolean (yes/no)</td>
-</tr>
-<tr>
-<td><code>OptionSet</code></td>
-<td>Single-select choice</td>
-</tr>
-<tr>
-<td><code>MultiSelectOptionSet</code></td>
-<td>Multi-select choice</td>
-</tr>
-<tr>
-<td><code>DateAndTime.DateAndTime</code> / <code>DateAndTime.DateOnly</code></td>
-<td>Date/time variants</td>
-</tr>
-<tr>
-<td><code>Lookup.Simple</code></td>
-<td>Single-table lookup (model-driven only); must be inside <code>&lt;data-set&gt;</code> if a dataset is also declared</td>
-</tr>
-<tr>
-<td><code>Object</code></td>
-<td>Generic object — only valid with <code>usage="output"</code></td>
-</tr>
-<tr>
-<td><code>Enum</code></td>
-<td>Enumerated type</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Currently unsupported</strong> <code>of-type</code> values (will cause manifest errors): <code>Lookup.Customer</code>, <code>Lookup.Owner</code>, <code>Lookup.PartyList</code>, <code>Lookup.Regarding</code>, <code>Status</code>, <code>StatusReason</code>, <code>Whole.Duration</code>, <code>Whole.Language</code>, <code>Whole.TimeZone</code>. File columns are also not supported.</p>
-<p>Source: https://learn.microsoft.com/en-us/power-apps/developer/component-framework/manifest-schema-reference/property</p>
 <hr />
 <h3 id="pcf-feature-usage-complete-uses-feature-name-list">PCF: feature-usage — complete <code>uses-feature</code> name list</h3>
 <p>The <code>&lt;feature-usage&gt;</code> element (model-driven only) wraps one or more <code>&lt;uses-feature&gt;</code> children. The recognized <code>name</code> attribute values are:</p>
@@ -3949,15 +3795,6 @@ attribute.fireOnChange(); // required to trigger existing OnChange handlers
 <p>Note: <code>formContext.ui.navigation</code> and <code>formContext.ui.formSelector</code> are <strong>not available in Dynamics 365 for tablets</strong>.</p>
 <p>Source: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/clientapi-form-context<br />
 Source: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/formcontext-ui</p>
-<hr />
-<h3 id="client-api-xrmpage-deprecation-current-status">Client API: Xrm.Page deprecation — current status</h3>
-<p><code>Xrm.Page</code> is deprecated but <strong>not yet removed</strong> as of the current release. Microsoft states it will provide at least six months' notice before removal and maintains backward compatibility for scripts targeting v9.0+. However:</p>
-<ul>
-<li><code>Xrm.Page</code> does not work inside <strong>editable grids</strong> — only <code>formContext</code> obtained from the execution context works there.</li>
-<li>In ribbon/command bar actions, obtaining <code>formContext</code> is different from form scripting — use the <code>CrmParameters</code> approach or pass <code>PrimaryControl</code> from the ribbon definition. See <a href="https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/pass-data-page-parameter-ribbon-actions#form-and-grid-context-in-ribbon-actions">Form and grid context in ribbon actions</a>.</li>
-<li>New development must use <code>executionContext.getFormContext()</code>.</li>
-</ul>
-<p>Source: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/clientapi-form-context</p>
 <hr />
 <h3 id="client-api-execution-context-async-usage-restrictions">Client API: Execution context — async usage restrictions</h3>
 <p>The execution context object (and the <code>formContext</code> derived from it) is only <strong>guaranteed valid during the synchronous portion of the event handler</strong>. Holding a reference across async boundaries is unsafe:</p>
@@ -4183,130 +4020,6 @@ Navigate( Defaults(Accounts) )                        // new record form (create
 <p>For navigation scenarios not covered by Power Fx <code>Navigate()</code> (e.g., opening dialogs with custom options, setting target=2 for overlay), JavaScript and <code>Xrm.Navigation.navigateTo</code> remain the only option.</p>
 <p>Source: https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/commanding-use-powerfx</p>
 <hr />
-<h3 id="web-resources-complete-type-reference">Web resources: complete type reference</h3>
-<p>Web resources are virtual files stored in Dataverse, retrievable via URL, and usable in form customizations, SiteMap entries, and command bar configurations. There are <strong>12 supported file types</strong>:</p>
-<table>
-<thead>
-<tr>
-<th>Type number</th>
-<th>Format</th>
-<th>Extensions</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Webpage (HTML)</td>
-<td>.htm, .html</td>
-<td>Can contain JavaScript; cannot execute server-side code (no ASP.NET)</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Style Sheet (CSS)</td>
-<td>.css</td>
-<td>Referenced by HTML web resources</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Script (JScript)</td>
-<td>.js</td>
-<td>Primary carrier for form event handler functions</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Data (XML)</td>
-<td>.xml</td>
-<td>Configuration/data files consumed by HTML/JS web resources</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Image (PNG)</td>
-<td>.png</td>
-<td></td>
-</tr>
-<tr>
-<td>6</td>
-<td>Image (JPG)</td>
-<td>.jpg</td>
-<td></td>
-</tr>
-<tr>
-<td>7</td>
-<td>Image (GIF)</td>
-<td>.gif</td>
-<td></td>
-</tr>
-<tr>
-<td>8</td>
-<td>Silverlight (XAP)</td>
-<td>.xap</td>
-<td>Legacy — Silverlight is end-of-life; avoid</td>
-</tr>
-<tr>
-<td>9</td>
-<td>StyleSheet (XSL)</td>
-<td>.xsl, .xslt</td>
-<td>XSLT transforms</td>
-</tr>
-<tr>
-<td>10</td>
-<td>Image (ICO)</td>
-<td>.ico</td>
-<td></td>
-</tr>
-<tr>
-<td>11</td>
-<td>Vector format (SVG)</td>
-<td>.svg</td>
-<td></td>
-</tr>
-<tr>
-<td>12</td>
-<td>String (RESX)</td>
-<td>.resx</td>
-<td>Localization resource files</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Key constraints:</strong>
-- No web resource type supports server-side code execution (no <code>.aspx</code> equivalent).
-- Web resources are <strong>static files</strong> or browser-processed files only; they cannot execute server-side logic.
-- Maximum upload size is controlled by the <code>Organization.MaxUploadFileSize</code> setting (default 5 MB).
-- Access requires Dataverse authentication — web resources are not publicly accessible.
-- IFRAMEing content behind an authentication boundary is not supported (mobile/tablet clients will fail even if it works in a browser).</p>
-<p><strong>Referencing web resources:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Method</th>
-<th>When to use</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$webresource:</code> directive</td>
-<td>In SiteMap or ribbon XML — creates tracked solution dependencies</td>
-</tr>
-<tr>
-<td><code>Xrm.Navigation.openWebResource(name, options, data)</code></td>
-<td>Opens an HTML web resource in a new window from client script</td>
-</tr>
-<tr>
-<td>Relative URL</td>
-<td>When referencing from another web resource (e.g., CSS from HTML)</td>
-</tr>
-<tr>
-<td>Full URL <code>&lt;env&gt;/WebResources/&lt;name&gt;</code></td>
-<td>Direct access; avoid in production code — use <code>Xrm.Utility.getGlobalContext().getClientUrl()</code> to construct</td>
-</tr>
-</tbody>
-</table>
-<p><strong><code>$webresource</code> directive is the preferred reference method</strong> in SiteMap/ribbon because Dataverse creates solution dependency tracking automatically. Relative URL references between web resources do <strong>not</strong> create solution dependencies.</p>
-<p><strong>Naming best practice:</strong> Include the publisher customization prefix and use <code>/</code> to simulate a folder structure (e.g., <code>new_/scripts/myScript.js</code>). Never use <code>/WebResources/</code> as a root path in relative URLs — this causes "File Not Found" errors for users in non-default organizations.</p>
-<p><strong>Replacement guidance:</strong> Microsoft recommends preferring PCF components and custom pages over HTML web resources for new development requiring complex UI or external integrations. HTML web resources are appropriate for lightweight utilities, static content, or scenarios that do not require the PCF lifecycle.</p>
-<p>Source: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/web-resources</p>
-<hr />
 <h3 id="edge-case-decision-rules-what-if-scenarios">Edge-case decision rules ("What if..." scenarios)</h3>
 <p><strong>What if a PCF control needs to call <code>context.webAPI</code> but must also run in canvas?</strong>
 <code>context.webAPI</code> is model-driven only. If canvas support is required, remove the <code>webAPI</code> call from the PCF component and have the canvas app pass data in via <code>input</code> properties instead — or use separate model-driven and canvas variants of the component. Do not use <code>feature-usage</code> to declare <code>WebAPI</code> and then deploy to canvas; the declaration is ignored and the call will throw at runtime.</p>
@@ -4322,7 +4035,7 @@ Check <code>context.updatedProperties</code> at the start of <code>updateView</c
 There is no offline equivalent of <code>Xrm.WebApi.online.execute</code>. If the action must work offline, the operation must be queued locally using a custom offline strategy (e.g., storing a pending operation in offline data that syncs when connectivity is restored). There is no built-in "offline execute" API.</p>
 <p><strong>What if a ReactControl ("virtual") PCF is added to Power Pages?</strong>
 It is not supported. React controls and platform libraries only work in canvas and model-driven apps. Use a StandardControl for Power Pages targets.</p>
-<p>Source (consolidated from all above Microsoft Learn pages).</p></div></details></div>
+<p>Source (consolidated from all above Microsoft Learn pages).</p></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-pcf-code-components-lifecycle-methods">1. PCF Code Components — Lifecycle Methods</a><ul>
@@ -4382,19 +4095,16 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li><a href="#9-business-rules-vs-javascript-vs-pcf-when-to-use-what">9. Business Rules vs JavaScript vs PCF — When to Use What</a></li>
 <li><a href="#10-quick-fire-facts">10. Quick-Fire Facts</a></li>
 <li><a href="#11-common-traps">11. Common Traps</a></li>
-<li><a href="#beyond-the-exam">Beyond the exam</a><ul>
+<li><a href="#deeper-exam-detail">Deeper Exam Detail</a><ul>
 <li><a href="#pcf-full-context-object-surface-area">PCF: Full context object surface area</a></li>
 <li><a href="#pcf-reactcontrol-virtual-deeper-details">PCF: ReactControl ("virtual") — deeper details</a></li>
-<li><a href="#pcf-full-manifest-property-element-of-type-values">PCF: Full manifest property element — of-type values</a></li>
 <li><a href="#pcf-feature-usage-complete-uses-feature-name-list">PCF: feature-usage — complete uses-feature name list</a></li>
 <li><a href="#client-api-formcontext-object-model-full-sub-object-breakdown">Client API: formContext object model — full sub-object breakdown</a></li>
-<li><a href="#client-api-xrmpage-deprecation-current-status">Client API: Xrm.Page deprecation — current status</a></li>
 <li><a href="#client-api-execution-context-async-usage-restrictions">Client API: Execution context — async usage restrictions</a></li>
 <li><a href="#client-api-onsave-event-full-behavior-and-async-support">Client API: OnSave event — full behavior and async support</a></li>
 <li><a href="#client-api-xrmwebapi-complete-method-list-and-offline-behavior">Client API: Xrm.WebApi — complete method list and offline behavior</a></li>
 <li><a href="#modern-commanding-power-fx-selfselected-object-full-property-list">Modern commanding: Power Fx Self.Selected object — full property list</a></li>
 <li><a href="#modern-commanding-power-fx-navigate-function-patterns">Modern commanding: Power Fx Navigate function patterns</a></li>
-<li><a href="#web-resources-complete-type-reference">Web resources: complete type reference</a></li>
 <li><a href="#edge-case-decision-rules-what-if-scenarios">Edge-case decision rules ("What if..." scenarios)</a></li>
 </ul>
 </li>
@@ -4438,6 +4148,11 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li>Environment variables store <strong>configuration values</strong> (URLs, queue names, API keys, feature flags) separately from the components that consume them.</li>
 <li>They travel <strong>inside the solution</strong> as a definition; the <em>value</em> can differ per environment.</li>
 <li>A secret environment variable references a value in <strong>Azure Key Vault</strong> — it does not store the secret in the solution or in plain text. Use this for OAuth client secrets consumed by custom connectors and flows.</li>
+<li><strong>Azure Key Vault</strong> is an Azure cloud service for securely storing secrets (passwords, API keys, certificates). The env var stores only a <em>reference</em> to the Key Vault entry — the actual value never leaves Key Vault.</li>
+<li>Key Vault must be in the <strong>same tenant</strong> as the Power Platform environment — cross-tenant is not supported.</li>
+<li>The <strong>Key Vault Secrets User</strong> role is required (not Reader). Reader lets you see a secret exists but cannot retrieve its value; Secrets User grants the <code>secrets/get</code> permission needed to read the actual value.</li>
+<li>To use a Key Vault-backed secret inside a flow, call <strong><code>RetrieveEnvironmentVariableSecretValue</code></strong> explicitly — it does not appear in the dynamic content selector.</li>
+<li><code>Microsoft.PowerPlatform</code> resource provider must be registered on the Azure subscription.</li>
 <li>When a variable has <strong>no default value, no packaged solution value, and no existing target value</strong>, the import wizard prompts for a new value.</li>
 <li>After changing a variable value directly in an environment (not via import), <strong>cloud flows must be cycled</strong> (turned off and on) to pick up the new value — the running flow holds a cached reference.</li>
 <li>To force a target environment to supply a fresh value on import, <strong>remove the solution value before export</strong>; the development environment keeps its own value while the target is prompted.</li>
@@ -4542,6 +4257,8 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li>To restore managed control: <strong>remove the unmanaged active customization</strong> from the solution layers experience.</li>
 <li>If <strong>another managed solution is on top</strong> (e.g., SalesExtension above AppCore 2.1), that top managed layer wins — neither cycling the flow nor using "Overwrite Customizations" removes it. The fix must come from the owning publisher or by changing the layering arrangement.</li>
 <li><strong>Overwrite Customizations</strong> during import copies the incoming value to the Active layer; it does not displace a managed solution that is already the top layer.</li>
+<li>It sounds like it forces the imported value to win — but it only <em>writes</em> to the Active layer; it does NOT <em>remove</em> the Active layer if one already exists. The Active layer stays on top and continues to win at runtime.</li>
+<li>It also cannot displace a higher managed solution (e.g. SalesExtension above AppCore). Writing to the Active layer still lands below the top managed solution.</li>
 </ul>
 <h3 id="segmented-solutions-and-source-authoring">Segmented Solutions and Source Authoring</h3>
 <ul>
@@ -4549,6 +4266,8 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li><strong>Author all changes in the source/development environment</strong> — never edit managed components directly in downstream environments. Changes must be made unmanaged in the source and then re-deployed.</li>
 <li>For <strong>modular multi-team architectures</strong>: build a shared managed <em>base layer</em>, import it into each app team's dev environment, and let each team author an <em>app-layer unmanaged solution</em> on top. This creates clear import order and independent release cadences.</li>
 <li>Use the <strong>same publisher</strong> across layered solutions to keep the layer model manageable.</li>
+<li>The publisher prefix (e.g. <code>contoso_</code>) becomes part of every <em>new</em> component's schema name at creation (e.g. <code>contoso_name</code>). Once a component exists, any solution from any publisher can modify it — different publishers do not break layering on existing components.</li>
+<li>The recommendation is <strong>governance/clarity</strong>, not a hard technical rule: one prefix across all your solutions makes ownership immediately obvious; mixed prefixes make it harder to distinguish your components from third-party ones.</li>
 </ul>
 <h3 id="dependencies-between-solutions">Dependencies Between Solutions</h3>
 <ul>
@@ -4684,7 +4403,9 @@ It is not supported. React controls and platform libraries only work in canvas a
 <h3 id="stage-name-filter-pattern">Stage-Name Filter Pattern</h3>
 <pre><code>@equals(triggerOutputs()?['body/OutputParameters/DeploymentStageName'], 'Contoso UAT')
 </code></pre>
-<p>This trigger condition <strong>filters</strong> the flow so it runs only for the named stage — it does not approve, reject, or modify anything by itself.</p>
+<p>This trigger condition <strong>filters</strong> the flow so it runs only for the named stage — it does not approve, reject, or modify anything by itself.
+- The condition is a <strong>gatekeeper, not an actor</strong>: if the stage name matches the flow runs; if not the flow is skipped entirely. No approval, no rejection, no data change.
+- The actual approve/reject logic lives in the flow steps <em>after</em> the trigger — e.g. a Send Approval action followed by <code>UpdatePreDeploymentStepStatus</code> that writes the decision back to the pipeline.</p>
 <hr />
 <h2 id="6-environment-types-and-backuprestore">6. Environment Types and Backup/Restore</h2>
 <h3 id="developer-environment">Developer Environment</h3>
@@ -4809,6 +4530,8 @@ It is not supported. React controls and platform libraries only work in canvas a
 <ul>
 <li>Only <strong>owner teams</strong> and <strong>Microsoft Entra group teams</strong> can own records.</li>
 <li>When automation starts reassigning records to a team, the team's security roles determine effective access for all team members — unexpected visibility can appear without changing any individual user's role.</li>
+<li><strong>Visibility and access are separate privileges</strong>: Read = visibility (can see the record); Write/Delete/Append/Share/Assign = access (can act on it). A team's role could grant Read only, or Read + Write, or any combination.</li>
+<li>The concern is that <em>any</em> of those privileges can appear unexpectedly for all team members the moment records are reassigned — without touching a single individual user's role.</li>
 </ul>
 <hr />
 <h2 id="8-power-fx-with-function">8. Power Fx — With() Function</h2>
@@ -4860,20 +4583,10 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li><strong>Expecting a plug-in in Calling User context to succeed on a restricted table</strong> — it will fail if the calling user lacks privilege; change the execution context or grant the privilege.</li>
 </ul>
 <hr />
-<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Beyond the Exam</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
-<p>This section contains deeper product behavior, exact limits, ALM tooling specifics, and "What if..." edge-case decision rules sourced directly from Microsoft Learn documentation. None of this material duplicates what is already covered above.</p>
+<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<p>This section contains deeper product behavior, exact limits, ALM tooling specifics, and "What if..." edge-case decision rules sourced directly from Microsoft Learn documentation.</p>
 <hr />
 <h3 id="a-solutions-deeper-mechanics">A. Solutions — Deeper Mechanics</h3>
-<h4 id="solution-size-limit-and-component-size">Solution size limit and component size</h4>
-<ul>
-<li>A solution zip file is capped at <strong>95 MB</strong>. This is a hard platform limit that affects both export and import operations. If you approach this limit, apply solution segmentation (add only the specific table columns or assets needed, not entire tables) to reduce the payload. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm">learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm</a></li>
-<li>There is no documented limit on the number of environment variables in a solution, but each environment variable value is capped at <strong>2,000 characters</strong>. <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></li>
-</ul>
-<h4 id="publisher-prefix-change-window">Publisher prefix — change window</h4>
-<ul>
-<li>You <strong>cannot change the publisher prefix</strong> after any metadata item (table, column, relationship, etc.) has been created using that prefix. The prefix is baked into the schema name (e.g., <code>contoso_MyTable</code>) and schema names cannot be renamed post-creation. Plan your prefix before creating any components. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm">learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm</a></li>
-<li>You cannot move a component from one publisher to another without deleting it and recreating it (with data loss for custom table rows). The only mitigation is migrating data beforehand. <a href="https://learn.microsoft.com/en-us/power-platform/alm/organize-solutions">learn.microsoft.com/en-us/power-platform/alm/organize-solutions</a></li>
-</ul>
 <h4 id="deleting-a-managed-solution-data-loss-warning">Deleting a managed solution — data loss warning</h4>
 <ul>
 <li>When you delete (uninstall) a managed solution, <strong>all data stored in custom tables that were part of that solution is permanently deleted</strong>, as well as data in custom columns that were part of the solution on other tables. This is irreversible. Plan the uninstall sequence carefully in production environments. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm">learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm</a></li>
@@ -4924,20 +4637,6 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li>After staging an upgrade, calling <strong>Apply Upgrade</strong> from the Solutions area flattens all patch and pending-upgrade layers into a single new base layer. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-layers-alm">learn.microsoft.com/en-us/power-platform/alm/solution-layers-alm</a></li>
 <li>The <code>HoldingSolution: true</code> parameter on the <code>PowerPlatformImportSolution</code> Build Tools task imports a solution as a holding (staged) solution without applying it immediately, enabling pre-upgrade data operations. <a href="https://learn.microsoft.com/en-us/power-platform/alm/devops-build-tool-tasks">learn.microsoft.com/en-us/power-platform/alm/devops-build-tool-tasks</a></li>
 </ul>
-<h4 id="merge-behavior-not-all-components-use-top-wins">Merge behavior — not all components use "top wins"</h4>
-<ul>
-<li><strong>Model-driven app, form, and site map</strong> components use <strong>merge</strong> behavior when multiple solutions affect the same component — the platform attempts to combine both solutions' contributions rather than discarding the lower layer's changes.</li>
-<li><strong>All other component types</strong> use <strong>"top wins"</strong> (last-installed-wins) semantics, where the topmost layer determines runtime behavior completely.</li>
-<li>This distinction matters when planning whether two solutions can co-exist or must be consolidated. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-layers-alm">learn.microsoft.com/en-us/power-platform/alm/solution-layers-alm</a></li>
-</ul>
-<h4 id="solution-organization-strategies-and-their-trade-offs">Solution organization strategies and their trade-offs</h4>
-<p>Microsoft Learn documents three strategies with increasing complexity:</p>
-<ol>
-<li><strong>Single solution</strong> — all customizations in one solution. Simplest; scales poorly for large teams. Best for small/medium implementations unlikely to be modularized.</li>
-<li><strong>Multiple solutions, single dev environment</strong> — risk of cross-solution dependency conflicts; do not include the same table in more than one solution; do not split tables across solutions (relationship dependencies create upgrade issues).</li>
-<li><strong>Multiple solutions, dedicated dev environments per solution</strong> — each solution has its own isolated dev environment; base managed solution is imported into each app-team's dev environment first. Best for enterprise/multi-team scenarios but highest infrastructure overhead. <a href="https://learn.microsoft.com/en-us/power-platform/alm/organize-solutions">learn.microsoft.com/en-us/power-platform/alm/organize-solutions</a></li>
-</ol>
-<p><strong>Critical rule for strategy 2:</strong> Do not include the same unmanaged component in more than one solution, and do not split table ownership across solutions — a single foreign-key relationship creates a cross-solution dependency that causes upgrade and delete failures in target environments later. <a href="https://learn.microsoft.com/en-us/power-platform/alm/organize-solutions">learn.microsoft.com/en-us/power-platform/alm/organize-solutions</a></p>
 <hr />
 <h3 id="b-environment-variables-deeper-mechanics">B. Environment Variables — Deeper Mechanics</h3>
 <h4 id="all-five-data-types">All five data types</h4>
@@ -4983,30 +4682,6 @@ It is not supported. React controls and platform libraries only work in canvas a
 </tbody>
 </table>
 <p><a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></p>
-<h4 id="data-source-environment-variables-sharepoint-gotcha">Data source environment variables — SharePoint gotcha</h4>
-<ul>
-<li>SharePoint environment variables require <strong>matching display names AND logical names</strong> for corresponding columns between source and target environments. SharePoint internal identifiers must also match — the safest approach is to <strong>duplicate the SharePoint site</strong> rather than recreating it manually. Recreating a list with the same name does not guarantee matching internal identifiers. <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></li>
-</ul>
-<h4 id="reserved-environment-variable-names">Reserved environment variable names</h4>
-<ul>
-<li>The names <strong><code>$authentication</code></strong> and <strong><code>$connection</code></strong> are reserved parameters for flows. If an environment variable uses either of these names, <strong>flow save is blocked</strong>. Avoid these names entirely. <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></li>
-</ul>
-<h4 id="value-propagation-latency">Value propagation latency</h4>
-<ul>
-<li>After changing an environment variable value, it may take <strong>up to one hour</strong> for the updated value to be fully published and pushed asynchronously into all canvas apps and cloud flows. Cycling the flow accelerates this for flows but does not bypass the asynchronous push for canvas apps. <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></li>
-</ul>
-<h4 id="deleting-a-managed-solution-value">Deleting a managed solution value</h4>
-<ul>
-<li>If an environment variable value was <strong>included in a managed solution</strong>, the only way to delete that value from a target environment is to update the source solution to exclude the value, export a new version, and import it using an <strong>upgrade</strong> (not an update). An update cannot delete components; only an upgrade removes the value record. <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></li>
-</ul>
-<h4 id="runtime-fallback-behavior">Runtime fallback behavior</h4>
-<ul>
-<li>If someone inadvertently deletes an environment variable value at runtime, the platform uses the <strong>last known value as a fallback</strong> (provided the definition still exists). <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></li>
-</ul>
-<h4 id="security-of-the-definition-table">Security of the definition table</h4>
-<ul>
-<li><code>environmentvariabledefinition</code> is <strong>user or team owned</strong>. Privileges on the <code>environmentvariablevalue</code> table are <strong>inherited</strong> from the parent definition table — no separate privilege assignment is needed for values. The Environment Maker and Basic User roles include permissions to this table by default. <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></li>
-</ul>
 <hr />
 <h3 id="c-solutionpackager-pac-solution-tooling-details">C. SolutionPackager / pac solution — Tooling Details</h3>
 <h4 id="solutionpackager-is-superseded-by-pac-cli">SolutionPackager is superseded by pac CLI</h4>
@@ -5124,160 +4799,7 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li>An environment <strong>cannot be associated with multiple pipeline hosts simultaneously</strong>. To move an environment to a different host, add it to a pipeline in the new host, then delete the environment record from the original host. <a href="https://learn.microsoft.com/en-us/power-platform/alm/pipelines">learn.microsoft.com/en-us/power-platform/alm/pipelines</a></li>
 </ul>
 <hr />
-<h3 id="e-environment-types-complete-reference">E. Environment Types — Complete Reference</h3>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Key characteristics</th>
-<th>Backup support</th>
-<th>Copy target?</th>
-<th>Reset?</th>
-<th>Admin operations</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Production</strong></td>
-<td>Permanent workloads; requires 1 GB capacity to create</td>
-<td>System + manual (7 days; up to 28 days for Managed Env)</td>
-<td>Source only — cannot be copy target</td>
-<td>No</td>
-<td>Full</td>
-</tr>
-<tr>
-<td><strong>Default</strong></td>
-<td>One per tenant; all licensed users get Maker role; 1 TB storage cap; cannot be deleted</td>
-<td>System only (no manual backup; cannot restore via admin center)</td>
-<td>Neither source nor target</td>
-<td>No</td>
-<td>Limited</td>
-</tr>
-<tr>
-<td><strong>Sandbox</strong></td>
-<td>Non-production; supports copy, reset; developers need Maker role</td>
-<td>System + manual (7 days)</td>
-<td>Yes (copy target)</td>
-<td>Yes</td>
-<td>Full</td>
-</tr>
-<tr>
-<td><strong>Developer</strong></td>
-<td>One per Developer Plan user; owner-only; security groups cannot be assigned; may auto-disable after 30 days inactivity</td>
-<td>System + manual (7 days)</td>
-<td>Target only if source is also developer</td>
-<td>Yes</td>
-<td>Limited</td>
-</tr>
-<tr>
-<td><strong>Trial (standard)</strong></td>
-<td>30-day expiry; one per user; no backup or restore</td>
-<td>None</td>
-<td>No</td>
-<td>No</td>
-<td>Full control but limited operations</td>
-</tr>
-<tr>
-<td><strong>Trial (subscription-based)</strong></td>
-<td>Like production but time-limited; convert to production to get full backup</td>
-<td>None</td>
-<td>No</td>
-<td>No</td>
-<td>Full</td>
-</tr>
-<tr>
-<td><strong>Microsoft Dataverse for Teams</strong></td>
-<td>Auto-created per Teams team; Maker role maps to Teams membership</td>
-<td>System (7 days; self-restore only)</td>
-<td>Teams-to-Teams self-restore only</td>
-<td>No</td>
-<td>Very limited</td>
-</tr>
-</tbody>
-</table>
-<p><a href="https://learn.microsoft.com/en-us/power-platform/admin/environments-overview">learn.microsoft.com/en-us/power-platform/admin/environments-overview</a>
-<a href="https://learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments">learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments</a></p>
-<h4 id="backup-retention-period-extension">Backup retention period extension</h4>
-<ul>
-<li>Default retention for all environments is <strong>7 days</strong>.</li>
-<li>For <strong>production Managed Environments only</strong>, a tenant admin (Power Platform admin, Global admin, or Dynamics 365 admin role required) can extend retention to <strong>7, 14, 21, or 28 days</strong> via the Power Platform admin center or PowerShell (<code>Set-AdminPowerAppEnvironmentBackupRetentionPeriod</code>). This applies to both system and manual backups.</li>
-<li>The change may take up to 24 hours to affect existing backups; some older backups may be removed earlier than expected during that window. <a href="https://learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments">learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments</a></li>
-</ul>
-<h4 id="manual-backup-limits">Manual backup limits</h4>
-<ul>
-<li>There is <strong>no limit</strong> on the number of manual backups you can create.</li>
-<li>Manual backups do not count against storage capacity, but <strong>restoring an environment requires at least 1 GB of free capacity</strong>. If you are over capacity, restore, copy, and create-environment operations are all blocked. <a href="https://learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments">learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments</a></li>
-</ul>
-<h4 id="restore-source-to-target-matrix">Restore source-to-target matrix</h4>
-<table>
-<thead>
-<tr>
-<th>Source type</th>
-<th>Allowed target types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Production</td>
-<td>Sandbox</td>
-</tr>
-<tr>
-<td>Sandbox</td>
-<td>Sandbox</td>
-</tr>
-<tr>
-<td>Developer</td>
-<td>Sandbox or Developer</td>
-</tr>
-<tr>
-<td>Teams</td>
-<td>Teams (self-restore only)</td>
-</tr>
-<tr>
-<td>Default</td>
-<td>Developer</td>
-</tr>
-</tbody>
-</table>
-<p>A Managed Environment can only be restored to another Managed Environment. A non-Managed Environment cannot be restored to a Managed Environment. <a href="https://learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments">learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments</a></p>
-<h4 id="post-restore-state">Post-restore state</h4>
-<ul>
-<li>After any restore or copy operation, the target environment is placed in <strong>Administration mode</strong> (only System Administrators can sign in) and <strong>background operations</strong> (workflows, Exchange sync) are <strong>disabled</strong>. The admin must explicitly turn off administration mode and re-enable background services. <a href="https://learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments">learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments</a></li>
-</ul>
-<h4 id="copy-environment-full-vs-customizations-and-schemas-only">Copy environment — full vs. customizations-and-schemas-only</h4>
-<table>
-<thead>
-<tr>
-<th>Copy level</th>
-<th>What is included</th>
-<th>Typical use case</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Everything</strong></td>
-<td>All app data + users + customizations + schema</td>
-<td>UAT, upgrade testing, training environments</td>
-</tr>
-<tr>
-<td><strong>Customizations and schemas only</strong></td>
-<td>Users + customizations + schema; all data tables truncated</td>
-<td>Dev/test environments; partner/ISV solutions; PoC</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>You <strong>cannot copy to a production environment</strong> — the target must be sandbox or a preview environment.</li>
-<li>You cannot copy from or to a <strong>default or trial</strong> environment.</li>
-<li>Copy can take up to <strong>8 hours</strong> (up to 24 hours if audit data is included).</li>
-<li>After copy, the target is placed in Administration mode and background services are disabled — same as restore. Connection references require new connections; flows are disabled and must be individually re-enabled. <a href="https://learn.microsoft.com/en-us/power-platform/admin/copy-environment">learn.microsoft.com/en-us/power-platform/admin/copy-environment</a></li>
-</ul>
-<h4 id="reset-environment">Reset environment</h4>
-<ul>
-<li>Only <strong>sandbox and developer</strong> environments can be reset. Reset permanently deletes all environment components (canvas apps, flows, custom connectors, connections, backups) and reprovisions the environment to a clean state. <a href="https://learn.microsoft.com/en-us/power-platform/admin/reset-environment">learn.microsoft.com/en-us/power-platform/admin/reset-environment</a></li>
-</ul>
-<hr />
-<h3 id="f-what-if-edge-case-decision-rules">F. "What if..." Edge-Case Decision Rules</h3>
+<h3 id="e-what-if-edge-case-decision-rules">E. "What if..." Edge-Case Decision Rules</h3>
 <p>These rules address scenarios not clearly covered by a single exam bullet point.</p>
 <p><strong>What if I need to delete an environment variable value that was shipped as part of a managed solution?</strong>
 An update cannot delete solution components; you must ship an <strong>upgrade</strong> that excludes the value, then import it using the upgrade option (not update). <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables">learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables</a></p>
@@ -5287,16 +4809,8 @@ For most components (not forms/site maps/apps), the <strong>last-installed manag
 The dependency may be on a <strong>specific version</strong> or on a <strong>component within the dependency solution</strong> that is not yet present. Fix at the source — add the required components or align versions — then re-export and re-import. Never manually recreate components in the target. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm">learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm</a></p>
 <p><strong>What if a canvas app or modern flow is missing after SolutionPackager unpacks the solution?</strong>
 You are using the <strong>XML (legacy) format</strong>. Canvas <code>.msapp</code> files and modern flows are only supported in the <strong>YAML format</strong>. Switch to <code>pac solution clone</code> or ensure the YAML folder structure (<code>solutions/&lt;Name&gt;/solution.yml</code>) is present before packing. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-packager-tool">learn.microsoft.com/en-us/power-platform/alm/solution-packager-tool</a></p>
-<p><strong>What if I need to import a very large managed solution (&gt;95 MB) into a target environment?</strong>
-The 95 MB limit applies to the solution zip. Apply solution segmentation: split the solution into smaller solutions containing only the specific components (specific columns, not entire tables). Rebuild dependencies between the resulting solutions carefully. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm">learn.microsoft.com/en-us/power-platform/alm/solution-concepts-alm</a></p>
-<p><strong>What if two developers are working in the same unmanaged solution in a shared dev environment and overwrite each other's changes?</strong>
-This is a known risk of the single-dev-environment strategy. Mitigations: adopt a branching strategy in source control, use dedicated dev environments per developer per branch, and commit unpacked files frequently. <a href="https://learn.microsoft.com/en-us/power-platform/alm/organize-solutions">learn.microsoft.com/en-us/power-platform/alm/organize-solutions</a></p>
-<p><strong>What if a pipeline deployment fails and the target environment is disabled?</strong>
-Wait 30 minutes and retry the operation using the same failed environment as the target. If still failing, the available actions on the disabled environment are: reset, delete, copy to (as target), or restore. <a href="https://learn.microsoft.com/en-us/power-platform/admin/copy-environment">learn.microsoft.com/en-us/power-platform/admin/copy-environment</a></p>
-<p><strong>What if I need to restore a backup from more than 7 days ago on a production environment?</strong>
-The recommended approach is to keep the environment as <strong>production</strong> (do not switch to sandbox) and restore to a <strong>different sandbox environment</strong>. If you switch a production environment to sandbox to access a backup older than 7 days, the production-only extended retention backups may already have been pruned because the environment is now treated as sandbox (7-day max). <a href="https://learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments">learn.microsoft.com/en-us/power-platform/admin/backup-restore-environments</a></p>
 <p><strong>What if the pipeline's default Upgrade import behavior is not what I want (e.g., I only want an Update to avoid deleting components)?</strong>
-Pipelines do not currently expose an option to choose Update vs. Upgrade — the default is always Upgrade without Overwrite Customizations. For Update semantics (no component deletion), use the <strong>Power Platform Build Tools</strong> <code>PowerPlatformImportSolution</code> task in Azure DevOps or GitHub Actions where you have full control over import parameters. <a href="https://learn.microsoft.com/en-us/power-platform/alm/pipelines">learn.microsoft.com/en-us/power-platform/alm/pipelines</a></p></div></details></div>
+Pipelines do not currently expose an option to choose Update vs. Upgrade — the default is always Upgrade without Overwrite Customizations. For Update semantics (no component deletion), use the <strong>Power Platform Build Tools</strong> <code>PowerPlatformImportSolution</code> task in Azure DevOps or GitHub Actions where you have full control over import parameters. <a href="https://learn.microsoft.com/en-us/power-platform/alm/pipelines">learn.microsoft.com/en-us/power-platform/alm/pipelines</a></p></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-environment-variables">1. Environment Variables</a><ul>
@@ -5348,13 +4862,12 @@ Pipelines do not currently expose an option to choose Update vs. Upgrade — the
 <li><a href="#8-power-fx-with-function">8. Power Fx — With() Function</a></li>
 <li><a href="#quick-fire-facts">Quick-Fire Facts</a></li>
 <li><a href="#common-traps">Common Traps</a></li>
-<li><a href="#beyond-the-exam">Beyond the exam</a><ul>
+<li><a href="#deeper-exam-detail">Deeper Exam Detail</a><ul>
 <li><a href="#a-solutions-deeper-mechanics">A. Solutions — Deeper Mechanics</a></li>
 <li><a href="#b-environment-variables-deeper-mechanics">B. Environment Variables — Deeper Mechanics</a></li>
 <li><a href="#c-solutionpackager-pac-solution-tooling-details">C. SolutionPackager / pac solution — Tooling Details</a></li>
 <li><a href="#d-power-platform-pipelines-deeper-mechanics">D. Power Platform Pipelines — Deeper Mechanics</a></li>
-<li><a href="#e-environment-types-complete-reference">E. Environment Types — Complete Reference</a></li>
-<li><a href="#f-what-if-edge-case-decision-rules">F. "What if..." Edge-Case Decision Rules</a></li>
+<li><a href="#e-what-if-edge-case-decision-rules">E. "What if..." Edge-Case Decision Rules</a></li>
 </ul>
 </li>
 </ul>
@@ -5506,6 +5019,9 @@ Pipelines do not currently expose an option to choose Update vs. Upgrade — the
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p><strong>Plain English — Async vs Active Listener:</strong> These two columns measure different things. "Execution mode" describes whether Dataverse waits for the response before finishing the user's operation. "Listener requirement" describes whether the destination must be a live HTTP server. For webhooks, even in async mode, your HTTP endpoint must exist and be reachable — async just means Dataverse sends the call in the background without blocking the user. The listener still has to pick up eventually. With Service Bus Queue, the message sits in the queue indefinitely — your consumer can come back online a week later and still process it. Think of webhook as a phone call (someone must answer eventually) vs Service Bus Queue as a mailbox (message waits as long as needed).</p>
+</blockquote>
 <h3 id="webhook-authentication-options">Webhook Authentication Options</h3>
 <table>
 <thead>
@@ -5536,6 +5052,9 @@ Pipelines do not currently expose an option to choose Update vs. Upgrade — the
 <p><strong>Decision rule:</strong> Azure Function endpoint using <code>?code=</code> → <strong>WebhookKey</strong> always.</p>
 <h3 id="webhook-response-body-behavior">Webhook Response Body Behavior</h3>
 <p>Dataverse <strong>does not parse the response body</strong> from a webhook call. It only reads the HTTP status code. A 200 with a JSON body instructing Dataverse to alter behavior will be ignored. Use synchronous plug-ins if you need in-transaction control.</p>
+<blockquote>
+<p><strong>Plain English:</strong> Dataverse only cares about "did it succeed or fail" — not "what the response said." Your endpoint can return <code>200 OK</code> with a JSON body saying <code>{ "action": "cancel_save" }</code> and Dataverse will completely ignore that JSON. It sees <code>200</code> and moves on. If you want to control what Dataverse does based on external logic (block a save, throw an error to the user), you need a synchronous plug-in — not a webhook.</p>
+</blockquote>
 <hr />
 <h2 id="3-listener-option-selection-plug-in-vs-webhook-vs-flow-vs-event-hub">3. Listener Option Selection: Plug-in vs Webhook vs Flow vs Event Hub</h2>
 <table>
@@ -5613,6 +5132,9 @@ cloudService.Execute(
 - Source system has a business identifier but not the Dataverse GUID
 - Integration must avoid a retrieve-first pattern
 - Downstream logging needs to distinguish new vs updated rows</p>
+<blockquote>
+<p><strong>Plain English — why no GUID:</strong> The source system (e.g., SAP, Salesforce) has its own ID for a record (e.g., <code>CUST-1001</code>), but Dataverse assigns its own internal GUID when it stores the record. The source system has never seen that GUID and doesn't store it. So the integration maps the source system's ID to an <strong>alternate key</strong> in Dataverse, and Upsert uses that as the lookup key — find or create by <code>erp_customerid = CUST-1001</code> without ever needing the Dataverse GUID.</p>
+</blockquote>
 <h3 id="alternate-keys">Alternate Keys</h3>
 <p>Alternate keys let Dataverse rows be identified by <strong>business columns</strong> instead of GUIDs. Essential for integration with external systems that have their own identifiers.</p>
 <p><strong>Valid column types for alternate keys:</strong> Single line of text, Whole number, Decimal, Date/Time, Lookup, Option Set.</p>
@@ -5647,8 +5169,14 @@ service.Execute(new UpsertRequest { Target = account });
 <h3 id="delta-link">Delta Link</h3>
 <p>The <code>@odata.deltaLink</code> is the opaque, service-generated continuation token returned in the response. It must be persisted after each successful cycle to drive the next incremental request.</p>
 <p><strong>Wrong things to persist:</strong> <code>@odata.context</code>, <code>Preference-Applied</code> header, a specific record ID.</p>
+<blockquote>
+<p><strong>Plain English — persist the delta link:</strong> Save the delta link to a database, file, or config store after each successful sync. It acts as a bookmark — next run you read it back and pass it to Dataverse, which then returns only what changed since that point. Without persisting it you have no bookmark and must do a full sync every time.</p>
+</blockquote>
 <h3 id="deleted-rows">Deleted Rows</h3>
 <p>The delta response includes <strong>deleted-entity entries</strong> that must be processed to keep the external store consistent. Ignoring them causes drift.</p>
+<blockquote>
+<p><strong>Plain English:</strong> When someone deletes a record in Dataverse, the delta response includes a notification about that deletion. You must act on it in your external system too — otherwise your external database still has the record and the two systems slowly diverge. Always handle both: normal records (create or update externally) and <code>@odata.deletedEntity</code> entries (delete from external system). Always check if the record exists locally before deleting — you may receive a deletion for a record you never saw (phantom delete, explained below).</p>
+</blockquote>
 <h3 id="token-expiry">Token Expiry</h3>
 <p>Change tracking tokens have a <strong>default 7-day retention window</strong> (controlled by <code>ExpireChangeTrackingInDays</code> organization setting). If a sync is paused longer than this window, the stored token becomes invalid and Dataverse throws an exception. The fix is to <strong>reinitialize the sync baseline</strong> — not retry with the same token.</p>
 <h3 id="common-distractors_2">Common Distractors</h3>
@@ -5739,16 +5267,16 @@ service.Execute(new UpsertRequest { Target = account });
 </li>
 </ol>
 <hr />
-<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Beyond the Exam</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
-<p>This section adds depth, SDK specifics, current product behavior, limits, and edge-case decision rules not covered above. All claims are sourced from Microsoft Learn unless marked "(unverified)".</p>
+<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<p>This section adds depth, SDK specifics, current product behavior, limits, and edge-case decision rules. All claims are sourced from Microsoft Learn unless marked "(unverified)".</p>
 <hr />
 <h3 id="a-azure-service-bus-fuller-contract-details-and-runtime-behavior">A. Azure Service Bus: fuller contract details and runtime behavior</h3>
-<h4 id="queue-destructive-vs-non-destructive-reads">Queue: destructive vs non-destructive reads</h4>
-<p>The Queue contract supports two read modes: a <strong>destructive read</strong> removes the message from the queue after it is consumed, while a <strong>non-destructive read</strong> leaves the message on the queue. Dataverse supports <strong>persistent queues</strong>, meaning messages have a long but finite availability duration that you can configure in code. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/azure-integration]</p>
-<h4 id="one-way-retry-backoff">One-way retry backoff</h4>
-<p>When a one-way listener is offline, Dataverse does not silently discard the message. The asynchronous service retries the post in <strong>exponentially increasing intervals</strong>. Eventually the system job is set to <strong>Failed</strong> if the listener never comes online within the retry window. You can inspect retry details in <strong>Advanced Settings &gt; Settings &gt; System Jobs</strong> in the legacy Dynamics 365 UI. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/azure-integration]</p>
 <h4 id="two-way-and-rest-contracts-return-value-handling">Two-way and REST contracts: return value handling</h4>
 <p>The <strong>Two-way</strong> contract allows a <strong>string value</strong> to be returned from the listener to the Dataverse plug-in or custom workflow activity that initiated the post. The <code>IServiceEndpointNotificationService.Execute()</code> call returns this string. The <strong>REST contract</strong> behaves identically to two-way but targets a REST endpoint instead of a WCF relay. Neither two-way nor REST can replace Queue for durability — both still require an active listener. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/azure-integration]</p>
+<blockquote>
+<p><strong>Plain English — Why IServiceEndpointNotificationService appears here:</strong> This interface is not exclusive to Service Bus. It is the single interface Dataverse uses to send events to ANY registered service endpoint — Service Bus, webhooks, relay contracts. It is a generic "send this event to an external endpoint" interface. The contract type (Queue, Two-way, REST, Webhook) determines where the message goes and whether a response comes back.</p>
+<p><strong>What Two-way/REST can actually do:</strong> The string response is returned to YOUR plug-in code. The external listener cannot directly control Dataverse — it just returns a string. Your plug-in then interprets that string and decides what to do: call <code>orgService.Update()</code> to write a field, call <code>orgService.Create()</code> to create a record, or throw <code>InvalidPluginExecutionException</code> to cancel the save and show an error to the user. The plug-in has full access to Dataverse via <code>IOrganizationService</code> and can perform any CRUD operation based on the response. If the step is synchronous, all of this runs inside the same transaction.</p>
+</blockquote>
 <h4 id="what-if-decision-rules-for-contract-selection">What if... decision rules for contract selection</h4>
 <table>
 <thead>
@@ -5786,57 +5314,14 @@ service.Execute(new UpsertRequest { Target = account });
 </tr>
 </tbody>
 </table>
-<h4 id="message-payload-size-limit-and-truncation">Message payload size limit and truncation</h4>
-<p>When the <strong>entire HTTP payload exceeds 192 KB</strong> (Service Bus) or <strong>256 KB</strong> (Webhook), Dataverse strips the following <code>RemoteExecutionContext</code> properties before sending: <code>ParentContext</code>, <code>InputParameters</code>, <code>PreEntityImages</code>, <code>PostEntityImages</code>. For Service Bus, if the payload is still under 192 KB after stripping, a <code>MessageMaxSizeExceeded</code> property is added to the <code>BrokeredMessage</code>. If it still exceeds 192 KB after stripping, the message is <strong>not sent at all</strong> and the system job fails. For webhooks the threshold is 256 KB and the <code>x-ms-dynamics-msg-size-exceeded</code> HTTP header is added instead of failing. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/azure-integration] [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks]</p>
 <h4 id="authorization-sas-is-the-only-supported-model">Authorization: SAS is the only supported model</h4>
 <p>All Dataverse-to-Azure-Service-Bus integrations use <strong>Shared Access Signatures (SAS)</strong> for authorization. The claim posted by Dataverse is signed by the <code>AppFabricIssuer</code> certificate in the Dataverse configuration database. OAuth or Managed Identity are not supported directly through the Plug-in Registration Tool service endpoint model (as of 2026). [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/azure-integration]</p>
 <h4 id="data-context-type-difference-ipluginexecutioncontext-vs-remoteexecutioncontext">Data context type difference: IPluginExecutionContext vs RemoteExecutionContext</h4>
 <p>Inside the Dataverse event pipeline the context is <code>IPluginExecutionContext</code>. When posted to the Azure Service Bus it is serialized as <code>RemoteExecutionContext</code>. The <code>RemoteExecutionContext</code> can be formatted as <strong>.NET binary</strong> (default), <strong>XML</strong>, or <strong>JSON</strong>, enabling non-.NET consumers to deserialize it. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/azure-integration]</p>
 <h4 id="synchronous-step-caveat-for-service-endpoints">Synchronous step caveat for service endpoints</h4>
 <p>It is technically possible to register a service endpoint step as <strong>synchronous</strong>. When a synchronous step posts to Azure Service Bus and an error occurs after the request is sent, the <strong>Dataverse data operation rolls back</strong> but the message already sent to Azure <strong>cannot be recalled</strong>. This creates a potential data inconsistency. Microsoft therefore recommends registering service endpoint steps as <strong>asynchronous</strong> for best system performance. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/work-data-azure-solution]</p>
-<h4 id="operationid-and-operationcreatedon-for-deduplication">OperationId and OperationCreatedOn for deduplication</h4>
-<p>For asynchronous Azure-aware plug-ins, the <code>RemoteExecutionContext</code> sent over the Service Bus includes an <code>OperationId</code> (maps to <code>AsyncOperationId</code>) and <code>OperationCreatedOn</code> (maps to <code>CreatedOn</code> of the system job). Because the entire plug-in reruns on retry, the listener can use these two properties for <strong>duplicate detection and sequencing</strong>. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/write-custom-azure-aware-plugin]</p>
 <hr />
 <h3 id="b-webhooks-deeper-behavior-limits-and-edge-cases">B. Webhooks: deeper behavior, limits, and edge cases</h3>
-<h4 id="port-restriction">Port restriction</h4>
-<p>Registered webhooks support <strong>only port 80</strong> (HTTP) and <strong>port 443</strong> (HTTPS). Any other port in the endpoint URL will be rejected at registration or fail silently at runtime. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/register-web-hook]</p>
-<h4 id="timeout-and-partial-retry-behavior">Timeout and partial-retry behavior</h4>
-<p>The webhook service has a <strong>60-second timeout</strong>. If no response arrives within 60 seconds, the call is treated as a failure. If the endpoint returns HTTP <strong>502 Bad Gateway</strong>, <strong>503 Service Unavailable</strong>, or <strong>504 Gateway Timeout</strong>, Dataverse makes <strong>one additional retry attempt</strong> only. All other non-2xx codes cause immediate failure with no retry. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks]</p>
-<h4 id="synchronous-webhook-failure-ux">Synchronous webhook failure UX</h4>
-<p>When a synchronous webhook step fails, the user sees an <strong>"Endpoint unavailable"</strong> error dialog. A log file can be downloaded from that dialog to inspect error details. The underlying data operation is also rolled back — but any request already delivered to the webhook endpoint cannot be recalled, same as with synchronous service endpoint steps. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks]</p>
-<h4 id="webhook-payload-headers">Webhook payload headers</h4>
-<p>In addition to the request body, webhooks receive several standard HTTP headers:</p>
-<table>
-<thead>
-<tr>
-<th>Header</th>
-<th>Content</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>x-ms-dynamics-organization</code></td>
-<td>Domain name of the sending environment</td>
-</tr>
-<tr>
-<td><code>x-ms-dynamics-entity-name</code></td>
-<td>Logical name of the triggering table</td>
-</tr>
-<tr>
-<td><code>x-ms-dynamics-request-name</code></td>
-<td>Name of the event/message (e.g., <code>Update</code>)</td>
-</tr>
-<tr>
-<td><code>x-ms-correlation-request-id</code></td>
-<td>Correlation ID used for infinite-loop prevention and telemetry</td>
-</tr>
-<tr>
-<td><code>x-ms-dynamics-msg-size-exceeded</code></td>
-<td>Present only when payload exceeded 256 KB and was truncated</td>
-</tr>
-</tbody>
-</table>
-<p>[https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks]</p>
 <h4 id="authentication-option-mechanics">Authentication option mechanics</h4>
 <table>
 <thead>
@@ -5865,10 +5350,9 @@ service.Execute(new UpsertRequest { Target = account });
 </tbody>
 </table>
 <p>Only enter <strong>the value</strong> (not <code>code=</code>) when registering <code>WebhookKey</code> in the Plug-in Registration Tool — the tool adds the <code>code=</code> prefix automatically. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/register-web-hook]</p>
-<h4 id="webhook-stored-in-serviceendpoint-table">Webhook stored in ServiceEndpoint table</h4>
-<p>Webhook registrations are rows in the <code>ServiceEndpoint</code> table with a <code>Contract</code> value of <strong>8</strong>. You can query them via Web API: <code>GET [org]/api/data/v9.0/serviceendpoints?$filter=contract eq 8</code>. The <code>AuthValue</code> field holding the secret <strong>cannot be retrieved</strong> once saved. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/register-web-hook]</p>
-<h4 id="invoking-a-webhook-from-a-plug-in-programmatic-invocation">Invoking a webhook from a plug-in (programmatic invocation)</h4>
-<p>Because a webhook is stored as a <code>ServiceEndpoint</code>, a custom plug-in can invoke it directly using <code>IServiceEndpointNotificationService</code> — the same pattern used for Azure Service Bus. Pass the webhook's <code>ServiceEndpointId</code> in the <code>EntityReference</code>. This provides more control over failure handling than a simple step registration. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks]</p>
+<blockquote>
+<p><strong>HttpHeader vs HttpQueryString — security difference:</strong> Both send a secret key, but in different locations. <code>HttpHeader</code> puts the secret in the request header (not visible in the URL, not logged by default — more secure). <code>HttpQueryString</code> puts it in the URL itself (<code>?mykey=secret</code>) — URLs are commonly logged by web servers, proxies, and browsers, so the secret ends up in plain-text logs. <code>WebhookKey</code> is just a fixed-format version of <code>HttpQueryString</code> where the key name is always <code>code</code>.</p>
+</blockquote>
 <h4 id="what-if-webhook-vs-service-bus-decision">What if... webhook vs Service Bus decision</h4>
 <table>
 <thead>
@@ -5892,7 +5376,7 @@ service.Execute(new UpsertRequest { Target = account });
 <tr>
 <td>Volumes may exceed endpoint throughput</td>
 <td>No</td>
-<td>Yes</td>
+<td>Yes (Service Bus acts as a buffer — messages queue up and your consumer reads at its own pace; webhook fires directly at your endpoint with no buffer, so a burst of events can overwhelm it)</td>
 </tr>
 <tr>
 <td>Need fan-out to multiple consumers</td>
@@ -5919,8 +5403,14 @@ service.Execute(new UpsertRequest { Target = account });
 2. <strong>Record found:</strong> Strip the alternate key data from <code>Entity.Attributes</code> (you cannot change the key values through the same keys used to identify the row), call <code>Update</code>, set <code>UpsertResponse.RecordCreated = false</code>.
 3. <strong>Record not found:</strong> Copy key data into <code>Entity.Attributes</code> if absent, call <code>Create</code>, set <code>UpsertResponse.RecordCreated = true</code>.</p>
 <p>Key implication: <strong>You cannot update alternate key column values</strong> by including them both as the lookup key and in the body. To change an alternate key value, identify the record by primary key (or a different alternate key) and then update the column directly. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-upsert-insert-update-record]</p>
+<blockquote>
+<p><strong>Plain English:</strong> You cannot use the same alternate key to both FIND the record and CHANGE that key's value at the same time. If you use <code>erp_customerid = CUST-1001</code> to identify the record and also include <code>erp_customerid = CUST-9999</code> in the body, Dataverse strips the key from the body before updating — your change to <code>CUST-9999</code> is silently ignored. To actually change an alternate key value, identify the record by its GUID (primary key) instead, then update the column directly.</p>
+</blockquote>
 <h4 id="elastic-table-upsert-differs-from-standard-tables">Elastic table upsert differs from standard tables</h4>
 <p>For <strong>elastic tables</strong>, <code>Upsert</code> does not fire separate <code>Create</code> or <code>Update</code> events — it directly overwrites the record. Business logic registered on <code>Create</code> or <code>Update</code> messages will <strong>not fire</strong> when <code>Upsert</code> is used on elastic tables. You must also register your logic on the <code>Upsert</code> message if you need consistent behavior. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-upsert-insert-update-record]</p>
+<blockquote>
+<p><strong>Plain English — why elastic tables skip Create/Update:</strong> Standard tables store data in SQL Server, where Upsert internally resolves to a Create or Update call — so those events fire normally. Elastic tables store data in Azure Cosmos DB, which has a native "just write this document" operation that bypasses the Create/Update event chain entirely. Whether the record exists or not, Cosmos DB just writes directly — no Create event, no Update event, regardless. This is by design for performance. The fix is to also register your plugin on the <code>Upsert</code> message so it runs regardless of which write path was used.</p>
+</blockquote>
 <h4 id="performance-note">Performance note</h4>
 <p>Microsoft explicitly states there is a <strong>performance penalty</strong> when using <code>Upsert</code> vs <code>Create</code> because <code>Upsert</code> requires an existence check. If you know the record does not exist, prefer <code>Create</code> for performance-sensitive batch loads. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-upsert-insert-update-record]</p>
 <h4 id="web-api-distinguishing-create-vs-update-in-the-response">Web API: distinguishing create vs update in the response</h4>
@@ -5929,6 +5419,9 @@ service.Execute(new UpsertRequest { Target = account });
 <p>Adding <code>If-Match: *</code> to a Web API <code>PATCH</code> converts it from upsert to a pure <strong>update</strong> — it returns <code>404 Not Found</code> if no matching record exists. Conversely, <code>If-None-Match: *</code> blocks the update path: the request succeeds only if the record does <strong>not</strong> yet exist (create-only). [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-upsert-insert-update-record]</p>
 <h4 id="what-if-body-key-values-conflict-with-url-key-values-on-create">What if... body key values conflict with URL key values on create</h4>
 <p>On a Web API upsert where the record does not exist, if the request body contains alternate key fields with <strong>different values</strong> than those in the URL, the server uses the <strong>body values</strong> to create the record — not the URL values. To avoid this ambiguity, Microsoft's guidance is to <strong>omit alternate key columns from the request body</strong> entirely; let the server copy them from the URL. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-upsert-insert-update-record]</p>
+<blockquote>
+<p><strong>Simple rule:</strong> Put the alternate key in the URL only. Never repeat it in the body. If you do repeat it with a different value on a create, the body value wins — which is confusing and unpredictable. Omit it from the body entirely and let Dataverse copy it from the URL automatically.</p>
+</blockquote>
 <hr />
 <h3 id="d-change-tracking-sdk-path-constraints-and-ordering-guarantees">D. Change tracking: SDK path, constraints, and ordering guarantees</h3>
 <h4 id="net-sdk-retrieveentitychangesrequest">.NET SDK: RetrieveEntityChangesRequest</h4>
@@ -5940,12 +5433,21 @@ service.Execute(new UpsertRequest { Target = account });
 <p>On the first call (no token), <strong>all records are returned as new</strong> and <strong>deleted records are not included</strong>. Store the <code>response.EntityChanges.DataToken</code> to use on subsequent calls. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
 <h4 id="unsupported-query-options-with-change-tracking">Unsupported query options with change tracking</h4>
 <p>When the <code>Prefer: odata.track-changes</code> header is present in a Web API request, the following query options are <strong>not supported</strong> and return an error if included: <code>$filter</code>, <code>$orderby</code>, <code>$expand</code>, <code>$top</code>. Use <code>$select</code> to limit columns and paging parameters to page through results. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
+<blockquote>
+<p><strong>Why $select is allowed but $filter is not:</strong> <code>$select</code> controls which COLUMNS come back — it only trims the data shape, it does not affect which rows are returned. Change tracking integrity is not affected. <code>$filter</code> controls which ROWS come back — it would silently skip changed records that don't match the filter, meaning your delta link would advance past those records and they would be lost forever. Change tracking must return every changed row to guarantee completeness. <code>$select</code> is safe; <code>$filter</code> breaks the guarantee.</p>
+</blockquote>
 <h4 id="record-ordering-in-delta-responses">Record ordering in delta responses</h4>
 <p>The server returns records in a defined order: <strong>new or updated records first</strong> (sorted by version number), then <strong>deleted records</strong>. For a page size of 5,000, if there are 3,000 created/updated and 2,000 deleted, you receive all 5,000 in one response — updated records in positions 1–3,000 and deleted records in positions 3,001–5,000. If the new/updated count exceeds 5,000 you must page through that subset before deleted records appear. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
 <h4 id="access-requirement">Access requirement</h4>
 <p>The calling user must have <strong>organization-level read access</strong> to the table. Partial read access (e.g., business unit scope) causes a privilege check error on <code>RetrieveEntityChanges</code>. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
+<blockquote>
+<p><strong>Plain English:</strong> Dataverse has four read access levels: User (own records only), Business Unit (own BU), Parent-Child Business Unit (own BU + child BUs), and Organization (all records). Change tracking requires Organization level because it tracks changes across the entire table — it has no concept of BU boundaries. Even Business Unit access is not enough. Your integration service account must have org-level read on the synced table, or the call fails with a privilege error.</p>
+</blockquote>
 <h4 id="phantom-deletes">Phantom deletes</h4>
 <p>If a record is created and then deleted <strong>between two delta queries</strong>, the client will see a <strong>deleted-entity entry</strong> in the next delta response even though it never saw the created record. Integration code must handle deletes for records it has no local copy of without throwing an error. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
+<blockquote>
+<p><strong>Plain English:</strong> A record can be created and deleted in Dataverse between your two syncs. Your next delta response includes a deletion notification for a GUID you have never seen. If your code does <code>localRecord.Delete()</code> without checking first, it crashes with a null reference. Always check: <code>if (localRecord == null) return;</code> — skip gracefully if not found locally.</p>
+</blockquote>
 <h4 id="cannot-disable-change-tracking-once-enabled">Cannot disable change tracking once enabled</h4>
 <p>Once <code>EntityMetadata.ChangeTrackingEnabled</code> is set to <code>true</code> on a table, <strong>it cannot be disabled</strong>. Plan table configuration accordingly. To check programmatically whether a table supports enabling change tracking, read <code>EntityMetadata.CanChangeTrackingBeEnabled</code>. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
 <h4 id="checking-whether-change-tracking-is-enabled-via-web-api-metadata">Checking whether change tracking is enabled via Web API metadata</h4>
@@ -5991,6 +5493,9 @@ service.Execute(new UpsertRequest { Target = account });
 - Supported scalar types: text, number, date/time, choice.
 - Not supported on virtual tables.
 - The flow still runs if the column value submitted in the update is <strong>unchanged</strong> from the existing value (the filter is based on which columns are included in the request, not whether the value actually changed).</p>
+<blockquote>
+<p><strong>Plain English:</strong> This lets you say "only trigger my flow when these specific columns are updated." Without it, every update to a record fires the flow regardless of what changed. Key trap: it only works for Updates — Create and Delete always fire. Lookup columns are silently ignored (no error). Most importantly, the filter checks whether the column was <em>included in the update request</em>, not whether the value actually changed — so if someone sends an update with <code>revenue = 500000</code> and revenue was already 500000, the flow still fires.</p>
+</blockquote>
 <p>[https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
 <p><strong>Filter rows (OData expression):</strong>
 - Written in OData style but <strong>must not include the <code>$filter=</code> prefix</strong> (that prefix is for direct API calls only).
@@ -6000,6 +5505,9 @@ service.Execute(new UpsertRequest { Target = account });
 <p>[https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
 <p><strong>"Delay until" advanced option:</strong>
 An OData-style UTC timestamp that delays the flow trigger. Unlike the standard Power Automate <code>Delay until</code> action, the Dataverse trigger-level <code>Delay until</code> <strong>never expires</strong>, making it suitable for very long delays without the flow timing out. [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
+<blockquote>
+<p><strong>Plain English:</strong> The flow triggers when the record changes, but waits until the specified timestamp before actually running. Like setting an alarm — the alarm is set now but only rings later. Real-world use: a hotel booking is created today, but you want to send a reminder email 24 hours before check-in (weeks away). Set Delay Until to the day before check-in. The trigger-level version never expires, so it's safe for delays of weeks or months unlike the in-flow Delay Until action.</p>
+</blockquote>
 <p><strong>Run As (user impersonation):</strong>
 Three options: <code>Flow owner</code>, <code>Row owner</code> (owner of the changed row; defaults to flow owner if a team owns the row), or <code>Modifying user</code> (the user who triggered the change). Requires the <code>prvActOnBehalfOfAnotherUser</code> privilege. The <strong>Delegate</strong> security role includes this privilege by default. [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
 <p><strong>Relationship type limitation:</strong>
@@ -6011,6 +5519,9 @@ The trigger does <strong>not</strong> fire for changes on relationship records o
 <p>The flow creator must have <strong>user-level Create, Read, Write, and Delete</strong> permissions on the <strong>Callback Registration</strong> table in Dataverse. This is the underlying mechanism the connector uses to register the trigger. [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
 <h4 id="what-if-multiple-rapid-updates-to-the-same-row">What if... multiple rapid updates to the same row</h4>
 <p>Power Automate <strong>evaluates the trigger independently for each update event</strong>, even when the updated values are the same as before. A burst of five rapid updates to one row can result in <strong>five separate flow runs</strong>. Use Filter rows and/or Select columns to minimize unnecessary executions, and consider idempotent flow logic. [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
+<blockquote>
+<p><strong>Plain English — idempotent flow logic:</strong> Make your flow safe to run multiple times with the same result as running once. Instead of "create a task," do "create a task only if one doesn't already exist." Instead of "send a welcome email," do "send a welcome email only if WelcomeEmailSent is false, then set it to true." The pattern is always: (1) check if work is already done, (2) if yes skip, (3) if no do the work and mark it done. This way 5 flow runs produce the same outcome as 1 run.</p>
+</blockquote>
 <h4 id="scaling-comparison-webhook-vs-power-automate-vs-service-bus">Scaling comparison: webhook vs Power Automate vs Service Bus</h4>
 <table>
 <thead>
@@ -6030,9 +5541,9 @@ The trigger does <strong>not</strong> fire for changes on relationship records o
 </tr>
 <tr>
 <td>Sync capable</td>
-<td>Yes</td>
-<td>No (always async)</td>
-<td>No (always async)</td>
+<td>Yes (can run inside Dataverse transaction, block the save, rollback on failure)</td>
+<td>No (always async, never inside the transaction)</td>
+<td>No (always async, never inside the transaction)</td>
 </tr>
 <tr>
 <td>Durability</td>
@@ -6054,7 +5565,7 @@ The trigger does <strong>not</strong> fire for changes on relationship records o
 </tr>
 </tbody>
 </table>
-<p>[https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks] [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p></div></details></div>
+<p>[https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks] [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-dataverse-azure-integration-service-endpoints-contract-types">1. Dataverse Azure Integration: Service Endpoints &amp; Contract Types</a><ul>
@@ -6103,7 +5614,7 @@ The trigger does <strong>not</strong> fire for changes on relationship records o
 <li><a href="#8-recommended-integration-pattern-full-lifecycle">8. Recommended Integration Pattern (Full Lifecycle)</a></li>
 <li><a href="#quick-fire-facts">Quick-Fire Facts</a></li>
 <li><a href="#common-traps">Common Traps</a></li>
-<li><a href="#beyond-the-exam">Beyond the exam</a><ul>
+<li><a href="#deeper-exam-detail">Deeper Exam Detail</a><ul>
 <li><a href="#a-azure-service-bus-fuller-contract-details-and-runtime-behavior">A. Azure Service Bus: fuller contract details and runtime behavior</a></li>
 <li><a href="#b-webhooks-deeper-behavior-limits-and-edge-cases">B. Webhooks: deeper behavior, limits, and edge cases</a></li>
 <li><a href="#c-upsertrequest-and-alternate-keys-sdk-internals-and-edge-cases">C. UpsertRequest and alternate keys: SDK internals and edge cases</a></li>
@@ -6526,8 +6037,8 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 <li><strong>Assuming a component library update is instant</strong> — the library lifecycle and the consuming-app lifecycle are independent; updates require explicit adoption.</li>
 </ol>
 <hr />
-<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Beyond the Exam</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
-<p>This section contains fuller function lists, current platform limits, tooling specifics, and edge-case decision rules sourced directly from Microsoft Learn. None of this duplicates the exam-focused content above.</p>
+<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<p>This section contains fuller function lists, current platform limits, tooling specifics, and edge-case decision rules sourced directly from Microsoft Learn.</p>
 <hr />
 <h3 id="a-delegation-deep-dive-full-per-data-source-function-tables">A. Delegation deep-dive: full per-data-source function tables</h3>
 <h4 id="default-and-maximum-row-limits">Default and maximum row limits</h4>
@@ -7459,7 +6970,7 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 <td>Use <strong>Monitor</strong> published-app mode: from the Apps list, select the app &gt; Live monitor &gt; Play published app. A separate browser tab opens the published app connected to your Monitor session. Alternatively, send the user a <strong>Copy monitor link</strong> for Mobile.</td>
 </tr>
 </tbody>
-</table></div></details></div>
+</table></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-component-libraries-for-reusable-canvas-app-ui">1. Component Libraries for Reusable Canvas App UI</a><ul>
@@ -7511,7 +7022,7 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 </li>
 <li><a href="#8-quick-fire-facts">8. Quick-Fire Facts</a></li>
 <li><a href="#9-common-traps">9. Common Traps</a></li>
-<li><a href="#beyond-the-exam">Beyond the exam</a><ul>
+<li><a href="#deeper-exam-detail">Deeper Exam Detail</a><ul>
 <li><a href="#a-delegation-deep-dive-full-per-data-source-function-tables">A. Delegation deep-dive: full per-data-source function tables</a></li>
 <li><a href="#b-appformulas-named-formulas-and-onstart-full-behavioral-differences">B. App.Formulas (named formulas) and OnStart — full behavioral differences</a></li>
 <li><a href="#c-canvas-performance-additional-limits-patterns-and-tooling">C. Canvas performance — additional limits, patterns, and tooling</a></li>
@@ -7570,25 +7081,16 @@ function getAnswered(slug) { return getSet(slug,'answered'); }
 function getCorrect(slug)  { return getSet(slug,'correct'); }
 
 // ── Sidebar navigation ───────────────────────────────────────────────────────
-// ── Mobile sidebar drawer ─────────────────────────────────────────────────────
-function toggleSidebar(force) {
-    const sb = document.querySelector('.sb');
-    const bd = document.querySelector('.sb-backdrop');
-    const open = force === undefined ? !sb.classList.contains('open') : force;
-    sb.classList.toggle('open', open);
-    bd.classList.toggle('show', open);
-}
-
 function showDomain(slug) {
     document.querySelectorAll('.db').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const qb = document.getElementById('quiz-btn');
+    if (qb) qb.classList.remove('active');
     document.querySelector(`.db[data-slug="${slug}"]`).classList.add('active');
     document.getElementById(`panel-${slug}`).classList.add('active');
     // restore last tab
     const tab = tabState[slug] || 'guide';
     activateTab(slug, tab, false);
-    // on mobile, close the drawer after picking a domain
-    if (window.matchMedia('(max-width:768px)').matches) toggleSidebar(false);
 }
 
 // ── Tabs ─────────────────────────────────────────────────────────────────────
@@ -7807,6 +7309,248 @@ function escHtml(s) {
     return String(s)
         .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
         .replace(/"/g,'&quot;');
+}
+
+// ══ QUIZ MODE ═══════════════════════════════════════════════════════════════
+// Cross-domain randomized quiz. Pool is flattened from CARDS; each item keeps
+// its domain slug so a wrong answer can link straight to that concept guide.
+
+const DOMAIN_NAME = {};            // slug -> display name
+DOMAINS.forEach(([s,n,]) => DOMAIN_NAME[s] = n);
+
+function buildQuizPool() {
+    const pool = [];
+    DOMAINS.forEach(([slug,,]) => {
+        (CARDS[slug] || []).forEach(c => pool.push({...c, slug}));
+    });
+    return pool;
+}
+const QUIZ_POOL = buildQuizPool();
+
+const COUNTS = [10, 20, 60, 80];
+const quizCfg   = { domains: new Set(DOMAINS.map(d => d[0])), count: 20 };
+let   quizState = null;   // {order:[cards], idx, answers:[Set,...]}
+
+function openQuiz() {
+    document.querySelectorAll('.db').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('quiz-btn').classList.add('active');
+    document.getElementById('panel-quiz').classList.add('active');
+    if (!quizState) renderQuizSetup();   // keep an in-progress quiz on tab return
+}
+
+function poolFor(domSet) {
+    return QUIZ_POOL.filter(c => domSet.has(c.slug));
+}
+
+function renderQuizSetup() {
+    quizState = null;
+    const inner = document.getElementById('quiz-inner');
+    const allOn = quizCfg.domains.size === DOMAINS.length;
+    const domRows = DOMAINS.map(([slug,name,]) => {
+        const n = (CARDS[slug] || []).length;
+        const on = quizCfg.domains.has(slug);
+        return `<label class="dom-row ${on?'on':''}" data-slug="${slug}">
+            <input type="checkbox" ${on?'checked':''} onchange="toggleDomain('${slug}')">
+            <span class="dn">${name}</span><span class="dc">${n} Qs</span>
+          </label>`;
+    }).join('');
+    const countBtns = COUNTS.map(n =>
+        `<button class="count-btn ${quizCfg.count===n?'on':''}"
+                 onclick="setCount(${n})">${n}</button>`).join('');
+    inner.innerHTML = `
+      <div class="quiz-setup">
+        <h2>Build a practice quiz</h2>
+        <p class="sub">Randomly sample questions from the domains you pick, answer
+           them, then review every miss with a jump to the right concept guide.</p>
+        <div class="qs-label">Domains</div>
+        <div class="dom-grid">
+          <label class="dom-row all-row ${allOn?'on':''}" onclick="toggleAll(event)">
+            <input type="checkbox" ${allOn?'checked':''} onclick="event.stopPropagation()" onchange="toggleAll(event)">
+            <span class="dn">All domains</span>
+            <span class="dc">${QUIZ_POOL.length} Qs</span>
+          </label>
+          ${domRows}
+        </div>
+        <div class="qs-label">How many questions</div>
+        <div class="count-grid">${countBtns}</div>
+        <div class="quiz-pool-note" id="pool-note"></div>
+        <button class="start-quiz-btn" id="start-btn" onclick="startQuiz()">Start quiz →</button>
+      </div>`;
+    updatePoolNote();
+}
+
+function updatePoolNote() {
+    const avail = poolFor(quizCfg.domains).length;
+    const note  = document.getElementById('pool-note');
+    const btn   = document.getElementById('start-btn');
+    if (!note) return;
+    if (quizCfg.domains.size === 0) {
+        note.textContent = 'Select at least one domain.';
+        btn.disabled = true; return;
+    }
+    btn.disabled = false;
+    const n = Math.min(quizCfg.count, avail);
+    note.innerHTML = `Quiz will draw <strong>${n}</strong> question${n!==1?'s':''} `
+        + `from a pool of <strong>${avail}</strong>.`
+        + (quizCfg.count > avail
+            ? ` (Only ${avail} available in the selected domains.)` : '');
+}
+
+function toggleDomain(slug) {
+    if (quizCfg.domains.has(slug)) quizCfg.domains.delete(slug);
+    else quizCfg.domains.add(slug);
+    renderQuizSetup();
+}
+function toggleAll(e) {
+    if (e) e.preventDefault();
+    if (quizCfg.domains.size === DOMAINS.length) quizCfg.domains = new Set();
+    else quizCfg.domains = new Set(DOMAINS.map(d => d[0]));
+    renderQuizSetup();
+}
+function setCount(n) { quizCfg.count = n; renderQuizSetup(); }
+
+function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+}
+
+function startQuiz(customPool) {
+    const base = customPool || poolFor(quizCfg.domains);
+    if (base.length === 0) return;
+    const n = customPool ? base.length : Math.min(quizCfg.count, base.length);
+    const order = shuffle(base).slice(0, n);
+    quizState = { order, idx: 0, answers: order.map(() => new Set()) };
+    renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+    const { order, idx, answers } = quizState;
+    const q = order[idx];
+    const letters = Object.keys(q.options);
+    const multi = q.correct.length > 1;
+    const sel = answers[idx];
+    const inner = document.getElementById('quiz-inner');
+    inner.innerHTML = `
+      <div class="quiz-run-top">
+        <span class="qn">Question ${idx+1} of ${order.length}</span>
+        <span class="qd">${escHtml(DOMAIN_NAME[q.slug])}</span>
+      </div>
+      <div class="quiz-pbar"><div style="width:${(idx)/order.length*100}%"></div></div>
+      <div class="flashcard">
+        <div class="fc-stem">${escHtml(q.stem)}</div>
+        ${multi ? '<p class="multi-label">Select all that apply:</p>' : ''}
+        <div class="options-list" id="quiz-opts">
+          ${letters.map(l =>
+            `<div class="opt ${sel.has(l)?'selected':''}" data-letter="${l}"
+                  onclick="pickQuizOpt('${l}',${multi})">
+               <span class="opt-letter">${l}.</span>
+               <span>${escHtml(q.options[l])}</span>
+             </div>`).join('')}
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button onclick="prevQuizQuestion()" ${idx===0?'disabled':''}>← Back</button>
+        <button class="next" onclick="nextQuizQuestion()">
+          ${idx === order.length-1 ? 'Finish & see score' : 'Next →'}
+        </button>
+      </div>`;
+}
+
+function pickQuizOpt(letter, multi) {
+    const sel = quizState.answers[quizState.idx];
+    if (multi) {
+        if (sel.has(letter)) sel.delete(letter); else sel.add(letter);
+    } else {
+        sel.clear(); sel.add(letter);
+    }
+    document.querySelectorAll('#quiz-opts .opt').forEach(el =>
+        el.classList.toggle('selected', sel.has(el.dataset.letter)));
+}
+
+function prevQuizQuestion() {
+    if (quizState.idx > 0) { quizState.idx--; renderQuizQuestion(); }
+}
+function nextQuizQuestion() {
+    if (quizState.idx < quizState.order.length-1) {
+        quizState.idx++; renderQuizQuestion();
+    } else {
+        gradeQuiz();
+    }
+}
+
+function setsEqual(a, b) {
+    if (a.size !== b.size) return false;
+    for (const x of a) if (!b.has(x)) return false;
+    return true;
+}
+
+function gradeQuiz() {
+    const { order, answers } = quizState;
+    const wrong = [];
+    let correct = 0;
+    order.forEach((q, i) => {
+        if (setsEqual(answers[i], new Set(q.correct))) correct++;
+        else wrong.push({ q, chosen: answers[i] });
+    });
+    renderQuizResults(correct, order.length, wrong);
+}
+
+function fmtLetters(set, opts) {
+    const ls = [...set].sort();
+    if (ls.length === 0) return '(no answer)';
+    return ls.map(l => `${l}. ${opts[l] || ''}`).join('  ·  ');
+}
+
+function renderQuizResults(correct, total, wrong) {
+    const pct = Math.round(correct/total*100);
+    const pass = pct >= 70;   // PL-400 pass mark is 700/1000
+    const inner = document.getElementById('quiz-inner');
+    const reviewHtml = wrong.length === 0
+      ? `<div class="all-correct">🎉 Perfect score — every answer correct!</div>`
+      : `<div class="review-head">Review your ${wrong.length} missed question${wrong.length!==1?'s':''}</div>`
+        + wrong.map(({q, chosen}) => `
+          <div class="rev-card">
+            <div class="rev-stem">${escHtml(q.stem)}</div>
+            <div class="rev-ans"><span class="you">Your answer:</span> ${escHtml(fmtLetters(chosen, q.options))}</div>
+            <div class="rev-ans"><span class="cor">Correct:</span> ${escHtml(fmtLetters(new Set(q.correct), q.options))}</div>
+            ${q.rationale ? `<div class="rev-rat">${escHtml(q.rationale)}</div>` : ''}
+            <button class="goto-guide" onclick="gotoGuide('${q.slug}')">
+              📖 Read up: ${escHtml(DOMAIN_NAME[q.slug])} guide
+            </button>
+            <div class="rev-src">${q.id}</div>
+          </div>`).join('');
+    const retryWrong = wrong.length
+      ? `<button onclick='retryWrong()'>🔁 Retry these ${wrong.length}</button>` : '';
+    inner.innerHTML = `
+      <div class="quiz-score-card ${pass?'pass':'fail'}">
+        <div class="lbl">You scored</div>
+        <div class="big">${pct}%</div>
+        <div class="lbl">${correct} of ${total} correct${pass?' · above the 70% pass mark':' · below the 70% pass mark'}</div>
+      </div>
+      <div class="quiz-results-actions">
+        <button class="primary" onclick="renderQuizSetup()">↺ New quiz</button>
+        ${retryWrong}
+      </div>
+      ${reviewHtml}`;
+    // stash the missed pool for "retry these"
+    quizState._wrongPool = wrong.map(w => w.q);
+}
+
+function retryWrong() {
+    const pool = quizState && quizState._wrongPool;
+    if (pool && pool.length) startQuiz(pool);
+}
+
+function gotoGuide(slug) {
+    showDomain(slug);
+    activateTab(slug, 'guide');
+    const scroll = document.querySelector(`#panel-${slug} .guide-scroll`);
+    if (scroll) scroll.scrollTop = 0;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────

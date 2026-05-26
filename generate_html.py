@@ -249,6 +249,92 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .done-banner .btn-review-only{padding:10px 24px;background:var(--surf);
   color:var(--txt);border:1px solid var(--bdr);border-radius:8px;
   cursor:pointer;font-size:.9rem;margin:4px}
+
+/* ── Quiz ── */
+.sb-quiz{padding:6px 12px 10px;border-bottom:1px solid var(--sb2)}
+.quiz-btn{display:flex;width:100%;padding:11px 14px;border:none;cursor:pointer;
+  align-items:center;gap:10px;border-radius:8px;background:var(--sb2);
+  color:#e2e8f0;font-size:.86rem;font-weight:600;transition:all .15s}
+.quiz-btn:hover{background:#334155}
+.quiz-btn.active{background:var(--sba);color:#fff}
+.quiz-btn .qb-emoji{font-size:1.1rem}
+.quiz-title{padding:11px 0;font-size:.85rem;font-weight:600;color:var(--txt)}
+.quiz-wrap{flex:1;overflow-y:auto;padding:28px 24px;display:flex;
+  justify-content:center;align-items:flex-start}
+.quiz-inner{width:100%;max-width:760px}
+/* setup */
+.quiz-setup h2{font-size:1.35rem;margin-bottom:6px;color:#0f172a}
+.quiz-setup .sub{color:var(--muted);font-size:.88rem;margin-bottom:22px}
+.qs-label{font-weight:700;text-transform:uppercase;font-size:.7rem;
+  letter-spacing:.06em;color:var(--muted);margin:18px 0 10px}
+.dom-grid{display:flex;flex-direction:column;gap:8px}
+.dom-row{display:flex;align-items:center;gap:11px;padding:11px 14px;
+  border:1.5px solid var(--bdr);border-radius:9px;cursor:pointer;
+  transition:all .15s;background:var(--surf)}
+.dom-row:hover{border-color:var(--acc);background:#f8fafc}
+.dom-row.on{border-color:var(--acc);background:#eff6ff}
+.dom-row input{width:17px;height:17px;accent-color:var(--acc);cursor:pointer}
+.dom-row .dn{flex:1;font-size:.9rem;font-weight:500}
+.dom-row .dc{font-size:.76rem;color:var(--muted)}
+.dom-row.all-row{background:#0f172a;border-color:#0f172a;color:#f1f5f9}
+.dom-row.all-row:hover{background:#1e293b}
+.dom-row.all-row .dc{color:#94a3b8}
+.count-grid{display:flex;gap:10px;flex-wrap:wrap}
+.count-btn{padding:12px 22px;border:1.5px solid var(--bdr);border-radius:9px;
+  background:var(--surf);cursor:pointer;font-size:1rem;font-weight:600;
+  color:var(--txt);transition:all .15s;min-width:64px}
+.count-btn:hover{border-color:var(--acc)}
+.count-btn.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.quiz-pool-note{font-size:.8rem;color:var(--muted);margin-top:10px}
+.start-quiz-btn{margin-top:26px;width:100%;padding:14px;background:var(--acc);
+  color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:600;
+  cursor:pointer;transition:background .12s}
+.start-quiz-btn:hover:not(:disabled){background:var(--acc2)}
+.start-quiz-btn:disabled{background:#94a3b8;cursor:not-allowed}
+/* runner */
+.quiz-run-top{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:8px}
+.quiz-run-top .qn{font-size:.82rem;font-weight:600;color:var(--muted)}
+.quiz-run-top .qd{font-size:.74rem;color:#cbd5e1;font-style:italic}
+.quiz-pbar{height:6px;background:var(--bdr);border-radius:3px;margin-bottom:22px}
+.quiz-pbar > div{height:100%;background:var(--acc);border-radius:3px;
+  transition:width .3s}
+.quiz-nav{display:flex;justify-content:space-between;margin-top:20px;gap:10px}
+.quiz-nav button{padding:11px 24px;border-radius:9px;font-size:.9rem;
+  font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--surf);
+  color:var(--txt)}
+.quiz-nav .next{background:var(--acc);border-color:var(--acc);color:#fff}
+.quiz-nav .next:hover{background:var(--acc2)}
+.quiz-nav button:disabled{opacity:.45;cursor:not-allowed}
+/* results */
+.quiz-score-card{text-align:center;padding:28px;background:var(--surf);
+  border:1px solid var(--bdr);border-radius:14px;margin-bottom:24px}
+.quiz-score-card .big{font-size:3rem;font-weight:800;margin:6px 0}
+.quiz-score-card .lbl{color:var(--muted);font-size:.9rem}
+.quiz-score-card.pass .big{color:var(--ok)}
+.quiz-score-card.fail .big{color:var(--bad)}
+.review-head{font-weight:700;font-size:1.05rem;margin:8px 0 14px;color:#0f172a}
+.rev-card{border:1px solid var(--bdr);border-radius:12px;padding:18px 20px;
+  margin-bottom:14px;background:var(--surf)}
+.rev-stem{font-size:.92rem;line-height:1.65;white-space:pre-wrap;margin-bottom:14px}
+.rev-ans{font-size:.85rem;margin:4px 0;line-height:1.5}
+.rev-ans .you{color:var(--bad);font-weight:600}
+.rev-ans .cor{color:var(--ok);font-weight:600}
+.rev-rat{background:#f8fafc;border-left:4px solid var(--ok);border-radius:0 6px 6px 0;
+  padding:11px 14px;margin:12px 0;font-size:.84rem;line-height:1.65;white-space:pre-wrap}
+.goto-guide{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;
+  background:var(--beybg);border:1px solid var(--beybdr);border-radius:8px;
+  color:var(--acc2);font-size:.83rem;font-weight:600;cursor:pointer;
+  transition:background .12s}
+.goto-guide:hover{background:#dbeafe}
+.rev-src{font-size:.72rem;color:#cbd5e1;font-style:italic;margin-top:10px}
+.quiz-results-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  margin:8px 0 26px}
+.quiz-results-actions button{padding:11px 22px;border-radius:9px;font-size:.9rem;
+  font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--surf);
+  color:var(--txt)}
+.quiz-results-actions .primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.all-correct{text-align:center;padding:30px;color:var(--ok);font-weight:600}
 """
 
 # ── JavaScript ────────────────────────────────────────────────────────────────
@@ -279,6 +365,8 @@ function getCorrect(slug)  { return getSet(slug,'correct'); }
 function showDomain(slug) {
     document.querySelectorAll('.db').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const qb = document.getElementById('quiz-btn');
+    if (qb) qb.classList.remove('active');
     document.querySelector(`.db[data-slug="${slug}"]`).classList.add('active');
     document.getElementById(`panel-${slug}`).classList.add('active');
     // restore last tab
@@ -504,6 +592,248 @@ function escHtml(s) {
         .replace(/"/g,'&quot;');
 }
 
+// ══ QUIZ MODE ═══════════════════════════════════════════════════════════════
+// Cross-domain randomized quiz. Pool is flattened from CARDS; each item keeps
+// its domain slug so a wrong answer can link straight to that concept guide.
+
+const DOMAIN_NAME = {};            // slug -> display name
+DOMAINS.forEach(([s,n,]) => DOMAIN_NAME[s] = n);
+
+function buildQuizPool() {
+    const pool = [];
+    DOMAINS.forEach(([slug,,]) => {
+        (CARDS[slug] || []).forEach(c => pool.push({...c, slug}));
+    });
+    return pool;
+}
+const QUIZ_POOL = buildQuizPool();
+
+const COUNTS = [10, 20, 60, 80];
+const quizCfg   = { domains: new Set(DOMAINS.map(d => d[0])), count: 20 };
+let   quizState = null;   // {order:[cards], idx, answers:[Set,...]}
+
+function openQuiz() {
+    document.querySelectorAll('.db').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('quiz-btn').classList.add('active');
+    document.getElementById('panel-quiz').classList.add('active');
+    if (!quizState) renderQuizSetup();   // keep an in-progress quiz on tab return
+}
+
+function poolFor(domSet) {
+    return QUIZ_POOL.filter(c => domSet.has(c.slug));
+}
+
+function renderQuizSetup() {
+    quizState = null;
+    const inner = document.getElementById('quiz-inner');
+    const allOn = quizCfg.domains.size === DOMAINS.length;
+    const domRows = DOMAINS.map(([slug,name,]) => {
+        const n = (CARDS[slug] || []).length;
+        const on = quizCfg.domains.has(slug);
+        return `<label class="dom-row ${on?'on':''}" data-slug="${slug}">
+            <input type="checkbox" ${on?'checked':''} onchange="toggleDomain('${slug}')">
+            <span class="dn">${name}</span><span class="dc">${n} Qs</span>
+          </label>`;
+    }).join('');
+    const countBtns = COUNTS.map(n =>
+        `<button class="count-btn ${quizCfg.count===n?'on':''}"
+                 onclick="setCount(${n})">${n}</button>`).join('');
+    inner.innerHTML = `
+      <div class="quiz-setup">
+        <h2>Build a practice quiz</h2>
+        <p class="sub">Randomly sample questions from the domains you pick, answer
+           them, then review every miss with a jump to the right concept guide.</p>
+        <div class="qs-label">Domains</div>
+        <div class="dom-grid">
+          <label class="dom-row all-row ${allOn?'on':''}" onclick="toggleAll(event)">
+            <input type="checkbox" ${allOn?'checked':''} onclick="event.stopPropagation()" onchange="toggleAll(event)">
+            <span class="dn">All domains</span>
+            <span class="dc">${QUIZ_POOL.length} Qs</span>
+          </label>
+          ${domRows}
+        </div>
+        <div class="qs-label">How many questions</div>
+        <div class="count-grid">${countBtns}</div>
+        <div class="quiz-pool-note" id="pool-note"></div>
+        <button class="start-quiz-btn" id="start-btn" onclick="startQuiz()">Start quiz →</button>
+      </div>`;
+    updatePoolNote();
+}
+
+function updatePoolNote() {
+    const avail = poolFor(quizCfg.domains).length;
+    const note  = document.getElementById('pool-note');
+    const btn   = document.getElementById('start-btn');
+    if (!note) return;
+    if (quizCfg.domains.size === 0) {
+        note.textContent = 'Select at least one domain.';
+        btn.disabled = true; return;
+    }
+    btn.disabled = false;
+    const n = Math.min(quizCfg.count, avail);
+    note.innerHTML = `Quiz will draw <strong>${n}</strong> question${n!==1?'s':''} `
+        + `from a pool of <strong>${avail}</strong>.`
+        + (quizCfg.count > avail
+            ? ` (Only ${avail} available in the selected domains.)` : '');
+}
+
+function toggleDomain(slug) {
+    if (quizCfg.domains.has(slug)) quizCfg.domains.delete(slug);
+    else quizCfg.domains.add(slug);
+    renderQuizSetup();
+}
+function toggleAll(e) {
+    if (e) e.preventDefault();
+    if (quizCfg.domains.size === DOMAINS.length) quizCfg.domains = new Set();
+    else quizCfg.domains = new Set(DOMAINS.map(d => d[0]));
+    renderQuizSetup();
+}
+function setCount(n) { quizCfg.count = n; renderQuizSetup(); }
+
+function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+}
+
+function startQuiz(customPool) {
+    const base = customPool || poolFor(quizCfg.domains);
+    if (base.length === 0) return;
+    const n = customPool ? base.length : Math.min(quizCfg.count, base.length);
+    const order = shuffle(base).slice(0, n);
+    quizState = { order, idx: 0, answers: order.map(() => new Set()) };
+    renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+    const { order, idx, answers } = quizState;
+    const q = order[idx];
+    const letters = Object.keys(q.options);
+    const multi = q.correct.length > 1;
+    const sel = answers[idx];
+    const inner = document.getElementById('quiz-inner');
+    inner.innerHTML = `
+      <div class="quiz-run-top">
+        <span class="qn">Question ${idx+1} of ${order.length}</span>
+        <span class="qd">${escHtml(DOMAIN_NAME[q.slug])}</span>
+      </div>
+      <div class="quiz-pbar"><div style="width:${(idx)/order.length*100}%"></div></div>
+      <div class="flashcard">
+        <div class="fc-stem">${escHtml(q.stem)}</div>
+        ${multi ? '<p class="multi-label">Select all that apply:</p>' : ''}
+        <div class="options-list" id="quiz-opts">
+          ${letters.map(l =>
+            `<div class="opt ${sel.has(l)?'selected':''}" data-letter="${l}"
+                  onclick="pickQuizOpt('${l}',${multi})">
+               <span class="opt-letter">${l}.</span>
+               <span>${escHtml(q.options[l])}</span>
+             </div>`).join('')}
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button onclick="prevQuizQuestion()" ${idx===0?'disabled':''}>← Back</button>
+        <button class="next" onclick="nextQuizQuestion()">
+          ${idx === order.length-1 ? 'Finish & see score' : 'Next →'}
+        </button>
+      </div>`;
+}
+
+function pickQuizOpt(letter, multi) {
+    const sel = quizState.answers[quizState.idx];
+    if (multi) {
+        if (sel.has(letter)) sel.delete(letter); else sel.add(letter);
+    } else {
+        sel.clear(); sel.add(letter);
+    }
+    document.querySelectorAll('#quiz-opts .opt').forEach(el =>
+        el.classList.toggle('selected', sel.has(el.dataset.letter)));
+}
+
+function prevQuizQuestion() {
+    if (quizState.idx > 0) { quizState.idx--; renderQuizQuestion(); }
+}
+function nextQuizQuestion() {
+    if (quizState.idx < quizState.order.length-1) {
+        quizState.idx++; renderQuizQuestion();
+    } else {
+        gradeQuiz();
+    }
+}
+
+function setsEqual(a, b) {
+    if (a.size !== b.size) return false;
+    for (const x of a) if (!b.has(x)) return false;
+    return true;
+}
+
+function gradeQuiz() {
+    const { order, answers } = quizState;
+    const wrong = [];
+    let correct = 0;
+    order.forEach((q, i) => {
+        if (setsEqual(answers[i], new Set(q.correct))) correct++;
+        else wrong.push({ q, chosen: answers[i] });
+    });
+    renderQuizResults(correct, order.length, wrong);
+}
+
+function fmtLetters(set, opts) {
+    const ls = [...set].sort();
+    if (ls.length === 0) return '(no answer)';
+    return ls.map(l => `${l}. ${opts[l] || ''}`).join('  ·  ');
+}
+
+function renderQuizResults(correct, total, wrong) {
+    const pct = Math.round(correct/total*100);
+    const pass = pct >= 70;   // PL-400 pass mark is 700/1000
+    const inner = document.getElementById('quiz-inner');
+    const reviewHtml = wrong.length === 0
+      ? `<div class="all-correct">🎉 Perfect score — every answer correct!</div>`
+      : `<div class="review-head">Review your ${wrong.length} missed question${wrong.length!==1?'s':''}</div>`
+        + wrong.map(({q, chosen}) => `
+          <div class="rev-card">
+            <div class="rev-stem">${escHtml(q.stem)}</div>
+            <div class="rev-ans"><span class="you">Your answer:</span> ${escHtml(fmtLetters(chosen, q.options))}</div>
+            <div class="rev-ans"><span class="cor">Correct:</span> ${escHtml(fmtLetters(new Set(q.correct), q.options))}</div>
+            ${q.rationale ? `<div class="rev-rat">${escHtml(q.rationale)}</div>` : ''}
+            <button class="goto-guide" onclick="gotoGuide('${q.slug}')">
+              📖 Read up: ${escHtml(DOMAIN_NAME[q.slug])} guide
+            </button>
+            <div class="rev-src">${q.id}</div>
+          </div>`).join('');
+    const retryWrong = wrong.length
+      ? `<button onclick='retryWrong()'>🔁 Retry these ${wrong.length}</button>` : '';
+    inner.innerHTML = `
+      <div class="quiz-score-card ${pass?'pass':'fail'}">
+        <div class="lbl">You scored</div>
+        <div class="big">${pct}%</div>
+        <div class="lbl">${correct} of ${total} correct${pass?' · above the 70% pass mark':' · below the 70% pass mark'}</div>
+      </div>
+      <div class="quiz-results-actions">
+        <button class="primary" onclick="renderQuizSetup()">↺ New quiz</button>
+        ${retryWrong}
+      </div>
+      ${reviewHtml}`;
+    // stash the missed pool for "retry these"
+    quizState._wrongPool = wrong.map(w => w.q);
+}
+
+function retryWrong() {
+    const pool = quizState && quizState._wrongPool;
+    if (pool && pool.length) startQuiz(pool);
+}
+
+function gotoGuide(slug) {
+    showDomain(slug);
+    activateTab(slug, 'guide');
+    const scroll = document.querySelector(`#panel-${slug} .guide-scroll`);
+    if (scroll) scroll.scrollTop = 0;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     DOMAINS.forEach(([slug,,]) => {
@@ -603,10 +933,19 @@ def build():
     <h1>PL-400 Study Portal</h1>
     <p>{total_q} questions · 6 domains</p>
   </div>
+  <div class="sb-quiz">
+    <button class="quiz-btn" id="quiz-btn" onclick="openQuiz()">
+      <span class="qb-emoji">📝</span><span>Practice Quiz</span>
+    </button>
+  </div>
   <nav class="sb-nav">{''.join(sb_items)}</nav>
   <div class="sb-foot">Space=reveal · G=got it · R=review</div>
 </aside>
 <main class="main">
+  <div class="panel" id="panel-quiz">
+    <div class="tabs"><span class="quiz-title">📝 Practice Quiz</span></div>
+    <div class="quiz-wrap"><div class="quiz-inner" id="quiz-inner"></div></div>
+  </div>
   {''.join(panels)}
 </main>
 <script>{js}</script>
