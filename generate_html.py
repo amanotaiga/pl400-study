@@ -476,6 +476,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .cell-code{font-family:'Cascadia Code','Consolas',monospace;font-size:.92em;
   background:#f1f5f9;padding:2px 5px;border-radius:4px;display:inline-block;
   white-space:pre-wrap;word-break:break-word}
+
+/* ── Theme toggle button ── */
+.sb-head-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.theme-btn{background:var(--sb2);color:#cbd5e1;border:1px solid #334155;
+  border-radius:6px;padding:4px 9px;font-size:.7rem;font-weight:500;cursor:pointer;
+  white-space:nowrap;transition:background .15s;flex-shrink:0}
+.theme-btn:hover{background:#334155;color:#f1f5f9}
+body,.main,.tabs,.flashcard,.guide-scroll{transition:background .2s,color .2s}
+
+/* ── Dark mode (light mode is the default :root above) ── */
+:root[data-theme="dark"]{
+  --sb:#0b1120; --sb2:#1e293b; --sbt:#94a3b8; --sba:#3b82f6; --sbab:#1e3a5f;
+  --bg:#0f172a; --surf:#1e293b; --txt:#e2e8f0; --muted:#94a3b8;
+  --bdr:#334155; --acc:#60a5fa; --acc2:#3b82f6;
+  --ok:#4ade80; --okbg:#14301f; --okbdr:#166534;
+  --bad:#f87171; --badbg:#3a1618;
+  --codebg:#0b1120; --codetxt:#e2e8f0;
+  --beybg:#172033; --beybdr:#1e3a5f;
+}
+[data-theme="dark"] .guide-scroll h1{color:#f1f5f9}
+[data-theme="dark"] .guide-scroll h2{color:#e2e8f0}
+[data-theme="dark"] .guide-scroll h3{color:#cbd5e1}
+[data-theme="dark"] .guide-scroll h4{color:#94a3b8}
+[data-theme="dark"] .quiz-setup h2,
+[data-theme="dark"] .review-head,
+[data-theme="dark"] .stem-text.stem-q{color:#f1f5f9}
+[data-theme="dark"] .guide-scroll code,
+[data-theme="dark"] .fc-stem code,
+[data-theme="dark"] .cell-code{background:#334155;color:#e2e8f0}
+[data-theme="dark"] .guide-scroll th,
+[data-theme="dark"] .exhibit-table th{background:#334155;color:#f1f5f9}
+[data-theme="dark"] .guide-scroll tr:nth-child(even) td,
+[data-theme="dark"] .exhibit-table tr:nth-child(even) td{background:#172033}
+[data-theme="dark"] .beyond-body{background:#131d33}
+[data-theme="dark"] .btn-sm:hover{background:#334155}
+[data-theme="dark"] .opt:hover:not(.disabled){background:#1e3a5f}
+[data-theme="dark"] .opt.selected{background:#283461;border-color:#818cf8}
+[data-theme="dark"] .rationale,
+[data-theme="dark"] .rev-rat{background:#172033}
+[data-theme="dark"] .dom-row:hover{background:#283548}
+[data-theme="dark"] .dom-row.on{background:#1e3a5f}
+[data-theme="dark"] .dom-row.all-row{background:#334155;border-color:#475569}
+[data-theme="dark"] .fc-src{color:#64748b}
+[data-theme="dark"] .flashcard{box-shadow:0 1px 3px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.3)}
 """
 
 # ── JavaScript ────────────────────────────────────────────────────────────────
@@ -1034,8 +1078,21 @@ function gotoGuide(slug) {
     if (scroll) scroll.scrollTop = 0;
 }
 
+// ── Theme (dark / light) ──────────────────────────────────────────────────────
+function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('pl400_theme', t);
+    const b = document.getElementById('theme-btn');
+    if (b) b.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+}
+function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
     DOMAINS.forEach(([slug,,]) => {
         const ans = getAnswered(slug);
         const cor = getCorrect(slug);
@@ -1122,18 +1179,31 @@ def build():
 
     total_q = sum(len(all_cards[s]) for s,_,_ in DOMAINS)
 
+    # Set the saved/preferred theme before first paint to avoid a light flash.
+    early_theme = (
+        "<script>(function(){try{var t=localStorage.getItem('pl400_theme')||"
+        "((window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)"
+        "?'dark':'light');document.documentElement.setAttribute('data-theme',t);}"
+        "catch(e){}})();</script>"
+    )
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PL-400 Study Portal</title>
+{early_theme}
 <style>{CSS}</style>
 </head>
 <body>
 <aside class="sb">
   <div class="sb-head">
-    <h1>PL-400 Study Portal</h1>
+    <div class="sb-head-top">
+      <h1>PL-400 Study Portal</h1>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()"
+              title="Toggle dark / light mode">🌙 Dark</button>
+    </div>
     <p>{total_q} questions · 6 domains</p>
   </div>
   <div class="sb-quiz">
