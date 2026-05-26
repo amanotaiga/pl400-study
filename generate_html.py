@@ -335,6 +335,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   color:var(--txt)}
 .quiz-results-actions .primary{background:var(--acc);border-color:var(--acc);color:#fff}
 .all-correct{text-align:center;padding:30px;color:var(--ok);font-weight:600}
+
+/* ── Stem with code snippet ── */
+.stem-text{white-space:pre-wrap}
+.stem-text.stem-q{margin-top:12px;font-weight:600;color:#0f172a}
+.code-snippet{background:var(--codebg);color:var(--codetxt);padding:14px 16px;
+  border-radius:8px;overflow-x:auto;margin:13px 0;white-space:pre;tab-size:2;
+  font-family:'Cascadia Code','Consolas','Courier New',monospace;
+  font-size:.8rem;line-height:1.55}
+.code-snippet code{font-family:inherit;background:none;padding:0;color:inherit}
+.rev-stem .code-snippet{font-size:.78rem}
 """
 
 # ── JavaScript ────────────────────────────────────────────────────────────────
@@ -445,7 +455,7 @@ function renderCurrentCard(slug) {
         <span class="fc-idx">Card ${qIdx[slug]+1} of ${queue[slug].length}</span>
         <span class="fc-src">${q.id}</span>
       </div>
-      <div class="fc-stem">${escHtml(q.stem)}</div>
+      <div class="fc-stem">${renderStem(q.stem)}</div>
       ${multi ? '<p class="multi-label">Select all correct answers:</p>' : ''}
       <div class="options-list" id="opts-${slug}">
         ${letters.map(l =>
@@ -592,6 +602,46 @@ function escHtml(s) {
         .replace(/"/g,'&quot;');
 }
 
+// Render a question stem, pulling any "Snippet" code block into a monospace
+// <pre> so code/JSON/formulas stay readable instead of wrapping like prose.
+// Shape in the source data: <scenario> \n Snippet \n <code> \n [<question?>]
+function renderStem(stem) {
+    const lines = String(stem).split('\n');
+    let mark = -1;
+    for (let i = 0; i < lines.length; i++) {
+        if (/^\s*snippet\s*$/i.test(lines[i])) { mark = i; break; }
+    }
+    if (mark === -1) return `<div class="stem-text">${escHtml(stem)}</div>`;
+
+    const lead = lines.slice(0, mark);
+    let rest = lines.slice(mark + 1);
+    while (rest.length && !rest[0].trim()) rest.shift();          // drop blank after marker
+
+    // Peel a trailing prose question off the end (it follows the code block).
+    const isQuestion = l => {
+        const t = l.trim();
+        if (!t || /[{};=]/.test(t)) return false;                 // looks like code
+        if (/^(GET|POST|PUT|PATCH|DELETE|HTTP|OData|Prefer|Preference)\b/i.test(t)) return false;
+        return /\?\s*$/.test(t) || /Select (only one answer|all that apply|TWO|THREE)/i.test(t);
+    };
+    const tail = [];
+    while (rest.length) {
+        const last = rest[rest.length - 1];
+        if (!last.trim()) { rest.pop(); continue; }
+        if (isQuestion(last)) tail.unshift(rest.pop());
+        else break;
+    }
+    while (rest.length && !rest[rest.length - 1].trim()) rest.pop();
+
+    let html = '';
+    const leadText = lead.join('\n').trim();
+    if (leadText) html += `<div class="stem-text">${escHtml(leadText)}</div>`;
+    if (rest.length) html += `<pre class="code-snippet"><code>${escHtml(rest.join('\n'))}</code></pre>`;
+    const tailText = tail.join('\n').trim();
+    if (tailText) html += `<div class="stem-text stem-q">${escHtml(tailText)}</div>`;
+    return html;
+}
+
 // ══ QUIZ MODE ═══════════════════════════════════════════════════════════════
 // Cross-domain randomized quiz. Pool is flattened from CARDS; each item keeps
 // its domain slug so a wrong answer can link straight to that concept guide.
@@ -723,7 +773,7 @@ function renderQuizQuestion() {
       </div>
       <div class="quiz-pbar"><div style="width:${(idx)/order.length*100}%"></div></div>
       <div class="flashcard">
-        <div class="fc-stem">${escHtml(q.stem)}</div>
+        <div class="fc-stem">${renderStem(q.stem)}</div>
         ${multi ? '<p class="multi-label">Select all that apply:</p>' : ''}
         <div class="options-list" id="quiz-opts">
           ${letters.map(l =>
@@ -796,7 +846,7 @@ function renderQuizResults(correct, total, wrong) {
       : `<div class="review-head">Review your ${wrong.length} missed question${wrong.length!==1?'s':''}</div>`
         + wrong.map(({q, chosen}) => `
           <div class="rev-card">
-            <div class="rev-stem">${escHtml(q.stem)}</div>
+            <div class="rev-stem">${renderStem(q.stem)}</div>
             <div class="rev-ans"><span class="you">Your answer:</span> ${escHtml(fmtLetters(chosen, q.options))}</div>
             <div class="rev-ans"><span class="cor">Correct:</span> ${escHtml(fmtLetters(new Set(q.correct), q.options))}</div>
             ${q.rationale ? `<div class="rev-rat">${escHtml(q.rationale)}</div>` : ''}
