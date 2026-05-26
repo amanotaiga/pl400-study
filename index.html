@@ -36,6 +36,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .db-meta{display:flex;justify-content:space-between;font-size:.68rem;
          color:#475569;margin-top:2px}
 .db.active .db-meta{color:#93c5fd}
+/* deckless reference nav button (Order & Sequences) */
+.db-emoji{width:36px;height:36px;flex-shrink:0;display:flex;
+          align-items:center;justify-content:center;font-size:1.15rem}
 /* progress ring */
 .ring-wrap{position:relative;width:36px;height:36px;flex-shrink:0}
 .ring-wrap svg{transform:rotate(-90deg)}
@@ -351,6 +354,13 @@ body,.main,.tabs,.flashcard,.guide-scroll{transition:background .2s,color .2s}
     </button>
   </div>
   <nav class="sb-nav">
+<button class="db" data-slug="order" onclick="showDomain('order')">
+  <span class="db-emoji">🧭</span>
+  <div class="db-info">
+    <span class="db-name">Order &amp; Sequences</span>
+    <span class="db-meta"><span>Reference</span><span>14 flows</span></span>
+  </div>
+</button>
 <button class="db" data-slug="extend_the_platform" onclick="showDomain('extend_the_platform')">
   <div class="ring-wrap">
     <svg width="36" height="36" viewBox="0 0 36 36">
@@ -7213,6 +7223,383 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
       </div>
       <div id="deck-box-implement_power_apps_improvements"></div>
     </div>
+  </div>
+</div>
+<div class="panel" id="panel-order">
+  <div class="tabs"><span class="quiz-title">🧭 Order &amp; Sequences</span></div>
+  <div class="guide-wrap active">
+    <div class="guide-scroll"><h1 id="order-sequences">Order &amp; Sequences</h1>
+<p>The PL-400 exam loves "put these steps in the correct order" and "what runs first"
+questions. This page gathers <strong>every ordered sequence</strong> scattered across the six
+domain guides into one place. For each one: the steps, <strong>why the order is what it
+is</strong> (the concept, not just memorization), and the trap that makes the wrong order
+look tempting.</p>
+<blockquote>
+<p>How to use this page: don't memorize the lists cold. Read the <strong>"Why this order"</strong>
+line under each — almost every exam ordering question is solvable from the
+underlying rule (e.g. "reject before the transaction opens", "you can't reference
+a thing before it exists").</p>
+</blockquote>
+<hr />
+<h2 id="1-plug-in-execution-pipeline-stages-in-order">1. Plug-in Execution Pipeline (stages, in order)</h2>
+<p><strong>PreValidation → PreOperation → Main Operation → PostOperation</strong></p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>When it runs</th>
+<th>Use it to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PreValidation</td>
+<td>Outside the DB transaction</td>
+<td>Reject bad data cheaply (no rollback cost)</td>
+</tr>
+<tr>
+<td>PreOperation</td>
+<td>Inside the transaction, before write</td>
+<td>Mutate the incoming values</td>
+</tr>
+<tr>
+<td>Main Operation</td>
+<td>The core Dataverse write</td>
+<td>(platform / data providers)</td>
+</tr>
+<tr>
+<td>PostOperation</td>
+<td>Inside transaction (sync) or after (async)</td>
+<td>React once the record exists</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why this order:</strong> it mirrors the life of a save request — <em>validate the request →
+adjust the data → write it → react to the written record</em>. The transaction "opens"
+between PreValidation and PreOperation, which is the whole point of the ordering.</p>
+<p><strong>Trap:</strong> PreOperation <em>sounds</em> earlier/safer than PostOperation, so people validate
+there. Wrong — <strong>PreValidation</strong> runs <em>outside</em> the transaction, so rejecting there
+avoids the rollback cost entirely. "Reject early, reject outside the transaction."</p>
+<hr />
+<h2 id="2-plug-in-registration-sequence">2. Plug-in Registration Sequence</h2>
+<ol>
+<li><strong>Register the assembly</strong> (the compiled DLL)</li>
+<li><strong>Register the step</strong> (message + table + stage + mode)</li>
+<li><strong>Configure step details</strong> (filtering attributes, entity images)</li>
+<li><strong>Add the assembly to the unmanaged solution</strong></li>
+<li><strong>Add the step to the unmanaged solution</strong></li>
+</ol>
+<p><strong>Why this order:</strong> each item <strong>can't exist until its parent exists</strong> — a step
+belongs to an assembly, step details belong to a step. Then solution packaging
+(4–5) comes last because you can only add things to a solution once they exist.</p>
+<p><strong>Trap:</strong> forgetting steps 4–5 — the plug-in <em>works</em> in the dev environment but
+isn't in the solution, so it never travels to Test/Prod.</p>
+<hr />
+<h2 id="3-expose-a-custom-api-as-a-business-event-catalog-hierarchy">3. Expose a Custom API as a Business Event (Catalog hierarchy)</h2>
+<ol>
+<li><strong>Create the root Catalog</strong></li>
+<li><strong>Create a Category</strong> under the catalog</li>
+<li><strong>Create the CatalogAssignment</strong> linking the Custom API (or table) to the category</li>
+</ol>
+<p><strong>Why this order:</strong> classic parent-before-child — a category needs a catalog to live
+in, and the assignment needs both a category to point <em>to</em> and the API to point <em>at</em>.</p>
+<p><strong>Trap:</strong> stopping after step 2. The <strong>CatalogAssignment</strong> is the link that actually
+publishes the action as a business event; without it the hierarchy looks complete but
+does nothing.</p>
+<hr />
+<h2 id="4-register-dataverse-azure-messaging-service-bus-event-hub">4. Register Dataverse → Azure Messaging (Service Bus / Event Hub)</h2>
+<ol>
+<li><strong>Register a service endpoint</strong> — defines the Azure target, contract type, and auth</li>
+<li><strong>Register a step</strong> — binds the Dataverse event (message + table) to that endpoint</li>
+</ol>
+<p><strong>Why this order:</strong> the step has to point at an endpoint, so the endpoint must exist
+first. (Same parent-before-child logic as plug-in registration — the endpoint plays
+the role the assembly plays for plug-ins.)</p>
+<p><strong>Trap:</strong> in the Azure-aware plug-in, referencing the business table name (e.g.
+<code>"account"</code>) instead of <code>"serviceendpoint"</code> as the EntityReference.</p>
+<hr />
+<h2 id="5-change-tracking-initial-setup-sequence">5. Change Tracking — Initial Setup Sequence</h2>
+<ol>
+<li><strong>Enable "Track changes"</strong> on the table</li>
+<li><strong>Send the initial request</strong> with the <code>Prefer: odata.track-changes</code> header</li>
+<li><strong>Process the returned rows</strong>, including deleted-entity entries</li>
+<li><strong>Persist the <code>@odata.deltaLink</code></strong> for the next incremental cycle</li>
+</ol>
+<p><strong>Why this order:</strong> you can't ask for changes (2) until tracking is on (1); you can't
+get a delta link to save (4) until you've made the baseline call (2–3). Each step
+produces the input the next one needs.</p>
+<p><strong>Trap:</strong> an <strong>expired</strong> delta token cannot be retried or extended — you must restart
+the baseline sync from step 2.</p>
+<hr />
+<h2 id="6-recommended-inboundoutbound-integration-pattern-full-lifecycle">6. Recommended Inbound/Outbound Integration Pattern (full lifecycle)</h2>
+<ol>
+<li>Define an <strong>alternate key</strong> on the business-identifier column</li>
+<li>Use <strong>UpsertRequest</strong> (SDK) or <strong>PATCH by alternate-key URL</strong> (Web API) for inbound writes</li>
+<li>Enable <strong>change tracking</strong> for outbound deltas</li>
+<li><strong>Persist the <code>@odata.deltaLink</code></strong> after each cycle</li>
+<li>Handle <strong>deleted-entity entries</strong> in delta responses</li>
+<li>Handle <strong>429 (throttling)</strong> with <code>Retry-After</code> backoff</li>
+</ol>
+<p><strong>Why this order:</strong> it's two pipelines stitched together — inbound (1–2: identify by
+business key, then upsert) then outbound (3–5: track and pull deltas) — with
+resilience (6) wrapping both. The alternate key comes first because upsert <em>depends</em>
+on it.</p>
+<hr />
+<h2 id="7-alm-cicd-source-control-sequence-dev-test">7. ALM CI/CD — Source-Control Sequence (Dev → Test)</h2>
+<ol>
+<li><strong>Export</strong> the unmanaged solution from Development</li>
+<li><strong>Unpack</strong> the zip into component files (readable diffs in source control)</li>
+<li><strong>Commit</strong> the unpacked files</li>
+<li><strong>Pack</strong> a managed build artifact from the source-controlled files</li>
+<li><strong>Import</strong> the managed artifact into Test (with a deployment settings file)</li>
+<li>Run <strong>end-to-end validation</strong> in Test</li>
+</ol>
+<p><strong>Why this order:</strong> unmanaged is the <em>editable source</em> (export/unpack/commit), managed
+is the <em>shippable output</em> (pack/import). You author unmanaged and ship managed — never
+the reverse. The <strong>Unpack</strong> must sit between export and <code>git add</code>, or your diffs are an
+opaque binary zip.</p>
+<p><strong>Trap:</strong> importing <strong>unmanaged</strong> into Test/Prod. Downstream environments get
+<strong>managed</strong> solutions only.</p>
+<hr />
+<h2 id="8-pipelines-delegated-deployment-approval-flow">8. Pipelines — Delegated-Deployment / Approval Flow</h2>
+<ol>
+<li>Create the cloud flow <strong>in the pipelines host environment</strong> (solution context)</li>
+<li>Select the <strong>OnApprovalStarted</strong> trigger</li>
+<li>Add approval logic + an approve/reject branch</li>
+<li>Call <strong>UpdateApprovalStatus</strong> using the <strong>service principal connection</strong></li>
+</ol>
+<p><strong>Why this order:</strong> the trigger (2) defines <em>when</em> the flow wakes up, the logic (3)
+makes the decision, and the action (4) writes that decision back to the pipeline. The
+trigger always precedes the action it feeds.</p>
+<p><strong>Trap:</strong> a stage-name trigger condition is a <strong>gatekeeper, not an actor</strong> — it only
+decides whether the flow runs. The actual approve/reject lives in the steps <em>after</em>
+the trigger (e.g. <code>UpdatePreDeploymentStepStatus</code>).</p>
+<hr />
+<h2 id="9-restore-a-backup-to-production">9. Restore a Backup to Production</h2>
+<ol>
+<li>Change the production environment's type to <strong>Sandbox</strong></li>
+<li><strong>Restore</strong> the backup</li>
+<li>Change the environment type <strong>back to Production</strong></li>
+</ol>
+<p><strong>Why this order:</strong> restore is only permitted into a sandbox-type environment, so you
+temporarily demote, restore, then promote. (Source and target must also be in the
+<strong>same region</strong>.)</p>
+<hr />
+<h2 id="10-pcf-control-lifecycle-field-control">10. PCF Control Lifecycle (field control)</h2>
+<p><strong>init → updateView → getOutputs → destroy</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>init</code></td>
+<td>One-time setup; receives context + container</td>
+</tr>
+<tr>
+<td><code>updateView</code></td>
+<td>Runs on every data/layout change — the workhorse</td>
+</tr>
+<tr>
+<td><code>getOutputs</code></td>
+<td>Hands changed values back to the host</td>
+</tr>
+<tr>
+<td><code>destroy</code></td>
+<td>Cleanup when the control is removed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why this order:</strong> set up once → react to changes repeatedly → report values out →
+tear down. <code>updateView</code> is the only one that fires many times.</p>
+<p><strong>Trap:</strong> putting one-time setup in <code>updateView</code> (runs repeatedly) or expecting
+<code>getOutputs</code> to <em>render</em> (it only reports values).</p>
+<hr />
+<h2 id="11-pcf-deployment-packaging-flow">11. PCF Deployment &amp; Packaging Flow</h2>
+<ol>
+<li><strong>Implement the control logic</strong> (declare Device / Utility / Web API features used)</li>
+<li><strong>Build the PCF project</strong> (<code>msbuild</code>, or <code>pac pcf push</code> for fast dev iteration)</li>
+<li>
+<p><strong>Create a solution project</strong> (<code>pac solution init</code>) and <strong>add a reference</strong> to the
+   PCF project (<code>pac solution add-reference</code>)</p>
+</li>
+<li>
+<p><strong>Build the solution project</strong> and <strong>import the resulting ZIP</strong> into Dataverse</p>
+</li>
+</ol>
+<p><strong>Why this order:</strong> you can't reference a component that isn't built (3 needs 2), and
+you can't import a solution that hasn't been assembled (4 needs 3). <code>pac pcf push</code> is a
+dev-iteration shortcut; the solution route (3–4) is how it actually ships through ALM.</p>
+<p><strong>Trap:</strong> treating <code>pac pcf push</code> as the deployment method. It's for dev iteration —
+real deployment goes through a <strong>solution</strong>.</p>
+<hr />
+<h2 id="12-call-a-cloud-flow-from-a-canvas-app-button">12. Call a Cloud Flow from a Canvas-App Button</h2>
+<ol>
+<li><strong>Add the flow</strong> from the Power Automate pane (flow must have a Power Apps trigger)</li>
+<li>Select the button's <strong><code>OnSelect</code></strong> property</li>
+<li>Enter <strong><code>FlowName.Run(params)</code></strong> in the formula bar</li>
+<li><strong>Test</strong> in Play mode</li>
+</ol>
+<p><strong>Why this order:</strong> the flow must be associated with the app (1) before its <code>.Run()</code>
+is callable (3). Selecting the property (2) is just where you type the call.</p>
+<hr />
+<h2 id="13-delegation-warning-fix-path">13. Delegation Warning — Fix Path</h2>
+<ol>
+<li><strong>Identify</strong> delegation warnings (yellow triangle in the formula bar, or Monitor)</li>
+<li><strong>Remove/replace</strong> non-delegable functions with delegable equivalents</li>
+<li>Use <strong>server-side views</strong> to pre-filter instead of complex client-side expressions</li>
+<li><strong>Validate</strong> in Monitor that the query runs server-side and returns correct rows</li>
+</ol>
+<p><strong>Why this order:</strong> diagnose → fix → reduce load → confirm. Validation comes last
+because you can only confirm a fix after making it.</p>
+<p><strong>Trap:</strong> "raise the row limit to 2000" does <strong>not</strong> fix delegation — it just changes
+how many non-delegated rows are pulled locally.</p>
+<hr />
+<h2 id="14-monitor-diagnostic-workflow">14. Monitor — Diagnostic Workflow</h2>
+<ol>
+<li><strong>Start a fresh Monitor session</strong> (clean capture, no stale noise)</li>
+<li><strong>Reproduce</strong> the failing action</li>
+<li><strong>Correlate</strong> Monitor events with the browser console and Network tab</li>
+<li><strong>Retest</strong> after isolating and addressing the cause</li>
+</ol>
+<p><strong>Why this order:</strong> capture cleanly → trigger the bug → analyze → verify the fix. A
+fresh session first is what keeps the capture readable.</p>
+<hr />
+<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Deeper Exam Detail</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
+<blockquote>
+<p>Exact stage codes, ordering-within-a-stage rules, and the cross-cutting "where does
+X sit in the order" gotchas the exam uses to separate guesses from understanding.</p>
+</blockquote>
+<h3 id="a-plug-in-pipeline-exact-stage-codes-and-transaction-boundary">A. Plug-in pipeline — exact stage codes and transaction boundary</h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Stage code</th>
+<th>Transaction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PreValidation</td>
+<td><strong>10</strong></td>
+<td>Outside (before tx)</td>
+</tr>
+<tr>
+<td>PreOperation</td>
+<td><strong>20</strong></td>
+<td>Inside</td>
+</tr>
+<tr>
+<td>Main Operation</td>
+<td>— (stage <strong>30</strong> for custom data providers)</td>
+<td>Inside</td>
+</tr>
+<tr>
+<td>PostOperation (sync)</td>
+<td><strong>40</strong></td>
+<td>Inside</td>
+</tr>
+<tr>
+<td>PostOperation (async)</td>
+<td><strong>40</strong></td>
+<td>Outside (via async service)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>The transaction boundary falls <strong>between stage 10 and stage 20</strong>. That single fact
+  answers most "which stage" questions: rejection that must avoid rollback → 10;
+  in-transaction work → 20/40.</p>
+</li>
+<li>
+<p>A <strong>custom data provider</strong> (virtual tables) plug-in runs at <strong>stage 30</strong>, the main
+  core stage — <em>not</em> the ordinary 10/20/40 used for normal steps.</p>
+</li>
+</ul>
+<h3 id="b-ordering-within-a-single-stage-execution-order">B. Ordering <em>within</em> a single stage — Execution Order</h3>
+<ul>
+<li>
+<p>When multiple steps register on the <strong>same message + table + stage</strong>, the <strong>Execution
+  Order</strong> value decides the sequence among them.</p>
+</li>
+<li>
+<p><strong>Equal Execution Order = non-deterministic</strong> order that can differ between
+  environments. Always assign distinct values. This is a subtle "what runs first"
+  question that isn't about the pipeline stages at all — it's about steps <em>within</em> one
+  stage.</p>
+</li>
+</ul>
+<h3 id="c-entity-image-availability-follows-the-pipeline-order">C. Entity image availability follows the pipeline order</h3>
+<ul>
+<li>
+<p><strong>PreImage</strong> (state <em>before</em> the operation) is available in <strong>PreOperation and
+  PostOperation</strong>.</p>
+</li>
+<li>
+<p><strong>PostImage</strong> (state <em>after</em> the operation) is only meaningful <strong>PostOperation</strong> —
+  the record hasn't been written yet earlier in the order.</p>
+</li>
+<li>
+<p>On <strong>Create</strong>, there is no PreImage (nothing existed before); on <strong>Delete</strong>, there is
+  no PostImage (nothing exists after). The available image is dictated by where you are
+  in the order.</p>
+</li>
+</ul>
+<h3 id="d-elastic-table-ordering-caveat-rejection-must-be-early">D. Elastic-table ordering caveat (rejection must be early)</h3>
+<ul>
+<li>On <strong>elastic tables</strong>, throwing <code>InvalidPluginExecutionException</code> in <strong>PreOperation
+  or PostOperation</strong> returns an error but does <strong>not</strong> roll back the already-written
+  row. <strong>PreValidation (stage 10) is the only safe rejection point</strong> — another reason
+  the "reject first, outside the transaction" ordering matters.</li>
+</ul>
+<h3 id="e-why-doesnt-my-action-appear-in-the-power-automate-trigger-ordered-checks">E. "Why doesn't my action appear in the Power Automate trigger?" (ordered checks)</h3>
+<ol>
+<li><strong>Is Function = Yes</strong> → it must be an <strong>Action</strong> (Is Function = No) for connector discoverability.</li>
+<li>Missing <strong>CatalogAssignment</strong> (see sequence 3).</li>
+<li>The user <strong>lacks read access</strong> to the Custom API, Process, and SDK Message tables.</li>
+</ol>
+<p>Work the checks in that order — it goes from the most common cause (wrong type) to the
+least obvious (table privileges).</p>
+<h3 id="f-alm-artifact-direction-the-rule-behind-sequence-7">F. ALM artifact direction (the rule behind sequence 7)</h3>
+<ul>
+<li><strong>Unmanaged = source you edit; managed = output you ship.</strong> Every ALM ordering
+  question reduces to this: author in unmanaged (export → unpack → commit), produce and
+  promote managed (pack → import). The <strong>Unpack</strong> step must fall <em>between</em> export and
+  source-control commit, or diffs are unreadable binary.</li>
+</ul></div></details></div>
+    <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
+<ul>
+<li><a href="#1-plug-in-execution-pipeline-stages-in-order">1. Plug-in Execution Pipeline (stages, in order)</a></li>
+<li><a href="#2-plug-in-registration-sequence">2. Plug-in Registration Sequence</a></li>
+<li><a href="#3-expose-a-custom-api-as-a-business-event-catalog-hierarchy">3. Expose a Custom API as a Business Event (Catalog hierarchy)</a></li>
+<li><a href="#4-register-dataverse-azure-messaging-service-bus-event-hub">4. Register Dataverse → Azure Messaging (Service Bus / Event Hub)</a></li>
+<li><a href="#5-change-tracking-initial-setup-sequence">5. Change Tracking — Initial Setup Sequence</a></li>
+<li><a href="#6-recommended-inboundoutbound-integration-pattern-full-lifecycle">6. Recommended Inbound/Outbound Integration Pattern (full lifecycle)</a></li>
+<li><a href="#7-alm-cicd-source-control-sequence-dev-test">7. ALM CI/CD — Source-Control Sequence (Dev → Test)</a></li>
+<li><a href="#8-pipelines-delegated-deployment-approval-flow">8. Pipelines — Delegated-Deployment / Approval Flow</a></li>
+<li><a href="#9-restore-a-backup-to-production">9. Restore a Backup to Production</a></li>
+<li><a href="#10-pcf-control-lifecycle-field-control">10. PCF Control Lifecycle (field control)</a></li>
+<li><a href="#11-pcf-deployment-packaging-flow">11. PCF Deployment &amp; Packaging Flow</a></li>
+<li><a href="#12-call-a-cloud-flow-from-a-canvas-app-button">12. Call a Cloud Flow from a Canvas-App Button</a></li>
+<li><a href="#13-delegation-warning-fix-path">13. Delegation Warning — Fix Path</a></li>
+<li><a href="#14-monitor-diagnostic-workflow">14. Monitor — Diagnostic Workflow</a></li>
+<li><a href="#deeper-exam-detail">Deeper Exam Detail</a><ul>
+<li><a href="#a-plug-in-pipeline-exact-stage-codes-and-transaction-boundary">A. Plug-in pipeline — exact stage codes and transaction boundary</a></li>
+<li><a href="#b-ordering-within-a-single-stage-execution-order">B. Ordering within a single stage — Execution Order</a></li>
+<li><a href="#c-entity-image-availability-follows-the-pipeline-order">C. Entity image availability follows the pipeline order</a></li>
+<li><a href="#d-elastic-table-ordering-caveat-rejection-must-be-early">D. Elastic-table ordering caveat (rejection must be early)</a></li>
+<li><a href="#e-why-doesnt-my-action-appear-in-the-power-automate-trigger-ordered-checks">E. "Why doesn't my action appear in the Power Automate trigger?" (ordered checks)</a></li>
+<li><a href="#f-alm-artifact-direction-the-rule-behind-sequence-7">F. ALM artifact direction (the rule behind sequence 7)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
   </div>
 </div>
 </main>
