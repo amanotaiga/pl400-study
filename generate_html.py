@@ -225,6 +225,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .db-meta{display:flex;justify-content:space-between;font-size:.68rem;
          color:#475569;margin-top:2px}
 .db.active .db-meta{color:#93c5fd}
+/* deckless reference nav button (Order & Sequences) */
+.db-emoji{width:36px;height:36px;flex-shrink:0;display:flex;
+          align-items:center;justify-content:center;font-size:1.15rem}
 /* progress ring */
 .ring-wrap{position:relative;width:36px;height:36px;flex-shrink:0}
 .ring-wrap svg{transform:rotate(-90deg)}
@@ -1171,6 +1174,27 @@ def build():
     <span class="db-meta">
       <span>{weight}</span><span>{len(all_cards[slug])} Qs</span>
     </span>
+  </div>
+</button>""")
+
+    # ── Order & Sequences: a guide-only reference page (no deck, no ring) ──
+    # showDomain('order')/activateTab fall through generically: the panel has a
+    # .guide-wrap (so the 'guide' tab activates) and no .deck-wrap, so no deck JS runs.
+    order_toc, order_html = render_guide("order")
+    panels.append(f"""
+<div class="panel" id="panel-order">
+  <div class="tabs"><span class="quiz-title">🧭 Order &amp; Sequences</span></div>
+  <div class="guide-wrap active">
+    <div class="guide-scroll">{order_html}</div>
+    <div class="toc-col"><div class="toc-label">Contents</div>{order_toc}</div>
+  </div>
+</div>""")
+    sb_items.insert(0, """
+<button class="db" data-slug="order" onclick="showDomain('order')">
+  <span class="db-emoji">🧭</span>
+  <div class="db-info">
+    <span class="db-name">Order &amp; Sequences</span>
+    <span class="db-meta"><span>Reference</span><span>14 flows</span></span>
   </div>
 </button>""")
 
