@@ -458,11 +458,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tr>
 </tbody>
 </table>
-<p><strong>Decision rule — which stage to register:</strong>
-- <strong>Must reject the operation</strong> → PreValidation. Microsoft says throw <code>InvalidPluginExecutionException</code> preferably in PreValidation; cancellation here avoids database rollback.
-- <strong>Must change incoming column values</strong> → PreOperation. Microsoft explicitly recommends mutating <code>InputParameters["Target"]</code> in PreOperation; changes participate in the same save request without triggering a second Update event.
-- <strong>Must not trigger a second Update</strong> → Do NOT update the entity in PostOperation; that fires a new Update pipeline.
-- <strong>Work does not need to block the user</strong> → Async PostOperation. External service calls, fraud scoring, scoring APIs — move them async when the score is not needed before the save completes.</p>
+<p><strong>Decision rule — which stage to register:</strong></p>
+<ul>
+<li><strong>Must reject the operation</strong> → PreValidation. Microsoft says throw <code>InvalidPluginExecutionException</code> preferably in PreValidation; cancellation here avoids database rollback.</li>
+<li><strong>Must change incoming column values</strong> → PreOperation. Microsoft explicitly recommends mutating <code>InputParameters["Target"]</code> in PreOperation; changes participate in the same save request without triggering a second Update event.</li>
+<li><strong>Must not trigger a second Update</strong> → Do NOT update the entity in PostOperation; that fires a new Update pipeline.</li>
+<li><strong>Work does not need to block the user</strong> → Async PostOperation. External service calls, fraud scoring, scoring APIs — move them async when the score is not needed before the save completes.</li>
+</ul>
 <p><strong>Common distractor:</strong> PreOperation looks "earlier" than PostOperation so developers put validation there. Wrong — PreValidation exits the transaction entirely, reducing rollback cost.</p>
 <h3 id="plug-in-class-design-iplugin">Plug-in Class Design (IPlugin)</h3>
 <ul>
@@ -581,11 +583,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tr>
 </tbody>
 </table>
-<p><strong>Key rules:</strong>
-- A Pre Image on a Create step does not exist (no prior row). This is a common wrong answer.
-- A Post Image on Delete does not exist (row is gone).
-- To compare old vs. new values after an Update → PostOperation with both Pre and Post Images.
-- To mutate values before save without an extra retrieve → PreOperation + Pre Image for old values.</p>
+<p><strong>Key rules:</strong></p>
+<ul>
+<li>A Pre Image on a Create step does not exist (no prior row). This is a common wrong answer.</li>
+<li>A Post Image on Delete does not exist (row is gone).</li>
+<li>To compare old vs. new values after an Update → PostOperation with both Pre and Post Images.</li>
+<li>To mutate values before save without an extra retrieve → PreOperation + Pre Image for old values.</li>
+</ul>
 <p><strong>Performance rule:</strong> Register only the specific columns needed in each image. Microsoft warns that accepting the default "all columns" setting negatively affects performance.</p>
 <p><strong>Access pattern:</strong> Use the alias string defined at registration time as the key:</p>
 <pre><code class="language-csharp">var before = context.PreEntityImages[&quot;myAlias&quot;];
@@ -598,12 +602,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li><strong>Execution Order</strong> determines sequence within a stage for multiple steps on the same message/table. If two steps share the same execution order value, the order is non-deterministic and can vary between environments. Always assign distinct values.</li>
 </ul>
 <h3 id="plug-in-registration-sequence">Plug-in Registration Sequence</h3>
-<p>Correct order in Plug-in Registration Tool:
-1. Register the assembly
-2. Register the step (message, entity, stage, mode)
-3. Configure step details (filtering attributes, images)
-4. Add assembly to unmanaged solution
-5. Add step to unmanaged solution</p>
+<p>Correct order in Plug-in Registration Tool:</p>
+<ol>
+<li>Register the assembly</li>
+<li>Register the step (message, entity, stage, mode)</li>
+<li>Configure step details (filtering attributes, images)</li>
+<li>Add assembly to unmanaged solution</li>
+<li>Add step to unmanaged solution</li>
+</ol>
 <hr />
 <h2 id="4-custom-apis">4. Custom APIs</h2>
 <h3 id="design-properties">Design Properties</h3>
@@ -673,11 +679,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tbody>
 </table>
 <h3 id="custom-api-as-workflow-action-constraints">Custom API as Workflow Action — Constraints</h3>
-<p>For <code>WorkflowSdkStepEnabled = true</code>:
-- <strong>Is Function must be false</strong> (actions only).
-- Supported request/response property types are limited to a specific list (EntityReference, String, Integer, etc.).
-- EntityCollection and StringArray are NOT supported.
-- EntityReference is valid only when the API is entity-bound.</p>
+<p>For <code>WorkflowSdkStepEnabled = true</code>:</p>
+<ul>
+<li><strong>Is Function must be false</strong> (actions only).</li>
+<li>Supported request/response property types are limited to a specific list (EntityReference, String, Integer, etc.).</li>
+<li>EntityCollection and StringArray are NOT supported.</li>
+<li>EntityReference is valid only when the API is entity-bound.</li>
+</ul>
 <h3 id="custom-api-plug-in-wiring">Custom API — Plug-in Wiring</h3>
 <ul>
 <li>Set the <strong>Plug-in Type</strong> field on the custom API to associate the registered class as the main operation.</li>
@@ -694,10 +702,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <h2 id="5-business-events-catalog">5. Business Events &amp; Catalog</h2>
 <h3 id="hierarchy">Hierarchy</h3>
 <p><code>Catalog (root)</code> → <code>Catalog Category</code> → <code>CatalogAssignment (links API/table to category)</code></p>
-<p>Steps to expose an action as a business event:
-1. Create root Catalog
-2. Create Category under the catalog
-3. Create <strong>CatalogAssignment</strong> linking the custom API or table to the category</p>
+<p>Steps to expose an action as a business event:</p>
+<ol>
+<li>Create root Catalog</li>
+<li>Create Category under the catalog</li>
+<li>Create <strong>CatalogAssignment</strong> linking the custom API or table to the category</li>
+</ol>
 <p><strong>CatalogAssignment</strong> is the missing piece developers often forget after building the hierarchy.</p>
 <h3 id="user-owned-tables">User-Owned Tables</h3>
 <p>When a user-owned table is cataloged, Dataverse automatically exposes its security operations (GrantAccess, ModifyAccess, RevokeAccess) as business events — no synchronous plug-in detection layer needed.</p>
@@ -824,12 +834,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </table>
 <p><strong>Common mistake:</strong> Using <code>user_impersonation</code> scope for app-only (managed identity) calls. Correct scope is <code>&lt;env-url&gt;/.default</code>.</p>
 <h3 id="managed-identity-for-azure-functions-dataverse">Managed Identity for Azure Functions → Dataverse</h3>
-<p>Two required actions:
-1. <strong>Enable managed identity</strong> on the Function App (user-assigned preferred when shared across multiple functions or when Function App may be recreated).
-2. <strong>Create Dataverse application user</strong> for that identity and assign security roles.</p>
-<p><strong>User-assigned vs. system-assigned identity:</strong>
-- System-assigned: tied to the app instance; deleted when app is deleted.
-- User-assigned: standalone resource; survives app deletion; can be shared across multiple Function Apps.</p>
+<p>Two required actions:</p>
+<ol>
+<li><strong>Enable managed identity</strong> on the Function App (user-assigned preferred when shared across multiple functions or when Function App may be recreated).</li>
+<li><strong>Create Dataverse application user</strong> for that identity and assign security roles.</li>
+</ol>
+<p><strong>User-assigned vs. system-assigned identity:</strong></p>
+<ul>
+<li>System-assigned: tied to the app instance; deleted when app is deleted.</li>
+<li>User-assigned: standalone resource; survives app deletion; can be shared across multiple Function Apps.</li>
+</ul>
 <p>When multiple user-assigned identities are attached, use <code>ManagedIdentityCredential</code> with an explicit <code>clientId</code> (not <code>DefaultAzureCredential</code>) for deterministic production auth.</p>
 <hr />
 <h2 id="7-custom-connectors">7. Custom Connectors</h2>
@@ -962,11 +976,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tr>
 </tbody>
 </table>
-<p><strong>OAuth 2.0 Limitations:</strong>
-- <strong>Client credentials grant type is NOT supported</strong> in custom connectors. Unattended/app-only OAuth patterns cannot use standard custom connectors.
-- For generic OAuth 2.0: both <strong>Authorization URL</strong> and <strong>Token URL</strong> are required. Refresh URL is for token renewal, not the initial flow.
-- Common OAuth failure after ~60 min → check <strong>Refresh URL</strong> configuration.
-- Redirect URI mismatch after sign-in redirect → register the connector's redirect URI in the Entra app registration.</p>
+<p><strong>OAuth 2.0 Limitations:</strong></p>
+<ul>
+<li><strong>Client credentials grant type is NOT supported</strong> in custom connectors. Unattended/app-only OAuth patterns cannot use standard custom connectors.</li>
+<li>For generic OAuth 2.0: both <strong>Authorization URL</strong> and <strong>Token URL</strong> are required. Refresh URL is for token renewal, not the initial flow.</li>
+<li>Common OAuth failure after ~60 min → check <strong>Refresh URL</strong> configuration.</li>
+<li>Redirect URI mismatch after sign-in redirect → register the connector's redirect URI in the Entra app registration.</li>
+</ul>
 <p><strong>Multi-auth (Basic + API Key in same connector):</strong> The wizard does not support multiple auth types. Use the <strong>Connectors CLI</strong> and define <code>connectionParameterSets</code> in <code>apiProperties.json</code>.</p>
 <h3 id="policy-templates">Policy Templates</h3>
 <table>
@@ -1040,13 +1056,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     }
 }
 </code></pre>
-<p><strong>Key rules:</strong>
-- Use <code>Context.SendAsync(Context.Request, CancellationToken)</code> — <strong>never</strong> create your own <code>HttpClient</code>.
-- Branch on <code>Context.OperationId</code> to apply per-action logic in a single script file.
-- <code>CreateJsonContent(string)</code> is the helper for setting JSON response/request bodies.
-- Modify <code>Context.Request.Content</code> to transform the outbound request; modify the returned <code>response.Content</code> to transform the response.
-- <strong>Only one script file per connector</strong>; it handles all operations.
-- <strong>Cannot be combined with on-premises data gateway</strong> — custom code requires cloud endpoints.</p>
+<p><strong>Key rules:</strong></p>
+<ul>
+<li>Use <code>Context.SendAsync(Context.Request, CancellationToken)</code> — <strong>never</strong> create your own <code>HttpClient</code>.</li>
+<li>Branch on <code>Context.OperationId</code> to apply per-action logic in a single script file.</li>
+<li><code>CreateJsonContent(string)</code> is the helper for setting JSON response/request bodies.</li>
+<li>Modify <code>Context.Request.Content</code> to transform the outbound request; modify the returned <code>response.Content</code> to transform the response.</li>
+<li><strong>Only one script file per connector</strong>; it handles all operations.</li>
+<li><strong>Cannot be combined with on-premises data gateway</strong> — custom code requires cloud endpoints.</li>
+</ul>
 <p><strong>Common transformation scenarios the exam may test:</strong></p>
 <table>
 <thead>
@@ -1075,9 +1093,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tbody>
 </table>
 <h3 id="cors-for-apim-backed-connectors">CORS for APIM-backed Connectors</h3>
-<p>Browser-based Power Platform clients require:
-1. Enable <strong>APIM CORS policy</strong> to allow the Power Platform origin.
-2. Set an <strong>Origin header policy</strong> in the connector so the request carries a matching origin.</p>
+<p>Browser-based Power Platform clients require:</p>
+<ol>
+<li>Enable <strong>APIM CORS policy</strong> to allow the Power Platform origin.</li>
+<li>Set an <strong>Origin header policy</strong> in the connector so the request carries a matching origin.</li>
+</ol>
 <hr />
 <h2 id="8-power-automate-cloud-flows">8. Power Automate Cloud Flows</h2>
 <h3 id="trigger-optimization">Trigger Optimization</h3>
@@ -1145,9 +1165,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </tbody>
 </table>
 <h3 id="error-handling-scopes">Error Handling — Scopes</h3>
-<p>Use <strong>Scopes with Configure run after</strong> for try/catch/finally patterns:
-- Main logic scope (Try) → error-handling scope runs after Failed/TimedOut.
-- <code>Terminate</code> action with <strong>Failed</strong> status is needed if the Catch path should mark the run as failed (otherwise, successful error-logging makes the run appear green).</p>
+<p>Use <strong>Scopes with Configure run after</strong> for try/catch/finally patterns:</p>
+<ul>
+<li>Main logic scope (Try) → error-handling scope runs after Failed/TimedOut.</li>
+<li><code>Terminate</code> action with <strong>Failed</strong> status is needed if the Catch path should mark the run as failed (otherwise, successful error-logging makes the run appear green).</li>
+</ul>
 <p><strong><code>result('Try')</code> function</strong> → returns an array of top-level action results within a scope (status, error detail). Use in Catch scope to identify which actions failed.</p>
 <p><strong><code>workflow()</code> function</strong> → returns current run metadata (use to build a run URL for support emails).</p>
 <h3 id="runafter-configuration">runAfter Configuration</h3>
@@ -1347,20 +1369,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li><code>useMonitor: true</code> → enables durable schedule monitoring so missed schedules are tracked across restarts. <strong>Enable for production schedules.</strong></li>
 </ul>
 <h3 id="http-trigger-timeout-limit">HTTP Trigger Timeout Limit</h3>
-<p>Azure HTTP-triggered functions have a hard <strong>230-second timeout</strong> due to Azure Load Balancer. For operations exceeding this:
-- Use the <strong>Durable Functions async HTTP pattern</strong>: start orchestration, return tracking response immediately, caller polls status.</p>
+<p>Azure HTTP-triggered functions have a hard <strong>230-second timeout</strong> due to Azure Load Balancer. For operations exceeding this:</p>
+<ul>
+<li>Use the <strong>Durable Functions async HTTP pattern</strong>: start orchestration, return tracking response immediately, caller polls status.</li>
+</ul>
 <h3 id="azure-functions-openapi-extension">Azure Functions OpenAPI Extension</h3>
-<p>Build order for Azure Function → Custom Connector:
-1. Install OpenAPI extension in project
-2. Add HTTP trigger endpoint with OpenAPI annotations
-3. Publish to Azure
-4. Import OpenAPI definition into custom connector</p>
+<p>Build order for Azure Function → Custom Connector:</p>
+<ol>
+<li>Install OpenAPI extension in project</li>
+<li>Add HTTP trigger endpoint with OpenAPI annotations</li>
+<li>Publish to Azure</li>
+<li>Import OpenAPI definition into custom connector</li>
+</ol>
 <h3 id="durable-functions">Durable Functions</h3>
-<p>Use Durable Functions when:
-- Workload runs for <strong>minutes or hours</strong> (long-running).
-- Must survive <strong>retries and restarts</strong> (stateful checkpointing).
-- Must wait for <strong>external events</strong> (callbacks, approvals) and resume.
-- Need status polling without holding the original request open.</p>
+<p>Use Durable Functions when:</p>
+<ul>
+<li>Workload runs for <strong>minutes or hours</strong> (long-running).</li>
+<li>Must survive <strong>retries and restarts</strong> (stateful checkpointing).</li>
+<li>Must wait for <strong>external events</strong> (callbacks, approvals) and resume.</li>
+<li>Need status polling without holding the original request open.</li>
+</ul>
 <p>Not appropriate for: synchronous Dataverse validation, UI form rules, client-side logic.</p>
 <h3 id="azure-service-bus-integration">Azure Service Bus Integration</h3>
 <ul>
@@ -1644,12 +1672,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <h4 id="functions-must-return-data">Functions Must Return Data</h4>
 <p>A Custom API with <code>IsFunction = true</code> must include at least one response property to be valid. A function with no response property will not appear in the Web API <code>$metadata</code> service document, and callers receive <code>404 Not Found</code> with <code>"Resource not found for the segment 'your_function_name'."</code>. Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
 <h4 id="is-private-what-it-actually-prevents-and-doesnt">Is Private — What It Actually Prevents (and Doesn't)</h4>
-<p>Setting <code>IsPrivate = true</code>:
-- Removes the API from the Web API <code>$metadata</code> (CSDL) service document.
-- Prevents Dataverse code-generation tools from generating classes for the message.
-- Does <strong>not</strong> prevent the API from being invoked if a caller knows the message name and can compose a valid request.
-- Use <code>IsPrivate = false</code> during development so you can see $metadata output; switch to <code>true</code> before shipping the managed solution.
-- Known issue: <strong>Private messages cannot be used inside plug-ins.</strong> Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></p>
+<p>Setting <code>IsPrivate = true</code>:</p>
+<ul>
+<li>Removes the API from the Web API <code>$metadata</code> (CSDL) service document.</li>
+<li>Prevents Dataverse code-generation tools from generating classes for the message.</li>
+<li>Does <strong>not</strong> prevent the API from being invoked if a caller knows the message name and can compose a valid request.</li>
+<li>Use <code>IsPrivate = false</code> during development so you can see $metadata output; switch to <code>true</code> before shipping the managed solution.</li>
+<li>Known issue: <strong>Private messages cannot be used inside plug-ins.</strong> Source: <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">Create and use custom APIs</a></li>
+</ul>
 <hr />
 <h3 id="c-web-api-odata-deeper-detail">C. Web API / OData — Deeper Detail</h3>
 <h4 id="batch-limits-and-structure">$batch Limits and Structure</h4>
@@ -1783,10 +1813,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <h4 id="key-vault-must-be-in-same-tenant">Key Vault Must Be in Same Tenant</h4>
 <p>Azure Key Vault must be in the <strong>same tenant</strong> as the Power Platform environment. Cross-tenant key vault integration is not supported. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
 <h4 id="scope-of-use">Scope of Use</h4>
-<p>Environment variables referencing Azure Key Vault secrets are currently limited to:
-- Power Automate cloud flows
-- Copilot Studio agents
-- Custom connectors</p>
+<p>Environment variables referencing Azure Key Vault secrets are currently limited to:</p>
+<ul>
+<li>Power Automate cloud flows</li>
+<li>Copilot Studio agents</li>
+<li>Custom connectors</li>
+</ul>
 <p>They are <strong>not</strong> accessible via the general API or in other customizations such as client-side scripts, plug-ins, or canvas apps directly. Source: <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/environmentvariables-azure-key-vault-secrets">Use environment variables for Azure Key Vault secrets</a></p>
 <hr />
 <h3 id="f-durable-functions-async-http-pattern-details">F. Durable Functions — Async HTTP Pattern Details</h3>
@@ -1799,10 +1831,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </ul>
 <p>The caller polls <code>statusQueryGetUri</code>. While the orchestration runs, polling returns <code>202</code> with a new <code>Location</code> header. When the orchestration completes or fails, it returns <code>200 OK</code> with the result. This pattern is built into the Durable Functions extension — no custom polling code is required. Source: <a href="https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-http-features">HTTP Features in Durable Functions</a></p>
 <h4 id="managed-identity-in-durable-orchestrations">Managed Identity in Durable Orchestrations</h4>
-<p>Durable Functions supports <code>ManagedIdentityTokenSource</code> for acquiring Entra ID tokens inside <code>context.CallHttpAsync(...)</code>. The token source:
-- Automatically fetches and refreshes tokens.
-- Never stores tokens in durable orchestration state.
-- Attaches the token as a <code>Bearer</code> token in the <code>Authorization</code> header.</p>
+<p>Durable Functions supports <code>ManagedIdentityTokenSource</code> for acquiring Entra ID tokens inside <code>context.CallHttpAsync(...)</code>. The token source:</p>
+<ul>
+<li>Automatically fetches and refreshes tokens.</li>
+<li>Never stores tokens in durable orchestration state.</li>
+<li>Attaches the token as a <code>Bearer</code> token in the <code>Authorization</code> header.</li>
+</ul>
 <p>To call Dataverse from a Durable orchestrator, pass <code>ManagedIdentityTokenSource("&lt;dataverse-env-url&gt;/.default")</code> as the <code>tokenSource</code> parameter. This eliminates manual token management. Source: <a href="https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-http-features">HTTP Features in Durable Functions</a></p>
 <hr />
 <h3 id="g-additional-edge-case-decision-rules">G. Additional Edge-Case Decision Rules</h3>
@@ -2374,10 +2408,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <li><strong>Hard-coded connector IDs / URLs</strong>: Fragile; break after import to a new environment.</li>
 </ul>
 <h3 id="decision-rule">Decision Rule</h3>
-<p>For any solution that deploys across DEV → TEST → PROD:
-- Environment-specific values → <strong>environment variables</strong>
-- Connector bindings for flows → <strong>connection references</strong>
-- Both together = portable, maintainable, managed-solution-ready design</p>
+<p>For any solution that deploys across DEV → TEST → PROD:</p>
+<ul>
+<li>Environment-specific values → <strong>environment variables</strong></li>
+<li>Connector bindings for flows → <strong>connection references</strong></li>
+<li>Both together = portable, maintainable, managed-solution-ready design</li>
+</ul>
 <h3 id="custom-connector-environment-variables">Custom Connector + Environment Variables</h3>
 <p>Microsoft documents that environment variables can update key connector properties in a solution: Host, Base URL, Client ID, Client Secret, Login URL, Refresh URL. This is the correct mechanism for environment-specific connector settings, alongside a connection reference for runtime binding.</p>
 <hr />
@@ -2459,9 +2495,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <h3 id="concurrency-and-duplicate-prevention">Concurrency and Duplicate Prevention</h3>
 <p>If parallel flow runs are causing duplicate downstream effects against a non-idempotent external API, the first fix is to <strong>limit trigger concurrency</strong> (serialize runs). Increasing retries would worsen the duplication problem.</p>
 <h3 id="change-tracking-for-efficient-sync">Change Tracking for Efficient Sync</h3>
-<p>For scheduled Azure Function sync jobs reading Dataverse:
-- Use <strong>OAuth client credentials</strong> for unattended auth.
-- Enable <strong>Dataverse change tracking</strong> to retrieve only rows changed since the last sync, minimizing reads and supporting efficient resume.</p>
+<p>For scheduled Azure Function sync jobs reading Dataverse:</p>
+<ul>
+<li>Use <strong>OAuth client credentials</strong> for unattended auth.</li>
+<li>Enable <strong>Dataverse change tracking</strong> to retrieve only rows changed since the last sync, minimizing reads and supporting efficient resume.</li>
+</ul>
 <hr />
 <h2 id="10-native-platform-vs-custom-development">10. Native Platform vs. Custom Development</h2>
 <h3 id="out-of-the-box-capabilities-no-custom-code-needed">Out-of-the-Box Capabilities (no custom code needed)</h3>
@@ -2880,14 +2918,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </table>
 <p><strong>Elastic table caveat</strong>: Sync plug-ins registered on PostOperation for elastic tables do NOT roll back the main operation if they throw an error — the record is already written. PreValidation is the only safe stage for rejection logic on elastic tables. <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/elastic-tables">learn.microsoft.com/en-us/power-apps/developer/data-platform/elastic-tables</a></p>
 <h4 id="background-operations-custom-api-async-execution">Background operations (Custom API + async execution)</h4>
-<p>Background operations use the Custom API mechanism to queue an operation for asynchronous server-side execution. The calling client does not wait for completion. This is distinct from:
-- An async plug-in step (which fires as a side effect of a Dataverse message)
-- A Power Automate cloud flow (which runs in the Power Automate runtime)</p>
+<p>Background operations use the Custom API mechanism to queue an operation for asynchronous server-side execution. The calling client does not wait for completion. This is distinct from:</p>
+<ul>
+<li>An async plug-in step (which fires as a side effect of a Dataverse message)</li>
+<li>A Power Automate cloud flow (which runs in the Power Automate runtime)</li>
+</ul>
 <p>Background operations are appropriate when: the logic is complex, coded in .NET, must run on the Dataverse server, and the caller should not block. <a href="https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api">learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api</a></p>
 <h4 id="business-rule-scope-entity-vs-specific-form">Business rule scope — "Entity" vs. specific form</h4>
-<p>Business rules have two scope settings:
-- <strong>Entity (table)</strong>: The rule fires for all forms associated with the table AND is enforced server-side on save (for certain action types like Set Column Value, Set Business Required, Set Default Value). This is the correct scope for universal enforcement across all app surfaces.
-- <strong>Specific form</strong>: The rule fires only for that one form in the model-driven app. Not enforced server-side. Effectively a client-only rule.</p>
+<p>Business rules have two scope settings:</p>
+<ul>
+<li><strong>Entity (table)</strong>: The rule fires for all forms associated with the table AND is enforced server-side on save (for certain action types like Set Column Value, Set Business Required, Set Default Value). This is the correct scope for universal enforcement across all app surfaces.</li>
+<li><strong>Specific form</strong>: The rule fires only for that one form in the model-driven app. Not enforced server-side. Effectively a client-only rule.</li>
+</ul>
 <p><strong>What if a business rule is set to a specific form scope but needs to enforce a required field for all channels?</strong> Change scope to Entity. Only Entity-scope rules participate in server-side validation for applicable action types. <a href="https://learn.microsoft.com/en-us/power-apps/maker/data-platform/data-platform-create-business-rule">learn.microsoft.com/en-us/power-apps/maker/data-platform/data-platform-create-business-rule</a></p>
 <h4 id="complete-logic-placement-decision-map">Complete logic placement decision map</h4>
 <table>
@@ -3211,9 +3253,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 <h3 id="canvas-app-enablement">Canvas-App Enablement</h3>
 <p>Importing a solution containing a PCF control is not sufficient for canvas usage. The <strong>Power Apps component framework feature must be explicitly enabled</strong> in each target environment before makers can add code components inside canvas apps.</p>
 <h3 id="alm-modern-commands-in-solutions">ALM: Modern Commands in Solutions</h3>
-<p>When exporting a solution containing modern commands, the following components must also be included:
-- <strong>Power Fx commands</strong> → depend on a <strong>Dataverse component library</strong> (must be in the solution)
-- <strong>JavaScript commands</strong> → depend on a <strong>JavaScript web resource</strong> (must be in the solution)</p>
+<p>When exporting a solution containing modern commands, the following components must also be included:</p>
+<ul>
+<li><strong>Power Fx commands</strong> → depend on a <strong>Dataverse component library</strong> (must be in the solution)</li>
+<li><strong>JavaScript commands</strong> → depend on a <strong>JavaScript web resource</strong> (must be in the solution)</li>
+</ul>
 <hr />
 <h2 id="4-pcf-apis-host-support-and-usage">4. PCF APIs — Host Support and Usage</h2>
 <h3 id="context-apis-availability">context APIs availability</h3>
@@ -3245,10 +3289,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 </table>
 <p><strong>Decision rule:</strong> If a PCF control uses <code>context.webAPI</code> for Dataverse CRUD, <strong>restrict it to model-driven hosts</strong>. Deploying the same component to canvas will throw at runtime because <code>context.webAPI</code> is not available in canvas apps.</p>
 <h3 id="local-test-harness-limitations">Local test harness limitations</h3>
-<p><code>npm start</code> (browser test harness) does NOT support:
-- <code>context.device</code> methods (barcode, camera)
-- <code>context.utils.lookupObjects</code> and other Utility/Navigation methods
-- Features declared in <code>feature-usage</code></p>
+<p><code>npm start</code> (browser test harness) does NOT support:</p>
+<ul>
+<li><code>context.device</code> methods (barcode, camera)</li>
+<li><code>context.utils.lookupObjects</code> and other Utility/Navigation methods</li>
+<li>Features declared in <code>feature-usage</code></li>
+</ul>
 <p><strong>Fix:</strong> Deploy to Dataverse and test there — do not interpret harness exceptions as proof of a code bug.</p>
 <h3 id="device-api">Device API</h3>
 <ul>
@@ -3898,13 +3944,15 @@ Source: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps
 </tbody>
 </table>
 <p><strong>Cancelling a save:</strong> Call <code>executionContext.getEventArgs().preventDefault()</code> synchronously inside the OnSave handler. <code>preventDefault()</code> cannot be called inside an async callback — it must be called before the first <code>await</code>.</p>
-<p><strong>Async OnSave handlers:</strong>
-- An OnSave handler that returns a <code>Promise</code> makes the event asynchronous — the platform waits for the promise to settle before saving.
-- Default timeout: <strong>10 seconds per promise</strong>. Five handlers each returning a promise = up to 50 seconds total wait.
-- If a handler times out or the promise rejects, the save continues unless <code>preventDefault()</code> was already called.
-- To disable the 10-second timeout for a specific handler (e.g., waiting for user input in a dialog), call <code>context.getEventArgs().disableAsyncTimeout()</code> <strong>before any <code>await</code> statement</strong>.
-- Async OnSave must be <strong>enabled per app</strong> via the app Settings &gt; Features &gt; "Async onSave handler" toggle.
-- Wrap multiple concurrent async calls in <code>Promise.all()</code> and return the single combined promise rather than registering multiple handlers that each return individual promises.</p>
+<p><strong>Async OnSave handlers:</strong></p>
+<ul>
+<li>An OnSave handler that returns a <code>Promise</code> makes the event asynchronous — the platform waits for the promise to settle before saving.</li>
+<li>Default timeout: <strong>10 seconds per promise</strong>. Five handlers each returning a promise = up to 50 seconds total wait.</li>
+<li>If a handler times out or the promise rejects, the save continues unless <code>preventDefault()</code> was already called.</li>
+<li>To disable the 10-second timeout for a specific handler (e.g., waiting for user input in a dialog), call <code>context.getEventArgs().disableAsyncTimeout()</code> <strong>before any <code>await</code> statement</strong>.</li>
+<li>Async OnSave must be <strong>enabled per app</strong> via the app Settings &gt; Features &gt; "Async onSave handler" toggle.</li>
+<li>Wrap multiple concurrent async calls in <code>Promise.all()</code> and return the single combined promise rather than registering multiple handlers that each return individual promises.</li>
+</ul>
 <p>Source: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/events/form-onsave</p>
 <hr />
 <h3 id="client-api-xrmwebapi-complete-method-list-and-offline-behavior">Client API: Xrm.WebApi — complete method list and offline behavior</h3>
@@ -4026,9 +4074,11 @@ Source: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps
 <p><strong>AutoSave behavior:</strong> By default, commands save the form buffer before executing — the form is saved on behalf of the maker before the Power Fx formula runs. Any save errors are surfaced in the form UI, not in the formula. JavaScript commands historically required explicit save calls at the start; Power Fx eliminates that boilerplate.</p>
 <p><strong>Power Fx functions explicitly not supported with commanding</strong> (key subset for exam awareness):</p>
 <p><code>Back()</code>, <code>Collect()</code>, <code>Clear()</code>, <code>Set()</code>, <code>UpdateContext()</code>, <code>LoadData()</code>, <code>SaveData()</code>, <code>Exit()</code>, <code>Param()</code>, <code>User()</code>, <code>ResetForm()</code>, <code>SubmitForm()</code>, <code>ViewForm()</code>, <code>ScanBarcode()</code>, <code>Print()</code>, <code>Language()</code></p>
-<p><strong>Unsupported platform contexts:</strong> Power Fx commands do <strong>not</strong> run in:
-- Dynamics 365 app for Outlook
-- Model-driven apps hosted inside a Portal</p>
+<p><strong>Unsupported platform contexts:</strong> Power Fx commands do <strong>not</strong> run in:</p>
+<ul>
+<li>Dynamics 365 app for Outlook</li>
+<li>Model-driven apps hosted inside a Portal</li>
+</ul>
 <p><strong>Dataverse-only data source:</strong> When writing Power Fx formulas in the command designer, Microsoft Dataverse is the only directly supported data source. For external data connections, use a custom page.</p>
 <p><strong>Single component library per app:</strong> Each model-driven app supports only one Power Fx command component library. Multiple libraries cause the error "Unable to initialize component manager. There are multiple component libraries associated with your app." Resolution: remove duplicate <code>AppElement</code> records for the app via Power Automate + Dataverse.</p>
 <p>Source: https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/commanding-use-powerfx<br />
@@ -4306,13 +4356,15 @@ It is not supported. React controls and platform libraries only work in canvas a
 <h3 id="standard-cicd-sequence">Standard CI/CD Sequence</h3>
 <pre><code>Dev (unmanaged) → Export → Unpack → Source Control → Pack (managed) → Import into Test/Prod
 </code></pre>
-<p>Correct step order:
-1. <strong>Export</strong> the unmanaged solution from Development.
-2. <strong>Unpack</strong> (decompose the zip into component files) — enables readable diffs and merge review in source control.
-3. <strong>Commit</strong> unpacked files to source control.
-4. <strong>Pack</strong> a managed build artifact from source-controlled files.
-5. <strong>Import</strong> the managed artifact into Test (with deployment settings).
-6. Run <strong>end-to-end validation</strong> in Test.</p>
+<p>Correct step order:</p>
+<ol>
+<li><strong>Export</strong> the unmanaged solution from Development.</li>
+<li><strong>Unpack</strong> (decompose the zip into component files) — enables readable diffs and merge review in source control.</li>
+<li><strong>Commit</strong> unpacked files to source control.</li>
+<li><strong>Pack</strong> a managed build artifact from source-controlled files.</li>
+<li><strong>Import</strong> the managed artifact into Test (with deployment settings).</li>
+<li>Run <strong>end-to-end validation</strong> in Test.</li>
+</ol>
 <h3 id="key-build-tools-tasks">Key Build Tools Tasks</h3>
 <table>
 <thead>
@@ -4428,9 +4480,11 @@ It is not supported. React controls and platform libraries only work in canvas a
 <h3 id="stage-name-filter-pattern">Stage-Name Filter Pattern</h3>
 <pre><code>@equals(triggerOutputs()?['body/OutputParameters/DeploymentStageName'], 'Contoso UAT')
 </code></pre>
-<p>This trigger condition <strong>filters</strong> the flow so it runs only for the named stage — it does not approve, reject, or modify anything by itself.
-- The condition is a <strong>gatekeeper, not an actor</strong>: if the stage name matches the flow runs; if not the flow is skipped entirely. No approval, no rejection, no data change.
-- The actual approve/reject logic lives in the flow steps <em>after</em> the trigger — e.g. a Send Approval action followed by <code>UpdatePreDeploymentStepStatus</code> that writes the decision back to the pipeline.</p>
+<p>This trigger condition <strong>filters</strong> the flow so it runs only for the named stage — it does not approve, reject, or modify anything by itself.</p>
+<ul>
+<li>The condition is a <strong>gatekeeper, not an actor</strong>: if the stage name matches the flow runs; if not the flow is skipped entirely. No approval, no rejection, no data change.</li>
+<li>The actual approve/reject logic lives in the flow steps <em>after</em> the trigger — e.g. a Send Approval action followed by <code>UpdatePreDeploymentStepStatus</code> that writes the decision back to the pipeline.</li>
+</ul>
 <hr />
 <h2 id="6-environment-types-and-backuprestore">6. Environment Types and Backup/Restore</h2>
 <h3 id="developer-environment">Developer Environment</h3>
@@ -4491,9 +4545,11 @@ It is not supported. React controls and platform libraries only work in canvas a
 </tr>
 </tbody>
 </table>
-<p><strong>Append + Append To pair</strong> is required whenever a lookup field is set or a note/related record is attached:
-- The record being attached needs <strong>Append</strong>.
-- The table receiving the relationship pointer needs <strong>Append To</strong>.</p>
+<p><strong>Append + Append To pair</strong> is required whenever a lookup field is set or a note/related record is attached:</p>
+<ul>
+<li>The record being attached needs <strong>Append</strong>.</li>
+<li>The table receiving the relationship pointer needs <strong>Append To</strong>.</li>
+</ul>
 <h3 id="common-security-scenarios">Common Security Scenarios</h3>
 <table>
 <thead>
@@ -4978,11 +5034,13 @@ Pipelines do not currently expose an option to choose Update vs. Upgrade — the
 </tr>
 </tbody>
 </table>
-<p><strong>Decision rule:</strong>
-- Listener is sometimes offline → <strong>Queue</strong>
-- Multiple independent downstream consumers → <strong>Topic</strong>
-- High-throughput streaming / analytics → <strong>Event Hub</strong>
-- Simple direct HTTP callback to external app → <strong>Webhook</strong></p>
+<p><strong>Decision rule:</strong></p>
+<ul>
+<li>Listener is sometimes offline → <strong>Queue</strong></li>
+<li>Multiple independent downstream consumers → <strong>Topic</strong></li>
+<li>High-throughput streaming / analytics → <strong>Event Hub</strong></li>
+<li>Simple direct HTTP callback to external app → <strong>Webhook</strong></li>
+</ul>
 <h3 id="event-hub-specifics">Event Hub Specifics</h3>
 <ul>
 <li>Contract type must be <strong>Event Hub</strong> (not Queue or One-way)</li>
@@ -5139,10 +5197,12 @@ cloudService.Execute(
 </code></pre>
 <p><strong>Critical:</strong> The <code>EntityReference</code> logical name must be <code>"serviceendpoint"</code> — NOT the business table name (e.g., <code>"account"</code>).</p>
 <h3 id="retry-safety-rule">Retry Safety Rule</h3>
-<p>For asynchronous plug-ins, if the Service Bus post fails and is retried, the <strong>entire plug-in executes again</strong>. Therefore:
-- The Azure-aware plug-in should do <strong>nothing except</strong> modify the context (if needed) and post to Service Bus
-- Adding extra business logic creates duplicate side effects on retry
-- <strong>Publish-only design</strong> is the Microsoft-documented best practice</p>
+<p>For asynchronous plug-ins, if the Service Bus post fails and is retried, the <strong>entire plug-in executes again</strong>. Therefore:</p>
+<ul>
+<li>The Azure-aware plug-in should do <strong>nothing except</strong> modify the context (if needed) and post to Service Bus</li>
+<li>Adding extra business logic creates duplicate side effects on retry</li>
+<li><strong>Publish-only design</strong> is the Microsoft-documented best practice</li>
+</ul>
 <h3 id="common-distractors_1">Common Distractors</h3>
 <ul>
 <li>"Register outside sandbox for direct network access" — wrong; sandbox is required</li>
@@ -5153,10 +5213,12 @@ cloudService.Execute(
 <h2 id="5-upsertrequest-and-alternate-keys-for-data-synchronization">5. UpsertRequest and Alternate Keys for Data Synchronization</h2>
 <h3 id="upsertrequest">UpsertRequest</h3>
 <p><code>UpsertRequest</code> is the standard message for integration scenarios where you need to <strong>create or update</strong> without a preliminary existence check. The <code>UpsertResponse.RecordCreated</code> property indicates whether the operation inserted (<code>true</code>) or updated (<code>false</code>) the row.</p>
-<p><strong>Use when:</strong>
-- Source system has a business identifier but not the Dataverse GUID
-- Integration must avoid a retrieve-first pattern
-- Downstream logging needs to distinguish new vs updated rows</p>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Source system has a business identifier but not the Dataverse GUID</li>
+<li>Integration must avoid a retrieve-first pattern</li>
+<li>Downstream logging needs to distinguish new vs updated rows</li>
+</ul>
 <blockquote>
 <p><strong>Plain English — why no GUID:</strong> The source system (e.g., SAP, Salesforce) has its own ID for a record (e.g., <code>CUST-1001</code>), but Dataverse assigns its own internal GUID when it stores the record. The source system has never seen that GUID and doesn't store it. So the integration maps the source system's ID to an <strong>alternate key</strong> in Dataverse, and Upsert uses that as the lookup key — find or create by <code>erp_customerid = CUST-1001</code> without ever needing the Dataverse GUID.</p>
 </blockquote>
@@ -5423,10 +5485,12 @@ service.Execute(new UpsertRequest { Target = account });
 <hr />
 <h3 id="c-upsertrequest-and-alternate-keys-sdk-internals-and-edge-cases">C. UpsertRequest and alternate keys: SDK internals and edge cases</h3>
 <h4 id="server-side-upsert-processing-logic-standard-tables">Server-side Upsert processing logic (standard tables)</h4>
-<p>The server resolves the upsert in this exact order:
-1. If <code>Entity.Id</code> is set, look up by primary key first; otherwise use <code>Entity.KeyAttributes</code>.
-2. <strong>Record found:</strong> Strip the alternate key data from <code>Entity.Attributes</code> (you cannot change the key values through the same keys used to identify the row), call <code>Update</code>, set <code>UpsertResponse.RecordCreated = false</code>.
-3. <strong>Record not found:</strong> Copy key data into <code>Entity.Attributes</code> if absent, call <code>Create</code>, set <code>UpsertResponse.RecordCreated = true</code>.</p>
+<p>The server resolves the upsert in this exact order:</p>
+<ol>
+<li>If <code>Entity.Id</code> is set, look up by primary key first; otherwise use <code>Entity.KeyAttributes</code>.</li>
+<li><strong>Record found:</strong> Strip the alternate key data from <code>Entity.Attributes</code> (you cannot change the key values through the same keys used to identify the row), call <code>Update</code>, set <code>UpsertResponse.RecordCreated = false</code>.</li>
+<li><strong>Record not found:</strong> Copy key data into <code>Entity.Attributes</code> if absent, call <code>Create</code>, set <code>UpsertResponse.RecordCreated = true</code>.</li>
+</ol>
 <p>Key implication: <strong>You cannot update alternate key column values</strong> by including them both as the lookup key and in the body. To change an alternate key value, identify the record by primary key (or a different alternate key) and then update the column directly. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-upsert-insert-update-record]</p>
 <blockquote>
 <p><strong>Plain English:</strong> You cannot use the same alternate key to both FIND the record and CHANGE that key's value at the same time. If you use <code>erp_customerid = CUST-1001</code> to identify the record and also include <code>erp_customerid = CUST-9999</code> in the body, Dataverse strips the key from the body before updating — your change to <code>CUST-9999</code> is silently ignored. To actually change an alternate key value, identify the record by its GUID (primary key) instead, then update the column directly.</p>
@@ -5450,11 +5514,13 @@ service.Execute(new UpsertRequest { Target = account });
 <hr />
 <h3 id="d-change-tracking-sdk-path-constraints-and-ordering-guarantees">D. Change tracking: SDK path, constraints, and ordering guarantees</h3>
 <h4 id="net-sdk-retrieveentitychangesrequest">.NET SDK: RetrieveEntityChangesRequest</h4>
-<p>The SDK equivalent of the Web API delta query is <code>RetrieveEntityChangesRequest</code>. Key fields:
-- <code>EntityName</code> — logical name of the table
-- <code>Columns</code> — <code>ColumnSet</code> of columns to return
-- <code>PageInfo</code> — paging with <code>Count</code> (max page size), <code>PageNumber</code>, <code>PagingCookie</code>
-- <code>DataVersion</code> — the version token from the previous response (omit on first run)</p>
+<p>The SDK equivalent of the Web API delta query is <code>RetrieveEntityChangesRequest</code>. Key fields:</p>
+<ul>
+<li><code>EntityName</code> — logical name of the table</li>
+<li><code>Columns</code> — <code>ColumnSet</code> of columns to return</li>
+<li><code>PageInfo</code> — paging with <code>Count</code> (max page size), <code>PageNumber</code>, <code>PagingCookie</code></li>
+<li><code>DataVersion</code> — the version token from the previous response (omit on first run)</li>
+</ul>
 <p>On the first call (no token), <strong>all records are returned as new</strong> and <strong>deleted records are not included</strong>. Store the <code>response.EntityChanges.DataToken</code> to use on subsequent calls. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
 <h4 id="unsupported-query-options-with-change-tracking">Unsupported query options with change tracking</h4>
 <p>When the <code>Prefer: odata.track-changes</code> header is present in a Web API request, the following query options are <strong>not supported</strong> and return an error if included: <code>$filter</code>, <code>$orderby</code>, <code>$expand</code>, <code>$top</code>. Use <code>$select</code> to limit columns and paging parameters to page through results. [https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems]</p>
@@ -5511,22 +5577,26 @@ service.Execute(new UpsertRequest { Target = account });
 </tbody>
 </table>
 <p>[https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
-<p><strong>Select columns (filtering attributes) — critical limits:</strong>
-- Applies <strong>only to the Update (Modified) change type</strong>; Create and Delete always fire for all columns.
-- Accepts a <strong>comma-separated list of logical column names</strong>.
-- <strong>Lookup columns are not supported</strong> — if you include a lookup column, changes to that column will not trigger the flow.
-- Supported scalar types: text, number, date/time, choice.
-- Not supported on virtual tables.
-- The flow still runs if the column value submitted in the update is <strong>unchanged</strong> from the existing value (the filter is based on which columns are included in the request, not whether the value actually changed).</p>
+<p><strong>Select columns (filtering attributes) — critical limits:</strong></p>
+<ul>
+<li>Applies <strong>only to the Update (Modified) change type</strong>; Create and Delete always fire for all columns.</li>
+<li>Accepts a <strong>comma-separated list of logical column names</strong>.</li>
+<li><strong>Lookup columns are not supported</strong> — if you include a lookup column, changes to that column will not trigger the flow.</li>
+<li>Supported scalar types: text, number, date/time, choice.</li>
+<li>Not supported on virtual tables.</li>
+<li>The flow still runs if the column value submitted in the update is <strong>unchanged</strong> from the existing value (the filter is based on which columns are included in the request, not whether the value actually changed).</li>
+</ul>
 <blockquote>
 <p><strong>Plain English:</strong> This lets you say "only trigger my flow when these specific columns are updated." Without it, every update to a record fires the flow regardless of what changed. Key trap: it only works for Updates — Create and Delete always fire. Lookup columns are silently ignored (no error). Most importantly, the filter checks whether the column was <em>included in the update request</em>, not whether the value actually changed — so if someone sends an update with <code>revenue = 500000</code> and revenue was already 500000, the flow still fires.</p>
 </blockquote>
 <p>[https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
-<p><strong>Filter rows (OData expression):</strong>
-- Written in OData style but <strong>must not include the <code>$filter=</code> prefix</strong> (that prefix is for direct API calls only).
-- The expression is evaluated <strong>after</strong> the row change is saved; the flow runs only when the expression evaluates to <code>true</code>.
-- Can be combined with Select columns: both conditions must be true for the flow to fire.
-- Example: <code>firstname eq 'John'</code> or <code>contains(firstname,'John')</code>.</p>
+<p><strong>Filter rows (OData expression):</strong></p>
+<ul>
+<li>Written in OData style but <strong>must not include the <code>$filter=</code> prefix</strong> (that prefix is for direct API calls only).</li>
+<li>The expression is evaluated <strong>after</strong> the row change is saved; the flow runs only when the expression evaluates to <code>true</code>.</li>
+<li>Can be combined with Select columns: both conditions must be true for the flow to fire.</li>
+<li>Example: <code>firstname eq 'John'</code> or <code>contains(firstname,'John')</code>.</li>
+</ul>
 <p>[https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
 <p><strong>"Delay until" advanced option:</strong>
 An OData-style UTC timestamp that delays the flow trigger. Unlike the standard Power Automate <code>Delay until</code> action, the Dataverse trigger-level <code>Delay until</code> <strong>never expires</strong>, making it suitable for very long delays without the flow timing out. [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p>
@@ -5891,11 +5961,13 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 <hr />
 <h2 id="5-canvas-app-and-cloud-flow-integration">5. Canvas App and Cloud Flow Integration</h2>
 <h3 id="invoking-a-cloud-flow-from-a-button">Invoking a Cloud Flow from a Button</h3>
-<p>Correct sequence to wire an existing flow to a canvas app button:
-1. <strong>Add the flow</strong> from the Power Automate pane (flow must have a Power Apps trigger).
-2. <strong>Select the button's <code>OnSelect</code> property</strong>.
-3. <strong>Enter <code>FlowName.Run(params)</code></strong> in the formula bar.
-4. <strong>Test</strong> in Play mode.</p>
+<p>Correct sequence to wire an existing flow to a canvas app button:</p>
+<ol>
+<li><strong>Add the flow</strong> from the Power Automate pane (flow must have a Power Apps trigger).</li>
+<li><strong>Select the button's <code>OnSelect</code> property</strong>.</li>
+<li><strong>Enter <code>FlowName.Run(params)</code></strong> in the formula bar.</li>
+<li><strong>Test</strong> in Play mode.</li>
+</ol>
 <p>The flow cannot be referenced in a formula until it has been added to the app context. Step order matters.</p>
 <h3 id="returning-data-from-a-flow-to-a-canvas-app">Returning Data from a Flow to a Canvas App</h3>
 <ul>
@@ -5946,11 +6018,13 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 <li>Works for both <strong>studio sessions</strong> (authoring) and <strong>published app sessions</strong> (production debugging).</li>
 </ul>
 <h3 id="monitor-diagnostic-workflow">Monitor Diagnostic Workflow</h3>
-<p>Correct troubleshooting order:
-1. <strong>Start a fresh Monitor session</strong> (clean capture, no stale noise).
-2. <strong>Reproduce the failing action</strong>.
-3. <strong>Correlate Monitor events</strong> with browser console and Network tab.
-4. <strong>Retest</strong> after isolating and addressing the cause.</p>
+<p>Correct troubleshooting order:</p>
+<ol>
+<li><strong>Start a fresh Monitor session</strong> (clean capture, no stale noise).</li>
+<li><strong>Reproduce the failing action</strong>.</li>
+<li><strong>Correlate Monitor events</strong> with browser console and Network tab.</li>
+<li><strong>Retest</strong> after isolating and addressing the cause.</li>
+</ol>
 <h3 id="monitor-vs-browser-devtools">Monitor vs. Browser DevTools</h3>
 <table>
 <thead>
@@ -6318,12 +6392,14 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 </tr>
 </tbody>
 </table>
-<p><strong>Key SharePoint-specific caveats:</strong>
-- <code>And</code> / <code>Or</code> are delegable; <code>Not</code> is <strong>not</strong> delegable to SharePoint.
-- SharePoint system fields (e.g., <code>IsFolder</code>, <code>ContentType</code>, <code>VersionNumber</code>, <code>Path</code>) do <strong>not</strong> delegate.
-- SharePoint ID fields appear as Number in Power Apps but the underlying type is Text — only <code>=</code> delegates on ID; relational operators (<code>&lt;</code>, <code>&gt;</code>, etc.) do not.
-- For Complex types (Choice, Person, Lookup), only <code>Email</code> and <code>DisplayName</code> subfields of Person are delegable.
-- <code>IsBlank</code> on Text columns does not delegate to SharePoint. Workaround: use <code>Filter(..., col = Blank())</code> for <code>=</code> comparisons, which does delegate (though it does not treat empty string as blank — be aware of semantic difference).</p>
+<p><strong>Key SharePoint-specific caveats:</strong></p>
+<ul>
+<li><code>And</code> / <code>Or</code> are delegable; <code>Not</code> is <strong>not</strong> delegable to SharePoint.</li>
+<li>SharePoint system fields (e.g., <code>IsFolder</code>, <code>ContentType</code>, <code>VersionNumber</code>, <code>Path</code>) do <strong>not</strong> delegate.</li>
+<li>SharePoint ID fields appear as Number in Power Apps but the underlying type is Text — only <code>=</code> delegates on ID; relational operators (<code>&lt;</code>, <code>&gt;</code>, etc.) do not.</li>
+<li>For Complex types (Choice, Person, Lookup), only <code>Email</code> and <code>DisplayName</code> subfields of Person are delegable.</li>
+<li><code>IsBlank</code> on Text columns does not delegate to SharePoint. Workaround: use <code>Filter(..., col = Blank())</code> for <code>=</code> comparisons, which does delegate (though it does not treat empty string as blank — be aware of semantic difference).</li>
+</ul>
 <h4 id="delegable-vs-non-delegable-sql-server">Delegable vs. non-delegable: SQL Server</h4>
 <p><a href="https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/connections/sql-connection-overview">Source: Connect to SQL Server from Power Apps overview</a></p>
 <table>
@@ -6468,12 +6544,14 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 </tr>
 </tbody>
 </table>
-<p><strong>Key SQL Server-specific caveats:</strong>
-- <code>IsBlank</code> is <strong>not</strong> delegable for SQL Server on any data type. Workaround: <code>Filter(..., col &lt;&gt; Blank())</code>.
-- <code>Len</code> delegates but behaves unexpectedly on <code>char(N)</code> columns, which always report length N. Use <code>varchar</code>/<code>nvarchar</code> to avoid this.
-- <code>EndsWith</code> is delegable but only when the column is on the left side: <code>EndsWith(column, "value")</code>. Reversing the arguments breaks delegation.
-- Direct date filters via an on-premises Data Gateway for SQL Server do not delegate. Workaround: add a computed column in SQL (e.g., <code>DateAsInt AS YEAR(date)*10000 + MONTH(date)*100 + DAY(date)</code>) and filter on the integer column.
-- Arithmetic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) delegate for Number but not DateTime.</p>
+<p><strong>Key SQL Server-specific caveats:</strong></p>
+<ul>
+<li><code>IsBlank</code> is <strong>not</strong> delegable for SQL Server on any data type. Workaround: <code>Filter(..., col &lt;&gt; Blank())</code>.</li>
+<li><code>Len</code> delegates but behaves unexpectedly on <code>char(N)</code> columns, which always report length N. Use <code>varchar</code>/<code>nvarchar</code> to avoid this.</li>
+<li><code>EndsWith</code> is delegable but only when the column is on the left side: <code>EndsWith(column, "value")</code>. Reversing the arguments breaks delegation.</li>
+<li>Direct date filters via an on-premises Data Gateway for SQL Server do not delegate. Workaround: add a computed column in SQL (e.g., <code>DateAsInt AS YEAR(date)*10000 + MONTH(date)*100 + DAY(date)</code>) and filter on the integer column.</li>
+<li>Arithmetic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) delegate for Number but not DateTime.</li>
+</ul>
 <h4 id="what-if-delegation-edge-cases">What if... delegation edge cases</h4>
 <table>
 <thead>
@@ -6559,19 +6637,25 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 </tr>
 </tbody>
 </table>
-<p><strong>Named formula constraints:</strong>
-- Cannot call behavior functions (<code>Set</code>, <code>Collect</code>, <code>Navigate</code>, <code>Patch</code>, etc.) unless wrapped in a behavior user-defined function using <code>{}</code> syntax.
-- Cannot create circular references (<code>a = b; b = a;</code> is a compile error).
-- Type is inferred — no explicit type annotation required for data named formulas.
-- Can call each other in any order (the system resolves dependencies automatically).</p>
-<p><strong><code>App.OnStart</code> current status:</strong>
-- Microsoft documentation explicitly warns: "Using the OnStart property can cause performance problems when loading an app." It may be disabled by default in future. The <code>StartScreen</code> property and named formulas are the recommended replacements.
-- Non-blocking <code>OnStart</code> (a preview feature) allows screens to render before <code>OnStart</code> finishes — meaning variables initialized in <code>OnStart</code> may not be ready when a screen's <code>OnVisible</code> or control formulas evaluate them. Named formulas avoid this race condition entirely.</p>
-<p><strong>User-defined functions (UDF) in App.Formulas:</strong>
-- Power Fx now supports parameterized named formulas (user-defined functions): <code>FunctionName(Param: Type): ReturnType = formula;</code>
-- Behavior UDFs (with side effects) use curly-brace syntax: <code>FunctionName(Param: Type): Void = { Set(x, y); Patch(...); };</code>
-- Recursion is not yet supported in UDFs.
-- UDFs cannot be used directly in Power Fx commanding (ribbon/command bar).</p>
+<p><strong>Named formula constraints:</strong></p>
+<ul>
+<li>Cannot call behavior functions (<code>Set</code>, <code>Collect</code>, <code>Navigate</code>, <code>Patch</code>, etc.) unless wrapped in a behavior user-defined function using <code>{}</code> syntax.</li>
+<li>Cannot create circular references (<code>a = b; b = a;</code> is a compile error).</li>
+<li>Type is inferred — no explicit type annotation required for data named formulas.</li>
+<li>Can call each other in any order (the system resolves dependencies automatically).</li>
+</ul>
+<p><strong><code>App.OnStart</code> current status:</strong></p>
+<ul>
+<li>Microsoft documentation explicitly warns: "Using the OnStart property can cause performance problems when loading an app." It may be disabled by default in future. The <code>StartScreen</code> property and named formulas are the recommended replacements.</li>
+<li>Non-blocking <code>OnStart</code> (a preview feature) allows screens to render before <code>OnStart</code> finishes — meaning variables initialized in <code>OnStart</code> may not be ready when a screen's <code>OnVisible</code> or control formulas evaluate them. Named formulas avoid this race condition entirely.</li>
+</ul>
+<p><strong>User-defined functions (UDF) in App.Formulas:</strong></p>
+<ul>
+<li>Power Fx now supports parameterized named formulas (user-defined functions): <code>FunctionName(Param: Type): ReturnType = formula;</code></li>
+<li>Behavior UDFs (with side effects) use curly-brace syntax: <code>FunctionName(Param: Type): Void = { Set(x, y); Patch(...); };</code></li>
+<li>Recursion is not yet supported in UDFs.</li>
+<li>UDFs cannot be used directly in Power Fx commanding (ribbon/command bar).</li>
+</ul>
 <hr />
 <h3 id="c-canvas-performance-additional-limits-patterns-and-tooling">C. Canvas performance — additional limits, patterns, and tooling</h3>
 <h4 id="control-count-and-app-size">Control count and app size</h4>

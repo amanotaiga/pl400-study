@@ -32,9 +32,27 @@ def read_utf8(path):
     with open(path, encoding="utf-8") as f:
         return f.read()
 
+_FENCE_RE = re.compile(r'^\s*(```|~~~)')
+_LIST_RE  = re.compile(r'^\s*([-*+]|\d+\.)\s+\S')
+
+def fix_list_spacing(text):
+    """Python-Markdown only treats `- `/`1.` lines as a list when a blank line
+    precedes them; otherwise they fold into the previous paragraph and render
+    inline. Insert that blank line before any list that directly follows prose.
+    Fenced code blocks are skipped so bullet-like code (flags, YAML) is safe."""
+    out, in_fence = [], False
+    for ln in text.split("\n"):
+        if _FENCE_RE.match(ln):
+            in_fence = not in_fence
+        elif (not in_fence and _LIST_RE.match(ln)
+              and out and out[-1].strip() and not _LIST_RE.match(out[-1])):
+            out.append("")
+        out.append(ln)
+    return "\n".join(out)
+
 def render_guide(slug):
     path = os.path.join(ROOT, "concept_guides", f"{slug}.md")
-    text = read_utf8(path)
+    text = fix_list_spacing(read_utf8(path))
     md = mdlib.Markdown(extensions=[
         TableExtension(),
         FencedCodeExtension(),
