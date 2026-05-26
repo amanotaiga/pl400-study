@@ -8,7 +8,7 @@ Concept Guide : rendered markdown, "Beyond the Exam" collapsed by default.
 Study Deck    : interactive flashcards — guess → reveal → Got it / Review.
                 Score + progress persist across sessions via localStorage.
 """
-import json, os, re
+import json, os, re, html as htmllib
 import markdown as mdlib
 from markdown.extensions.tables import TableExtension
 from markdown.extensions.fenced_code import FencedCodeExtension
@@ -73,6 +73,104 @@ def load_cards(slug):
 def js_str(s):
     """Escape a Python string for safe embedding in a JS string literal."""
     return s.replace("\\", "\\\\").replace("`", "\\`").replace("$", "\\$")
+
+# ── Reconstructed exhibits ────────────────────────────────────────────────────
+# 8 questions reference a "Row 1-4" exhibit table that was an image in the source
+# and never got captured during scraping. Each table below is rebuilt strictly
+# from that question's own "Why each option is wrong" rationale in the raw set —
+# so it shows the same data the learner needs without revealing the answer.
+# Keyed by parsed card id ("Set X-Qn"). headers[0] is always the Row label.
+EXHIBITS = {
+    "Set B-Q74": {
+        "headers": ["Row", "Execution mode", "Filtering attributes"],
+        "rows": [
+            ["Row 1", "Asynchronous", "firstname, lastname"],
+            ["Row 2", "Synchronous", "(none)"],
+            ["Row 3", "Asynchronous", "(none)"],
+            ["Row 4", "Synchronous", "firstname, lastname"],
+        ],
+    },
+    "Set C-Q3": {
+        "headers": ["Row", "Requirement", "Proposed out-of-the-box feature"],
+        "rows": [
+            ["Row 1", "Show an aggregate value over related records", "Rollup column"],
+            ["Row 2", "Identify potential duplicate records", "Duplicate detection rules"],
+            ["Row 3", "Guide users through staged steps on a form", "Business process flow"],
+            ["Row 4", "Display a calculated value while in mobile offline mode", "Formula column"],
+        ],
+    },
+    "Set C-Q32": {
+        "headers": ["Row", "Control base class", "Key lifecycle assumption"],
+        "rows": [
+            ["Row 1", "ReactControl", "init() receives an HTMLDivElement container; updateView returns a ReactElement"],
+            ["Row 2", "ReactControl", "init() has no container parameter; updateView returns a ReactElement"],
+            ["Row 3", "StandardControl", "Dataset values are initialized in init()"],
+            ["Row 4", "StandardControl", "Uses allocatedWidth / allocatedHeight in updateView without calling trackContainerResize(true)"],
+        ],
+    },
+    "Set C-Q52": {
+        "headers": ["Row", "Extension step", "Start trigger", "Completion action"],
+        "rows": [
+            ["Row 1", "Pre-export", "OnDeploymentRequested", "UpdatePreExportStepStatus"],
+            ["Row 2", "Delegated deployment", "OnApprovalStarted", "UpdateApprovalStatus"],
+            ["Row 3", "Pre-deployment", "OnPreDeploymentStarted", "UpdatePreDeploymentStepStatus"],
+            ["Row 4", "Pre-deployment Step Required", "OnDeploymentCompleted", "UpdatePreDeploymentStepStatus"],
+        ],
+    },
+    "Set C-Q55": {
+        "headers": ["Row", "Requirement", "Proposed runtime policy template"],
+        "rows": [
+            ["Row 1", "Add an api-version query string value to selected operations", "Set Query String Parameter"],
+            ["Row 2", "Reroute selected operations to another relative path on the same service", "Route Request"],
+            ["Row 3", "Select the backend host dynamically from connection parameters", "Set Host URL"],
+            ["Row 4", "Change the host from api.contoso.com to eu.api.contoso.com", "Route Request"],
+        ],
+    },
+    "Set F-Q30": {
+        "headers": ["Row", "pageInput object passed to Xrm.Navigation.navigateTo"],
+        "rows": [
+            ["Row 1", '{ pageType: "custom", name: "<custom page logical name>", entityName: "<table>", recordId: "<id>" }'],
+            ["Row 2", '{ pageType: "entityrecord", entityName: "<table>", recordId: "<id>" }'],
+            ["Row 3", '{ pageType: "custom", pageId: "<custom page id>", entityName: "<table>", recordId: "<id>" }'],
+            ["Row 4", '{ pageType: "webresource", webresourceName: "<page>.html", data: "..." }'],
+        ],
+    },
+    "Set F-Q45": {
+        "headers": ["Row", "Requirement", "Proposed solution component"],
+        "rows": [
+            ["Row 1", "Surface external ERP data without copying it into Dataverse", "Standard table"],
+            ["Row 2", "Enforce validation on every server-side write path", "JavaScript web resource"],
+            ["Row 3", "Expose a reusable operation that developers and flows can call", "Custom API"],
+            ["Row 4", "Launch an interactive dialog from a model-driven command bar", "Cloud flow trigger"],
+        ],
+    },
+    "Set F-Q57": {
+        "headers": ["Row", "Endpoint type", "Stated behavior"],
+        "rows": [
+            ["Row 1", "Webhook", "Sends Dataverse server events to an external web application"],
+            ["Row 2", "Event Hub", "Uses OAuth authorization"],
+            ["Row 3", "Azure Service Bus relay contract", "An active listener is optional"],
+            ["Row 4", "Azure Service Bus queue contract", "Requires a listener actively listening at the moment of post"],
+        ],
+    },
+}
+
+def build_exhibit_html(ex):
+    """Render a reconstructed exhibit as a trusted (pre-escaped) HTML table."""
+    heads = "".join(f"<th>{htmllib.escape(h)}</th>" for h in ex["headers"])
+    body = []
+    for row in ex["rows"]:
+        cells = []
+        for c in row:
+            c = str(c)
+            if c.startswith("{") or c.startswith("GET "):
+                cells.append(f'<td><code class="cell-code">{htmllib.escape(c)}</code></td>')
+            else:
+                cells.append(f"<td>{htmllib.escape(c)}</td>")
+        body.append("<tr>" + "".join(cells) + "</tr>")
+    return ('<div class="exhibit-cap">📋 Exhibit (reconstructed from the explanation)</div>'
+            f'<table class="exhibit-table"><thead><tr>{heads}</tr></thead>'
+            f'<tbody>{"".join(body)}</tbody></table>')
 
 # ── CSS ──────────────────────────────────────────────────────────────────────
 
@@ -345,6 +443,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   font-size:.8rem;line-height:1.55}
 .code-snippet code{font-family:inherit;background:none;padding:0;color:inherit}
 .rev-stem .code-snippet{font-size:.78rem}
+
+/* ── Reconstructed exhibit table ── */
+.exhibit-cap{font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.04em;color:var(--muted);margin:14px 0 6px}
+.exhibit-table{border-collapse:collapse;width:100%;margin:0 0 4px;
+  font-size:.82rem;border:1px solid var(--bdr);border-radius:8px;overflow:hidden}
+.exhibit-table th{background:#1e293b;color:#f1f5f9;padding:8px 11px;
+  text-align:left;font-weight:600;white-space:nowrap}
+.exhibit-table td{padding:8px 11px;border-top:1px solid var(--bdr);
+  vertical-align:top;line-height:1.5}
+.exhibit-table tr:nth-child(even) td{background:#f8fafc}
+.exhibit-table td:first-child{font-weight:700;color:var(--muted);white-space:nowrap}
+.cell-code{font-family:'Cascadia Code','Consolas',monospace;font-size:.92em;
+  background:#f1f5f9;padding:2px 5px;border-radius:4px;display:inline-block;
+  white-space:pre-wrap;word-break:break-word}
 """
 
 # ── JavaScript ────────────────────────────────────────────────────────────────
@@ -455,7 +568,7 @@ function renderCurrentCard(slug) {
         <span class="fc-idx">Card ${qIdx[slug]+1} of ${queue[slug].length}</span>
         <span class="fc-src">${q.id}</span>
       </div>
-      <div class="fc-stem">${renderStem(q.stem)}</div>
+      <div class="fc-stem">${renderStem(q.stem, q.exhibit)}</div>
       ${multi ? '<p class="multi-label">Select all correct answers:</p>' : ''}
       <div class="options-list" id="opts-${slug}">
         ${letters.map(l =>
@@ -605,8 +718,27 @@ function escHtml(s) {
 // Render a question stem, pulling any "Snippet" code block into a monospace
 // <pre> so code/JSON/formulas stay readable instead of wrapping like prose.
 // Shape in the source data: <scenario> \n Snippet \n <code> \n [<question?>]
-function renderStem(stem) {
+function renderStem(stem, exhibitHtml) {
     const lines = String(stem).split('\n');
+
+    // Exhibit case: the stem has a bare "Exhibit N" line and we have a
+    // reconstructed table to drop in its place (scenario above, question below).
+    if (exhibitHtml) {
+        let ek = -1;
+        for (let i = 0; i < lines.length; i++) {
+            if (/^\s*exhibit\s*\d*\s*$/i.test(lines[i])) { ek = i; break; }
+        }
+        if (ek !== -1) {
+            const lead = lines.slice(0, ek).join('\n').trim();
+            const after = lines.slice(ek + 1).join('\n').trim();
+            let h = '';
+            if (lead)  h += `<div class="stem-text">${escHtml(lead)}</div>`;
+            h += exhibitHtml;
+            if (after) h += `<div class="stem-text stem-q">${escHtml(after)}</div>`;
+            return h;
+        }
+    }
+
     let mark = -1;
     for (let i = 0; i < lines.length; i++) {
         if (/^\s*snippet\s*$/i.test(lines[i])) { mark = i; break; }
@@ -773,7 +905,7 @@ function renderQuizQuestion() {
       </div>
       <div class="quiz-pbar"><div style="width:${(idx)/order.length*100}%"></div></div>
       <div class="flashcard">
-        <div class="fc-stem">${renderStem(q.stem)}</div>
+        <div class="fc-stem">${renderStem(q.stem, q.exhibit)}</div>
         ${multi ? '<p class="multi-label">Select all that apply:</p>' : ''}
         <div class="options-list" id="quiz-opts">
           ${letters.map(l =>
@@ -846,7 +978,7 @@ function renderQuizResults(correct, total, wrong) {
       : `<div class="review-head">Review your ${wrong.length} missed question${wrong.length!==1?'s':''}</div>`
         + wrong.map(({q, chosen}) => `
           <div class="rev-card">
-            <div class="rev-stem">${renderStem(q.stem)}</div>
+            <div class="rev-stem">${renderStem(q.stem, q.exhibit)}</div>
             <div class="rev-ans"><span class="you">Your answer:</span> ${escHtml(fmtLetters(chosen, q.options))}</div>
             <div class="rev-ans"><span class="cor">Correct:</span> ${escHtml(fmtLetters(new Set(q.correct), q.options))}</div>
             ${q.rationale ? `<div class="rev-rat">${escHtml(q.rationale)}</div>` : ''}
@@ -905,6 +1037,9 @@ def build():
     for slug, name, weight in DOMAINS:
         toc, guide_html = render_guide(slug)
         cards = load_cards(slug)
+        for c in cards:
+            if c["id"] in EXHIBITS:
+                c["exhibit"] = build_exhibit_html(EXHIBITS[c["id"]])
         all_cards[slug] = cards
 
         panel = f"""
