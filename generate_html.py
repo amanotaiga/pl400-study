@@ -61,16 +61,18 @@ def render_guide(slug):
     html = md.convert(text)
     toc  = md.toc
 
-    # Wrap "Beyond the exam" h2 and everything after it in a <details>
-    m = re.search(r'<h2[^>]*>[^<]*[Bb]eyond[^<]*</h2>', html)
+    # Wrap the deep-dive h2 ("Deeper Exam Detail" or "Beyond the Exam") and
+    # everything after it in a <details> so the section is collapsed by default.
+    m = re.search(r'<h2[^>]*>([^<]*(?:[Dd]eeper [Ee]xam|[Bb]eyond)[^<]*)</h2>', html)
     if m:
+        heading = m.group(1).strip()
         inner = html[m.end():]
         html = (
             html[:m.start()] +
             '<details class="beyond-section">'
             '<summary>'
             '<span class="beyond-arrow">▶</span>'
-            ' <strong>🔭 Beyond the Exam</strong>'
+            f' <strong>🔭 {heading}</strong>'
             ' <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em>'
             '</summary>'
             f'<div class="beyond-body">{inner}</div>'

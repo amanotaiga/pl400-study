@@ -1575,7 +1575,7 @@ body,.main,.tabs,.flashcard,.guide-scroll{transition:background .2s,color .2s}
 </tbody>
 </table>
 <hr />
-<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Deeper Exam Detail</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
 <blockquote>
 <p>This section adds depth, exact numbers, edge cases, and SDK/API specifics. All claims are sourced from Microsoft Learn unless marked "(unverified)".</p>
 </blockquote>
@@ -1926,7 +1926,7 @@ body,.main,.tabs,.flashcard,.guide-scroll{transition:background .2s,color .2s}
 <td>Add <code>Prefer: odata.continue-on-error</code> header to process all items and return aggregate results</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></details></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-plug-in-execution-pipeline">1. Plug-in Execution Pipeline</a><ul>
@@ -2694,7 +2694,7 @@ body,.main,.tabs,.flashcard,.guide-scroll{transition:background .2s,color .2s}
 </tbody>
 </table>
 <hr />
-<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Deeper Exam Detail</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
 <p>This section contains deeper product behavior, edge-case decision rules, and current platform limits. All claims are sourced against Microsoft Learn documentation unless marked "(unverified)".</p>
 <hr />
 <h3 id="a-dataverse-table-types-deeper-detail">A. Dataverse Table Types — Deeper Detail</h3>
@@ -3036,7 +3036,7 @@ body,.main,.tabs,.flashcard,.guide-scroll{transition:background .2s,color .2s}
 <td>Sync plug-in: blocks caller; cloud flow: runs in Power Automate runtime, not Dataverse server</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></details></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-dataverse-table-types">1. Dataverse Table Types</a><ul>
@@ -3681,7 +3681,7 @@ attribute.fireOnChange(); // required to trigger existing OnChange handlers
 </li>
 </ol>
 <hr />
-<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Deeper Exam Detail</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
 <p>This section contains deeper API detail, fuller method lists, lifecycle nuances, and edge-case decision rules. Each claim is sourced directly from Microsoft Learn documentation.</p>
 <hr />
 <h3 id="pcf-full-context-object-surface-area">PCF: Full context object surface area</h3>
@@ -4159,7 +4159,7 @@ Check <code>context.updatedProperties</code> at the start of <code>updateView</c
 There is no offline equivalent of <code>Xrm.WebApi.online.execute</code>. If the action must work offline, the operation must be queued locally using a custom offline strategy (e.g., storing a pending operation in offline data that syncs when connectivity is restored). There is no built-in "offline execute" API.</p>
 <p><strong>What if a ReactControl ("virtual") PCF is added to Power Pages?</strong>
 It is not supported. React controls and platform libraries only work in canvas and model-driven apps. Use a StandardControl for Power Pages targets.</p>
-<p>Source (consolidated from all above Microsoft Learn pages).</p></div>
+<p>Source (consolidated from all above Microsoft Learn pages).</p></div></details></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-pcf-code-components-lifecycle-methods">1. PCF Code Components — Lifecycle Methods</a><ul>
@@ -4713,7 +4713,7 @@ It is not supported. React controls and platform libraries only work in canvas a
 <li><strong>Expecting a plug-in in Calling User context to succeed on a restricted table</strong> — it will fail if the calling user lacks privilege; change the execution context or grant the privilege.</li>
 </ul>
 <hr />
-<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Deeper Exam Detail</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
 <p>This section contains deeper product behavior, exact limits, ALM tooling specifics, and "What if..." edge-case decision rules sourced directly from Microsoft Learn documentation.</p>
 <hr />
 <h3 id="a-solutions-deeper-mechanics">A. Solutions — Deeper Mechanics</h3>
@@ -4940,7 +4940,7 @@ The dependency may be on a <strong>specific version</strong> or on a <strong>com
 <p><strong>What if a canvas app or modern flow is missing after SolutionPackager unpacks the solution?</strong>
 You are using the <strong>XML (legacy) format</strong>. Canvas <code>.msapp</code> files and modern flows are only supported in the <strong>YAML format</strong>. Switch to <code>pac solution clone</code> or ensure the YAML folder structure (<code>solutions/&lt;Name&gt;/solution.yml</code>) is present before packing. <a href="https://learn.microsoft.com/en-us/power-platform/alm/solution-packager-tool">learn.microsoft.com/en-us/power-platform/alm/solution-packager-tool</a></p>
 <p><strong>What if the pipeline's default Upgrade import behavior is not what I want (e.g., I only want an Update to avoid deleting components)?</strong>
-Pipelines do not currently expose an option to choose Update vs. Upgrade — the default is always Upgrade without Overwrite Customizations. For Update semantics (no component deletion), use the <strong>Power Platform Build Tools</strong> <code>PowerPlatformImportSolution</code> task in Azure DevOps or GitHub Actions where you have full control over import parameters. <a href="https://learn.microsoft.com/en-us/power-platform/alm/pipelines">learn.microsoft.com/en-us/power-platform/alm/pipelines</a></p></div>
+Pipelines do not currently expose an option to choose Update vs. Upgrade — the default is always Upgrade without Overwrite Customizations. For Update semantics (no component deletion), use the <strong>Power Platform Build Tools</strong> <code>PowerPlatformImportSolution</code> task in Azure DevOps or GitHub Actions where you have full control over import parameters. <a href="https://learn.microsoft.com/en-us/power-platform/alm/pipelines">learn.microsoft.com/en-us/power-platform/alm/pipelines</a></p></div></details></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-environment-variables">1. Environment Variables</a><ul>
@@ -5403,7 +5403,7 @@ service.Execute(new UpsertRequest { Target = account });
 </li>
 </ol>
 <hr />
-<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Deeper Exam Detail</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
 <p>This section adds depth, SDK specifics, current product behavior, limits, and edge-case decision rules. All claims are sourced from Microsoft Learn unless marked "(unverified)".</p>
 <hr />
 <h3 id="a-azure-service-bus-fuller-contract-details-and-runtime-behavior">A. Azure Service Bus: fuller contract details and runtime behavior</h3>
@@ -5709,7 +5709,7 @@ The trigger does <strong>not</strong> fire for changes on relationship records o
 </tr>
 </tbody>
 </table>
-<p>[https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks] [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p></div>
+<p>[https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-webhooks] [https://learn.microsoft.com/en-us/power-automate/dataverse/create-update-delete-trigger]</p></div></details></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-dataverse-azure-integration-service-endpoints-contract-types">1. Dataverse Azure Integration: Service Endpoints &amp; Contract Types</a><ul>
@@ -6185,7 +6185,7 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 <li><strong>Assuming a component library update is instant</strong> — the library lifecycle and the consuming-app lifecycle are independent; updates require explicit adoption.</li>
 </ol>
 <hr />
-<h2 id="deeper-exam-detail">Deeper Exam Detail</h2>
+<details class="beyond-section"><summary><span class="beyond-arrow">▶</span> <strong>🔭 Deeper Exam Detail</strong> <em class="beyond-hint"> — extra depth from Microsoft Learn (click to expand)</em></summary><div class="beyond-body">
 <p>This section contains fuller function lists, current platform limits, tooling specifics, and edge-case decision rules sourced directly from Microsoft Learn.</p>
 <hr />
 <h3 id="a-delegation-deep-dive-full-per-data-source-function-tables">A. Delegation deep-dive: full per-data-source function tables</h3>
@@ -7128,7 +7128,7 @@ Set(varTotal, CountRows(colAccounts) + CountRows(colContacts))
 <td>Use <strong>Monitor</strong> published-app mode: from the Apps list, select the app &gt; Live monitor &gt; Play published app. A separate browser tab opens the published app connected to your Monitor session. Alternatively, send the user a <strong>Copy monitor link</strong> for Mobile.</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></details></div>
     <div class="toc-col"><div class="toc-label">Contents</div><div class="toc">
 <ul>
 <li><a href="#1-component-libraries-for-reusable-canvas-app-ui">1. Component Libraries for Reusable Canvas App UI</a><ul>
